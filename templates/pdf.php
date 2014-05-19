@@ -31,6 +31,7 @@ limitations under the License.
 	<script type="text/javascript" src="<?php print_unescaped(OC_Helper::linkTo('core', 'js/jquery-tipsy.js')); ?>"></script>
 	<script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkToRoute('js_config'));?>"></script>
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/oc-dialogs.js')); ?>"></script>
+    <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/underscore.js')); ?>"></script>
     <script type="text/javascript" src="<?php print_unescaped(OCP\Util::linkTo('core', 'js/js.js')); ?>"></script>
     <!-- oC changes -->
 
