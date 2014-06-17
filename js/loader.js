@@ -1,8 +1,8 @@
 /* globals FileList, FileActions */
 function hidePDFviewer() {
 	$('#pdframe, #pdfbar').remove();
-	if ($('#isPublic').val()){
-		$('#preview').css({height: null});
+	if ($('#isPublic').val() && $('#filesApp').val()){
+		$('#controls').css({display:'inherit'});
 	}
 	FileList.setViewerMode(false);
 	// replace the controls with our own
@@ -22,10 +22,12 @@ function showPDFviewer(dir, filename) {
 			$('#imgframe').css({display:'none'});
 			$('.directLink').css({display:'none'});
 			$('.directDownload').css({display:'none'});
+			$('#controls').css({display:'none'});
 		} else {
 			FileList.setViewerMode(true);
 			$('#app-content').append($iframe);
 		}
+
 		$("#pageWidthOption").attr("selected","selected");
 		// replace the controls with our own
 		$('#app-content #controls').addClass('hidden');
@@ -39,27 +41,31 @@ function showPDFviewer(dir, filename) {
 			$('#close').css({display:'none'});
 		}
 	}
-
 }
 showPDFviewer.oldCode='';
 showPDFviewer.lastTitle='';
 
+
 $(document).ready(function(){
 	// Doesn't work in IE
 	if(!$.browser.msie){
+		var sharingToken = $('#sharingToken').val();
+		var directory = $('#dir').val();
 
 		// Logged-in view
 		if ($('#filesApp').val() && typeof FileActions !=='undefined'){
  			FileActions.register('application/pdf','Edit', OC.PERMISSION_READ, '',function(filename){
-				showPDFviewer(FileList.getCurrentDirectory(), filename);
+				if($('#isPublic').val()) {
+					showPDFviewer('', encodeURIComponent(sharingToken)+"&files="+encodeURIComponent(filename)+"&path="+encodeURIComponent(directory));
+				} else {
+					showPDFviewer(FileList.getCurrentDirectory(), filename);
+				}
 			});
 			FileActions.setDefault('application/pdf','Edit');
 		}
 		
 		// Public view
 		if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
-			var sharingToken = $('#sharingToken').val();
-
 			showPDFviewer('', sharingToken);
 		}
 	}
