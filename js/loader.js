@@ -20,8 +20,8 @@ function showPDFviewer(dir, filename) {
 			$('body').css({height: '100%'});
 			$('footer').css({display:'none'});
 			$('#imgframe').css({display:'none'});
-			$('#directLink').css({display:'none'});
-			$('#directDownload').css({display:'none'});
+			$('.directLink').css({display:'none'});
+			$('.directDownload').css({display:'none'});
 		} else {
 			FileList.setViewerMode(true);
 			$('#app-content').append($iframe);
