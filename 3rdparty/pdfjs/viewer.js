@@ -5142,13 +5142,13 @@ function webViewerLoad(evt) {
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
 
 
-	// owncould customization to load file
+  // owncould customization to load file
   if (file && dir !== '') {
-	  // Logged in
-	PDFView.open(OC.linkTo('files', 'ajax/download.php')+"?files="+encodeURIComponent(window.file)+"&dir="+encodeURIComponent(window.dir), 1.0);
+  	// Logged in
+  	PDFView.open(OC.linkTo('files', 'ajax/download.php')+"?files="+encodeURIComponent(window.file)+"&dir="+encodeURIComponent(window.dir), 1.0);
   } else {
-	  // Public view
-    PDFView.open(OC.linkTo('', 'public.php')+'?service=files'+"&t="+encodeURIComponent(window.file)+"&download", 1.0);
+  	// Public view
+  	PDFView.open(OC.linkTo('', 'public.php')+'?service=files'+"&t="+encodeURIComponent(window.file)+"&download", 1.0);
   }
 
 }
