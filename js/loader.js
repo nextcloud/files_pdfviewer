@@ -18,6 +18,10 @@ function showPDFviewer(dir, filename) {
 			// force the preview to adjust its height
 			$('#preview').append($iframe).css({height: '100%'});
 			$('body').css({height: '100%'});
+			$('footer').css({display:'none'});
+			$('#imgframe').css({display:'none'});
+			$('#directLink').css({display:'none'});
+			$('#directDownload').css({display:'none'});
 		} else {
 			FileList.setViewerMode(true);
 			$('#app-content').append($iframe);
