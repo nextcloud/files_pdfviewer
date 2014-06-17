@@ -11,14 +11,15 @@ function hidePDFviewer() {
 
 function showPDFviewer(dir, filename) {
 	if(!showPDFviewer.shown) {
-		FileList.setViewerMode(true);
 		var $iframe;
 		var viewer = OC.linkTo('files_pdfviewer', 'viewer.php')+'?dir='+encodeURIComponent(dir).replace(/%2F/g, '/')+'&file='+encodeURIComponent(filename);
 		$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;" src="'+viewer+'" /><div id="pdfbar"><a id="close" title="Close">X</a></div>');
 		if ($('#isPublic').val()) {
 			// force the preview to adjust its height
 			$('#preview').append($iframe).css({height: '100%'});
+			$('body').css({height: '100%'});
 		} else {
+			FileList.setViewerMode(true);
 			$('#app-content').append($iframe);
 		}
 		$("#pageWidthOption").attr("selected","selected");
@@ -40,13 +41,22 @@ showPDFviewer.oldCode='';
 showPDFviewer.lastTitle='';
 
 $(document).ready(function(){
-	// doesn't work in IE or public link mode
-	if(!$.browser.msie && !$('#isPublic').val()){
-		if ($('#filesApp').val() && typeof FileActions!=='undefined'){
-			FileActions.register('application/pdf','Edit', OC.PERMISSION_READ, '',function(filename){
+	// Doesn't work in IE
+	if(!$.browser.msie){
+
+		// Logged-in view
+		if ($('#filesApp').val() && typeof FileActions !=='undefined'){
+ 			FileActions.register('application/pdf','Edit', OC.PERMISSION_READ, '',function(filename){
 				showPDFviewer(FileList.getCurrentDirectory(), filename);
 			});
 			FileActions.setDefault('application/pdf','Edit');
+		}
+		
+		// Public view
+		if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
+			var sharingToken = $('#sharingToken').val();
+
+			showPDFviewer('', sharingToken);
 		}
 	}
 });
