@@ -1,6 +1,5 @@
 <?php
 
-OCP\User::checkLoggedIn();
 OCP\App::checkAppEnabled('files_pdfviewer');
 
 $dir = isset($_GET['dir']) ? $_GET['dir'] : '';
