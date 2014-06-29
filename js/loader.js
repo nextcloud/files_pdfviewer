@@ -55,9 +55,9 @@ $(document).ready(function(){
 		if ($('#filesApp').val() && typeof FileActions !=='undefined'){
  			FileActions.register('application/pdf','Edit', OC.PERMISSION_READ, '',function(filename){
 				if($('#isPublic').val()) {
-					showPDFviewer('', encodeURIComponent(sharingToken)+"&files="+filename+"&path="+FileList.getCurrentDirectory());
+					showPDFviewer('', encodeURIComponent(sharingToken)+"&files="+encodeURIComponent(filename)+"&path="+encodeURIComponent(FileList.getCurrentDirectory()));
 				} else {
-					showPDFviewer(FileList.getCurrentDirectory(), filename);
+					showPDFviewer(encodeURIComponent(FileList.getCurrentDirectory()), encodeURIComponent(filename));
 				}
 			});
 			FileActions.setDefault('application/pdf','Edit');
