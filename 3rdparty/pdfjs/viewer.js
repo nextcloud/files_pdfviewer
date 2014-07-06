@@ -5144,11 +5144,11 @@ function webViewerLoad(evt) {
 
   // owncould customization to load file
   if (file && dir !== '') {
-  	// Logged in
-  	PDFView.open(OC.linkTo('files', 'ajax/download.php')+"?files="+decodeURIComponent(window.file)+"&dir="+decodeURIComponent(window.dir), 1.0);
+  	// Logged in       
+  	PDFView.open(OC.linkTo('files', 'ajax/download.php')+"?files="+window.file+"&dir="+window.dir, 1.0);
   } else {
   	// Public view
-  	PDFView.open(OC.linkTo('', 'public.php')+'?service=files'+"&t="+decodeURIComponent(window.file)+"&download", 1.0);
+  	PDFView.open(OC.linkTo('', 'public.php')+'?service=files'+"&t="+window.file+"&download", 1.0);
   }
 
 }
