@@ -1,6 +1,16 @@
 <?php
+/**
+ * @author Lukas Reschke
+ * @copyright 2014 Lukas Reschke lukas@owncloud.com
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later.
+ * See the COPYING-README file.
+ */
 
-/** @var $this \OCP\Route\IRouter */
+namespace OCA\Files_PdfViewer\AppInfo;
 
-$this->create('files_pdfviewer_viewer', 'viewer.php')
-	->actionInclude('files_pdfviewer/viewer.php');
+$application = new Application();
+$application->registerRoutes($this, ['routes' => [
+	['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
+]]);

@@ -1,12 +1,11 @@
 filter:
     excluded_paths:
-        - '3rdparty/*'
+        - 'vendor/*'
+        - 'tests/*'
 
 imports:
     - javascript
     - php
 
-checks:
-    php:
-        code_rating: true
-        duplication: true
+tools:
+    external_code_coverage: true
