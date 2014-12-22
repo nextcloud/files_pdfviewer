@@ -2,6 +2,7 @@
   /** @var array $_ */
   /** @var OCP\IURLGenerator $urlGenerator */
   $urlGenerator = $_['urlGenerator'];
+  $version = \OCP\App::getAppVersion('files_pdfviewer');
 ?>
 <!--
 Copyright 2012 Mozilla Foundation
@@ -22,21 +23,21 @@ Adobe CMap resources are covered by their own copyright and license:
 http://sourceforge.net/adobe/cmap/wiki/License/
 -->
 <html dir="ltr" mozdisallowselectionprint moznomarginboxes>
-  <head data-workersrc="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/build/pdf.worker.js')) ?>">
+  <head data-workersrc="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/build/pdf.worker.js')) ?>?v=<?php p($version) ?>">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
     <title>PDF.js viewer</title>
 
-    <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.css')) ?>"/>
+    <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.css')) ?>?v=<?php p($version) ?>"/>
 
-    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/compatibility.js')) ?>"></script>
+    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/compatibility.js')) ?>?v=<?php p($version) ?>"></script>
     <!-- This snippet is used in production (included from viewer.html) -->
-    <link rel="resource" type="application/l10n" href="../vendor/pdfjs/web/locale/locale.properties"/>
-    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/l10n.js')) ?>"></script>
-    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/build/pdf.js')) ?>"></script>
-    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.js')) ?>"></script>
-    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/workersrc.js')) ?>"></script>
+    <link rel="resource" type="application/l10n" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/locale/locale.properties')) ?>?v=<?php p($version) ?>"/>
+    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/l10n.js')) ?>?v=<?php p($version) ?>"></script>
+    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/build/pdf.js')) ?>?v=<?php p($version) ?>"></script>
+    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.js')) ?>?v=<?php p($version) ?>"></script>
+    <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/workersrc.js')) ?>?v=<?php p($version) ?>"></script>
   </head>
 
   <body tabindex="1">
