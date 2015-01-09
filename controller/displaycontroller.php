@@ -21,14 +21,14 @@ class DisplayController extends Controller {
 	private $urlGenerator;
 
 	/**
-	 * @param string $appName
+	 * @param string $AppName
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
 	 */
-	public function __construct($appName,
+	public function __construct($AppName,
 								IRequest $request,
 								IURLGenerator $urlGenerator) {
-		parent::__construct($appName, $request);
+		parent::__construct($AppName, $request);
 		$this->urlGenerator = $urlGenerator;
 	}
 

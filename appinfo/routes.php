@@ -10,7 +10,6 @@
 
 namespace OCA\Files_PdfViewer\AppInfo;
 
-$application = new Application();
-$application->registerRoutes($this, ['routes' => [
+return ['routes' => [
 	['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
-]]);
+]];
