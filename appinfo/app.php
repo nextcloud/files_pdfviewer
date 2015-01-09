@@ -12,6 +12,4 @@ namespace OCA\Files_PdfViewer\AppInfo;
 
 use OCP\Util;
 
-$application = new Application();
-
-Util::addScript($application->getContainer()->getAppName(), 'previewplugin');
+Util::addScript('files_pdfviewer', 'previewplugin');
