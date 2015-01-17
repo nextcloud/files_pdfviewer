@@ -2,10 +2,22 @@
 <info>
     <id>files_pdfviewer</id>
     <name>PDF Viewer</name>
-    <description>Inline PDF viewer (pdfjs-based)</description>
+    <description>
+        This application integrates the PDF.js library into ownCloud. Using this
+        application users can view their PDF files online without the need to
+        download the file.
+
+        When this application is enabled publicly shared PDF documents will also
+        get shown in the PDF Viewer instead of only showing a single static
+        snapshot of the document. The PDF viewer requires a modern browser and
+        will not work with Microsoft® Internet Explorer® versions below 9.
+
+        PDF.js is a JavaScript library developed by Mozilla, you can learn more
+        about the PDF.js project at https://mozilla.github.io/pdf.js/
+    </description>
     <licence>Apache 2.0</licence>
-    <author>Thomas Müller (ownCloud), Lukas Reschke (ownCloud), pdf.js: Andreas Gal, Chris G Jones, Shaon Barman, Vivien Nicolas, Justin D'Arcangelo, Yury Delendik, Kalervo Kujala, Adil Allawi, Jakob Miland, Artur Adib, Brendan Dahl, David Quintana, Julian Viereck</author>
-    <require>7.0</require>
+    <author>Thomas Müller, Lukas Reschke</author>
+    <require>8.0</require>
     <shipped>true</shipped>
     <default_enable/>
     <ocsid>166049</ocsid>
