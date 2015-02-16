@@ -15,7 +15,7 @@
         PDF.js is a JavaScript library developed by Mozilla, you can learn more
         about the PDF.js project at https://mozilla.github.io/pdf.js/
     </description>
-    <licence>Apache 2.0</licence>
+    <licence>AGPL</licence>
     <author>Thomas Müller, Lukas Reschke</author>
     <require>8.0</require>
     <shipped>true</shipped>
