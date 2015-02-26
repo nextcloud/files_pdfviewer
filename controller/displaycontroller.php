@@ -47,6 +47,7 @@ class DisplayController extends Controller {
 
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
+		$policy->addAllowedFontDomain('data:');
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
