@@ -11,6 +11,7 @@
 namespace OCA\Files_PdfViewer\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -42,8 +43,14 @@ class DisplayController extends Controller {
 		$params = [
 			'urlGenerator' => $this->urlGenerator
 		];
+		$response = new TemplateResponse($this->appName, 'viewer', $params, 'blank');
 
-		return new TemplateResponse($this->appName, 'viewer', $params, 'blank');
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedChildSrcDomain('\'self\'');
+		$policy->addAllowedFontDomain('data:');
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
 	}
 
 }

@@ -10,6 +10,7 @@
 
 namespace OCA\Files_PdfViewer\Controller;
 
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -50,6 +51,10 @@ class DisplayControllerTest extends TestCase {
 			'urlGenerator' => $this->urlGenerator
 		];
 		$expectedResponse = new TemplateResponse($this->appName, 'viewer', $params, 'blank');
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedChildSrcDomain('\'self\'');
+		$policy->addAllowedFontDomain('data:');
+		$expectedResponse->setContentSecurityPolicy($policy);
 
 		$this->assertEquals($expectedResponse, $this->controller->showPdfViewer());
 	}
