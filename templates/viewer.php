@@ -192,6 +192,10 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                   <span data-l10n-id="tools_label">Tools</span>
                 </button>
 
+                <button id="close" class="toolbarButton" title="Close" tabindex="37" data-l10n-id="Close" style="display:block;padding:0 5px;color:#BBBBBB;font-weight:900;font-size:16px;height:18px;top:4px;">
+                     X
+                </button>
+
               </div>
               <div class="outerCenter">
                 <div class="innerCenter" id="toolbarViewerMiddle">
