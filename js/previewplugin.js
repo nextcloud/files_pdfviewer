@@ -71,11 +71,11 @@
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
 				if ($('#fileList').length) {
-					iframe.find('#close').click(function() {
+					iframe.find('#secondaryToolbarClose').click(function() {
 						self.hide();
 					});
 				} else {
-					iframe.find("#close").addClass('hidden');
+					iframe.find("#secondaryToolbarClose").addClass('hidden');
 				}
 			});
 		},
