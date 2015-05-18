@@ -1,18 +1,17 @@
 .toolbarButton#secondaryToolbarClose::before {
-  content: url(../img/toolbarButton-secondaryToolbarClose.png);
+  display: block;
+  content: ' ';
+  background-image: url(../img/toolbarButton-secondaryToolbarClose.svg);
+  background-size: 16px 16px;
+  height: 16px;
+  width:16px;
+
 }
 
-@media screen and (min-resolution: 2dppx) {
-  .toolbarButton#secondaryToolbarClose::before {
-    content: url(../img/toolbarButton-secondaryToolbarClose@2x.png);
-  }
-}
 
-html[dir='rtl'] .doorHanger:after,
 html[dir='ltr'] .doorHangerRight:after {
   right: 53px!important;
 }
-html[dir='rtl'] .doorHanger:before,
 html[dir='ltr'] .doorHangerRight:before {
   right: 53px!important;
 }
