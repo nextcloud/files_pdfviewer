@@ -9,9 +9,9 @@
 }
 
 
-html[dir='ltr'] .doorHangerRight:after {
+html .doorHangerRight:after {
   right: 53px!important;
 }
-html[dir='ltr'] .doorHangerRight:before {
+html .doorHangerRight:before {
   right: 53px!important;
 }
