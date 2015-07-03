@@ -30,6 +30,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <title>PDF.js viewer</title>
 
     <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.css')) ?>?v=<?php p($version) ?>"/>
+    <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'css/style.css')) ?>?v=<?php p($version) ?>"/>
 
     <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/compatibility.js')) ?>?v=<?php p($version) ?>"></script>
     <!-- This snippet is used in production (included from viewer.html) -->
@@ -186,14 +187,15 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                   <span data-l10n-id="bookmark_label">Current View</span>
                 </a>
 
-                <div class="verticalToolbarSeparator hiddenSmallView"></div>
 
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
                   <span data-l10n-id="tools_label">Tools</span>
                 </button>
 
-                <button id="close" class="toolbarButton" title="Close" tabindex="37" data-l10n-id="Close" style="display:block;padding:0 5px;color:#BBBBBB;font-weight:900;font-size:16px;height:18px;top:4px;">
-                     X
+                <div class="verticalToolbarSeparator hiddenSmallView"></div>
+
+                <button id="secondaryToolbarClose" class="toolbarButton" title="Close" tabindex="37" data-l10n-id="Close">
+                  <span data-l10n-id="close_label">Close</span>
                 </button>
 
               </div>
