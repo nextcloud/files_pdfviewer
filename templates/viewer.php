@@ -27,6 +27,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
+    <meta name="referrer" content="never">
     <title>PDF.js viewer</title>
 
     <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.css')) ?>?v=<?php p($version) ?>"/>
