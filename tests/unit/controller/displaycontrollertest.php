@@ -54,6 +54,7 @@ class DisplayControllerTest extends TestCase {
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
+		$policy->addAllowedImageDomain('*');
 		$expectedResponse->setContentSecurityPolicy($policy);
 
 		$this->assertEquals($expectedResponse, $this->controller->showPdfViewer());
