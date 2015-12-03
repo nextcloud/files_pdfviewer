@@ -72,12 +72,26 @@
 				var iframe = $('#pdframe').contents();
 				if ($('#fileList').length) {
 					iframe.find('#secondaryToolbarClose').click(function() {
-						self.hide();
+						if(!$('html').hasClass('ie8')) {
+							history.back();
+						} else {
+							self.hide();
+						}
 					});
 				} else {
 					iframe.find("#secondaryToolbarClose").addClass('hidden');
 				}
 			});
+
+			if(!$('html').hasClass('ie8')) {
+				history.pushState({}, '', '#pdfviewer');
+			}
+
+			if(!$('html').hasClass('ie8')) {
+				$(window).one('popstate', function (e) {
+					self.hide();
+				});
+			}
 		},
 
 		/**
