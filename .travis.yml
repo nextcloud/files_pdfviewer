@@ -41,6 +41,4 @@ matrix:
       env: DB=mysql
     - php: 5.4
       env: DB=pgsql
-    - php: 5.4
-      env: DB=oracle
   fast_finish: true
