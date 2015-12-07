@@ -49,6 +49,7 @@ class DisplayController extends Controller {
 		$policy->addAllowedChildSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
 		$policy->addAllowedImageDomain('*');
+		$policy->allowEvalScript(false);
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
