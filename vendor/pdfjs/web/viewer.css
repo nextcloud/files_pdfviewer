@@ -1,4 +1,4 @@
-/* Copyright 2012 Mozilla Foundation
+/* Copyright 2014 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,163 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+.textLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: 0.2;
+}
+
+.textLayer > div {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+}
+
+.textLayer .highlight {
+  margin: -1px;
+  padding: 1px;
+
+  background-color: rgb(180, 0, 170);
+  border-radius: 4px;
+}
+
+.textLayer .highlight.begin {
+  border-radius: 4px 0px 0px 4px;
+}
+
+.textLayer .highlight.end {
+  border-radius: 0px 4px 4px 0px;
+}
+
+.textLayer .highlight.middle {
+  border-radius: 0px;
+}
+
+.textLayer .highlight.selected {
+  background-color: rgb(0, 100, 0);
+}
+
+.textLayer ::selection { background: rgb(0,0,255); }
+.textLayer ::-moz-selection { background: rgb(0,0,255); }
+
+
+.annotationLayer .annotLink > a:hover {
+  opacity: 0.2;
+  background: #ff0;
+  box-shadow: 0px 2px 10px #ff0;
+}
+
+.annotationLayer .annotText > img {
+  position: absolute;
+  cursor: pointer;
+}
+
+.annotationLayer .annotTextContentWrapper {
+  position: absolute;
+  width: 20em;
+}
+
+.annotationLayer .annotTextContent {
+  z-index: 200;
+  float: left;
+  max-width: 20em;
+  background-color: #FFFF99;
+  box-shadow: 0px 2px 5px #333;
+  border-radius: 2px;
+  padding: 0.6em;
+  cursor: pointer;
+}
+
+.annotationLayer .annotTextContent > h1 {
+  font-size: 1em;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.2em;
+}
+
+.annotationLayer .annotTextContent > p {
+  padding-top: 0.2em;
+}
+
+.annotationLayer .annotLink > a {
+  position: absolute;
+  font-size: 1em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.annotationLayer .annotLink > a /* -ms-a */  {
+  background: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0 repeat;
+}
+
+.pdfViewer .canvasWrapper {
+  overflow: hidden;
+}
+
+.pdfViewer .page {
+  direction: ltr;
+  width: 816px;
+  height: 1056px;
+  margin: 1px auto -8px auto;
+  position: relative;
+  overflow: visible;
+  border: 9px solid transparent;
+  background-clip: content-box;
+  border-image: url(images/shadow.png) 9 9 repeat;
+  background-color: white;
+}
+
+.pdfViewer.removePageBorders .page {
+  margin: 0px auto 10px auto;
+  border: none;
+}
+
+.pdfViewer .page canvas {
+  margin: 0;
+  display: block;
+}
+
+.pdfViewer .page .loadingIcon {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: url('images/loading-icon.gif') center no-repeat;
+}
+
+.pdfPresentationMode:-webkit-full-screen .pdfViewer .page {
+  margin-bottom: 100%;
+  border: 0;
+}
+
+.pdfPresentationMode:-moz-full-screen .pdfViewer .page {
+  margin-bottom: 100%;
+  border: 0;
+}
+
+.pdfPresentationMode:-ms-fullscreen .pdfViewer .page {
+  margin-bottom: 100% !important;
+  border: 0;
+}
+
+.pdfPresentationMode:fullscreen .pdfViewer .page {
+  margin-bottom: 100%;
+  border: 0;
+}
 
 * {
   padding: 0;
@@ -45,7 +202,7 @@ select {
   display: none !important;
 }
 
-#viewerContainer:-webkit-full-screen {
+#viewerContainer.pdfPresentationMode:-webkit-full-screen {
   top: 0px;
   border-top: 2px solid transparent;
   background-color: #000;
@@ -53,9 +210,10 @@ select {
   height: 100%;
   overflow: hidden;
   cursor: none;
+  -webkit-user-select: none;
 }
 
-#viewerContainer:-moz-full-screen {
+#viewerContainer.pdfPresentationMode:-moz-full-screen {
   top: 0px;
   border-top: 2px solid transparent;
   background-color: #000;
@@ -63,22 +221,24 @@ select {
   height: 100%;
   overflow: hidden;
   cursor: none;
+  -moz-user-select: none;
 }
 
-#viewerContainer:-ms-fullscreen {
+#viewerContainer.pdfPresentationMode:-ms-fullscreen {
   top: 0px !important;
   border-top: 2px solid transparent;
   width: 100%;
   height: 100%;
   overflow: hidden !important;
   cursor: none;
+  -ms-user-select: none;
 }
 
-#viewerContainer:-ms-fullscreen::-ms-backdrop {
+#viewerContainer.pdfPresentationMode:-ms-fullscreen::-ms-backdrop {
   background-color: #000;
 }
 
-#viewerContainer:fullscreen {
+#viewerContainer.pdfPresentationMode:fullscreen {
   top: 0px;
   border-top: 2px solid transparent;
   background-color: #000;
@@ -86,58 +246,45 @@ select {
   height: 100%;
   overflow: hidden;
   cursor: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
-:-webkit-full-screen .page {
-  margin-bottom: 100%;
-  border: 0;
-}
-
-:-moz-full-screen .page {
-  margin-bottom: 100%;
-  border: 0;
-}
-
-:-ms-fullscreen .page {
-  margin-bottom: 100% !important;
-  border: 0;
-}
-
-:fullscreen .page {
-  margin-bottom: 100%;
-  border: 0;
-}
-
-:-webkit-full-screen a:not(.internalLink) {
+.pdfPresentationMode:-webkit-full-screen a:not(.internalLink) {
   display: none;
 }
 
-:-moz-full-screen a:not(.internalLink) {
+.pdfPresentationMode:-moz-full-screen a:not(.internalLink) {
   display: none;
 }
 
-:-ms-fullscreen a:not(.internalLink) {
+.pdfPresentationMode:-ms-fullscreen a:not(.internalLink) {
   display: none !important;
 }
 
-:fullscreen a:not(.internalLink) {
+.pdfPresentationMode:fullscreen a:not(.internalLink) {
   display: none;
 }
 
-:-webkit-full-screen .textLayer > div {
+.pdfPresentationMode:-webkit-full-screen .textLayer > div {
   cursor: none;
 }
 
-:-moz-full-screen .textLayer > div {
+.pdfPresentationMode:-moz-full-screen .textLayer > div {
   cursor: none;
 }
 
-:fullscreen .textLayer > div {
+.pdfPresentationMode:-ms-fullscreen .textLayer > div {
   cursor: none;
 }
 
-#viewerContainer.presentationControls,
-#viewerContainer.presentationControls .textLayer > div {
+.pdfPresentationMode:fullscreen .textLayer > div {
+  cursor: none;
+}
+
+.pdfPresentationMode.pdfPresentationModeControls > *,
+.pdfPresentationMode.pdfPresentationModeControls .textLayer > div {
   cursor: default;
 }
 
@@ -410,6 +557,9 @@ html[dir='rtl'] .findbar {
   background-repeat: no-repeat;
   background-position: right;
 }
+html[dir='rtl'] #findInput[data-status="pending"] {
+  background-position: left;
+}
 
 .secondaryToolbar {
   padding: 6px;
@@ -487,8 +637,8 @@ html[dir='ltr'] .doorHangerRight:before {
   color: #A6B7D0;
 }
 
-.notFound {
-  background-color: rgb(255, 137, 153);
+#findInput.notFound {
+  background-color: rgb(255, 102, 102);
 }
 
 html[dir='ltr'] #toolbarViewerLeft {
@@ -596,6 +746,7 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 .splitToolbarButton > .toolbarButton:focus,
 .dropdownToolbarButton:hover,
 .overlayButton:hover,
+.overlayButton:focus,
 .toolbarButton.textButton:hover,
 .toolbarButton.textButton:focus {
   background-color: hsla(0,0%,0%,.2);
@@ -752,7 +903,7 @@ html[dir='rtl'] .dropdownToolbarButton {
 .dropdownToolbarButton {
   width: 120px;
   max-width: 120px;
-  padding: 3px 2px 2px;
+  padding: 0;
   overflow: hidden;
   background: url(images/toolbarButton-menuArrows.png) no-repeat;
 }
@@ -764,13 +915,11 @@ html[dir='rtl'] .dropdownToolbarButton {
 }
 
 .dropdownToolbarButton > select {
-  -webkit-appearance: none;
-  -moz-appearance: none; /* in the future this might matter, see bugzilla bug #649849 */
   min-width: 140px;
   font-size: 12px;
   color: hsl(0,0%,95%);
   margin: 0;
-  padding: 0;
+  padding: 3px 2px 2px;
   border: none;
   background: rgba(0,0,0,0); /* Opera does not support 'transparent' <select> background */
 }
@@ -1027,7 +1176,7 @@ html[dir='rtl'] .verticalToolbarSeparator {
 }
 
 .horizontalToolbarSeparator {
-  display: block; 
+  display: block;
   margin: 0 0 4px 0;
   height: 1px;
   width: 100%;
@@ -1066,6 +1215,12 @@ html[dir='rtl'] .verticalToolbarSeparator {
   min-width: 16px;
   text-align: right;
   width: 40px;
+}
+
+.toolbarField.pageNumber.visiblePageIsLoading {
+  background-image: url(images/loading-small.png);
+  background-repeat: no-repeat;
+  background-position: 1px;
 }
 
 .toolbarField.pageNumber::-webkit-inner-spin-button,
@@ -1118,23 +1273,27 @@ html[dir='rtl'] .verticalToolbarSeparator {
   margin-bottom: 10px;
 }
 
+#thumbnailView > a:last-of-type > .thumbnail:not([data-loaded]) {
+  margin-bottom: 9px;
+}
+
 .thumbnail:not([data-loaded]) {
   border: 1px dashed rgba(255, 255, 255, 0.5);
-  margin-bottom: 10px;
+  margin: -1px -1px 4px -1px;
 }
 
 .thumbnailImage {
-  transition-duration: 150ms;
   border: 1px solid transparent;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   opacity: 0.8;
   z-index: 99;
+  background-color: white;
+  background-clip: content-box;
 }
 
 .thumbnailSelectionRing {
   border-radius: 2px;
   padding: 7px;
-  transition-duration: 150ms;
 }
 
 a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
@@ -1187,10 +1346,12 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   padding: 3px 4px 0;
 }
 
+html[dir='ltr'] .outlineWithDeepNesting > .outlineItem,
 html[dir='ltr'] .outlineItem > .outlineItems {
   margin-left: 20px;
 }
 
+html[dir='rtl'] .outlineWithDeepNesting > .outlineItem,
 html[dir='rtl'] .outlineItem > .outlineItems {
   margin-right: 20px;
 }
@@ -1200,6 +1361,8 @@ html[dir='rtl'] .outlineItem > .outlineItems {
   text-decoration: none;
   display: inline-block;
   min-width: 95%;
+  min-width: calc(100% - 4px); /* Subtract the right padding (left, in RTL mode)
+                                  of the container. */
   height: auto;
   margin-bottom: 1px;
   border-radius: 2px;
@@ -1218,7 +1381,7 @@ html[dir='rtl'] .outlineItem > .outlineItems {
 }
 
 html[dir='ltr'] .outlineItem > a {
-  padding: 2px 0 5px 10px;
+  padding: 2px 0 5px 4px;
 }
 html[dir='ltr'] .attachmentsItem > button {
   padding: 2px 0 3px 7px;
@@ -1226,13 +1389,49 @@ html[dir='ltr'] .attachmentsItem > button {
 }
 
 html[dir='rtl'] .outlineItem > a {
-  padding: 2px 10px 5px 0;
+  padding: 2px 4px 5px 0;
 }
 html[dir='rtl'] .attachmentsItem > button {
   padding: 2px 7px 3px 0;
   text-align: right;
 }
 
+.outlineItemToggler {
+  position: relative;
+  height: 0;
+  width: 0;
+  color: hsla(0,0%,100%,.5);
+}
+.outlineItemToggler::before {
+  content: url(images/treeitem-expanded.png);
+  display: inline-block;
+  position: absolute;
+}
+html[dir='ltr'] .outlineItemToggler.outlineItemsHidden::before {
+  content: url(images/treeitem-collapsed.png);
+}
+html[dir='rtl'] .outlineItemToggler.outlineItemsHidden::before {
+  content: url(images/treeitem-collapsed-rtl.png);
+}
+.outlineItemToggler.outlineItemsHidden ~ .outlineItems {
+  display: none;
+}
+html[dir='ltr'] .outlineItemToggler {
+  float: left;
+}
+html[dir='rtl'] .outlineItemToggler {
+  float: right;
+}
+html[dir='ltr'] .outlineItemToggler::before {
+  right: 4px;
+}
+html[dir='rtl'] .outlineItemToggler::before {
+  left: 4px;
+}
+
+.outlineItemToggler:hover,
+.outlineItemToggler:hover + a,
+.outlineItemToggler:hover ~ .outlineItems,
 .outlineItem > a:hover,
 .attachmentsItem > button:hover {
   background-color: hsla(0,0%,100%,.02);
@@ -1241,6 +1440,7 @@ html[dir='rtl'] .attachmentsItem > button {
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
               0 0 1px hsla(0,0%,100%,.2) inset,
               0 0 1px hsla(0,0%,0%,.2);
+  border-radius: 2px;
   color: hsla(0,0%,100%,.9);
 }
 
@@ -1261,141 +1461,11 @@ html[dir='rtl'] .attachmentsItem > button {
   cursor: default;
 }
 
-.canvasWrapper {
-  overflow: hidden;
-}
-
-canvas {
-  margin: 0;
-  display: block;
-}
-
-.page {
-  direction: ltr;
-  width: 816px;
-  height: 1056px;
-  margin: 1px auto -8px auto;
-  position: relative;
-  overflow: visible;
-  border: 9px solid transparent;
-  background-clip: content-box;
-  border-image: url(images/shadow.png) 9 9 repeat;
-  background-color: white;
-}
-
-.annotLink > a:hover {
-  opacity: 0.2;
-  background: #ff0;
-  box-shadow: 0px 2px 10px #ff0;
-}
-
-.loadingIcon {
-  position: absolute;
-  display: block;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: url('images/loading-icon.gif') center no-repeat;
-}
-
-.textLayer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  color: #000;
-  font-family: sans-serif;
-  overflow: hidden;
-}
-
-.textLayer > div {
-  color: transparent;
-  position: absolute;
-  white-space: pre;
-  cursor: text;
-}
-
-.textLayer .highlight {
-  margin: -1px;
-  padding: 1px;
-
-  background-color: rgba(180, 0, 170, 0.2);
-  border-radius: 4px;
-}
-
-.textLayer .highlight.begin {
-  border-radius: 4px 0px 0px 4px;
-}
-
-.textLayer .highlight.end {
-  border-radius: 0px 4px 4px 0px;
-}
-
-.textLayer .highlight.middle {
-  border-radius: 0px;
-}
-
-.textLayer .highlight.selected {
-  background-color: rgba(0, 100, 0, 0.2);
-}
-
 /* TODO: file FF bug to support ::-moz-selection:window-inactive
    so we can override the opaque grey background when the window is inactive;
    see https://bugzilla.mozilla.org/show_bug.cgi?id=706209 */
-::selection { background:rgba(0,0,255,0.3); }
-::-moz-selection { background:rgba(0,0,255,0.3); }
-
-.annotationHighlight {
-  position: absolute;
-  border: 2px #FFFF99 solid;
-}
-
-.annotText > img {
-  position: absolute;
-  cursor: pointer;
-}
-
-.annotTextContentWrapper {
-  position: absolute;
-  width: 20em;
-}
-
-.annotTextContent {
-  z-index: 200;
-  float: left;
-  max-width: 20em;
-  background-color: #FFFF99;
-  box-shadow: 0px 2px 5px #333;
-  border-radius: 2px;
-  padding: 0.6em;
-  cursor: pointer;
-}
-
-.annotTextContent > h1 {
-  font-size: 1em;
-  border-bottom: 1px solid #000000;
-  padding-bottom: 0.2em;
-}
-
-.annotTextContent > p {
-  padding-top: 0.2em;
-}
-
-.annotLink > a {
-  position: absolute;
-  font-size: 1em;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.annotLink > a /* -ms-a */ {
-  background: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAA\
-                   LAAAAAABAAEAAAIBRAA7") 0 0 repeat;
-}
+::selection { background: rgba(0,0,255,0.3); }
+::-moz-selection { background: rgba(0,0,255,0.3); }
 
 #errorWrapper {
   background: none repeat scroll 0 0 #FF5555;
@@ -1483,13 +1553,9 @@ canvas {
 .dialog .toolbarField {
   margin: 5px 0;
 }
-.dialog .toolbarField:hover,
-.dialog .toolbarField:focus {
-  border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
-}
 
 .dialog .separator {
-  display: block; 
+  display: block;
   margin: 4px 0 4px 0;
   height: 1px;
   width: 100%;
@@ -1500,6 +1566,10 @@ canvas {
 .dialog .buttonRow {
   text-align: center;
   vertical-align: middle;
+}
+
+.dialog :link {
+  color: white;
 }
 
 #passwordOverlay > .dialog {
@@ -1578,11 +1648,9 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 .debuggerShowText {
   background: none repeat scroll 0 0 yellow;
   color: blue;
-  opacity: 0.3;
 }
 .debuggerHideText:hover {
   background: none repeat scroll 0 0 yellow;
-  opacity: 0.3;
 }
 #PDFBug .stats {
   font-family: courier;
@@ -1668,11 +1736,17 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     left: 186px;
   }
 
+  .toolbarField.pageNumber.visiblePageIsLoading,
+  #findInput[data-status="pending"] {
+    background-image: url(images/loading-small@2x.png);
+    background-size: 16px 17px;
+  }
+
   .dropdownToolbarButton {
     background: url(images/toolbarButton-menuArrows@2x.png) no-repeat;
     background-size: 7px 16px;
   }
-  
+
   html[dir='ltr'] .toolbarButton#sidebarToggle::before {
     content: url(images/toolbarButton-sidebarToggle@2x.png);
   }
@@ -1790,6 +1864,25 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   .secondaryToolbarButton.documentProperties::before {
     content: url(images/secondaryToolbarButton-documentProperties@2x.png);
   }
+
+  .outlineItemToggler::before {
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+    top: -1px;
+    content: url(images/treeitem-expanded@2x.png);
+  }
+  html[dir='ltr'] .outlineItemToggler.outlineItemsHidden::before {
+    content: url(images/treeitem-collapsed@2x.png);
+  }
+  html[dir='rtl'] .outlineItemToggler.outlineItemsHidden::before {
+    content: url(images/treeitem-collapsed-rtl@2x.png);
+  }
+  html[dir='ltr'] .outlineItemToggler::before {
+    right: 0;
+  }
+  html[dir='rtl'] .outlineItemToggler::before {
+    left: 0;
+  }
 }
 
 @media print {
@@ -1817,6 +1910,8 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     display: none;
     border: none;
     box-shadow: none;
+    background-clip: content-box;
+    background-color: white;
   }
 
   .page[data-loaded] {
@@ -1834,10 +1929,15 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   body[data-mozPrintCallback] #printContainer {
     display: block;
   }
-  #printContainer canvas {
+  /* wrapper around (scaled) print canvas elements */
+  #printContainer > div {
     position: relative;
     top: 0;
     left: 0;
+    overflow: hidden;
+  }
+  #printContainer canvas {
+    display: block;
   }
 }
 
@@ -1962,4 +2062,3 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     display: none;
   }
 }
-
