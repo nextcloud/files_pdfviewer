@@ -31,7 +31,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <title>PDF.js viewer</title>
 
     <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/viewer.css')) ?>?v=<?php p($version) ?>"/>
-    <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'css/style.css')) ?>?v=<?php p($version) ?>"/>
+    <link rel="stylesheet" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'css/viewer.css')) ?>?v=<?php p($version) ?>"/>
 
     <script src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'vendor/pdfjs/web/compatibility.js')) ?>?v=<?php p($version) ?>"></script>
     <!-- This snippet is used in production (included from viewer.html) -->
@@ -413,4 +413,3 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
   </body>
 </html>
-

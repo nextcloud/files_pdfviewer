@@ -1,17 +1,4 @@
-.toolbarButton#secondaryToolbarClose::before {
-  display: block;
-  content: ' ';
-  background-image: url(../img/toolbarButton-secondaryToolbarClose.svg);
-  background-size: 32px 32px;
-  height: 32px;
-  width: 32px;
-
-}
-
-
-html .doorHangerRight:after {
-  right: 53px!important;
-}
-html .doorHangerRight:before {
-  right: 53px!important;
+/* force full height on public template */
+#body-public #content {
+    height: 100%;
 }
