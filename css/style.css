@@ -1,4 +1,0 @@
-/* force full height on public template */
-#body-public #content {
-    height: 100%;
-}
