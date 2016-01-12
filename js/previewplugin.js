@@ -28,6 +28,8 @@
 			$('#pdframe').remove();
 			if ($('#isPublic').val() && $('#filesApp').val()){
 				$('#controls').removeClass('hidden');
+				$('#content').removeClass('full-height');
+				$('footer').removeClass('hidden');
 			}
 
 			FileList.setViewerMode(false);
@@ -45,7 +47,6 @@
 			var $iframe;
 			var viewer = OC.generateUrl('/apps/files_pdfviewer/?file={file}', {file: downloadUrl});
 			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;" src="'+viewer+'" sandbox="allow-scripts allow-same-origin allow-popups allow-modals" />');
-			$('#content').css('height', '100%');
 
 			if(isFileList === true) {
 				FileList.setViewerMode(true);
@@ -55,6 +56,7 @@
 				// force the preview to adjust its height
 				$('#preview').append($iframe).css({height: '100%'});
 				$('body').css({height: '100%'});
+				$('#content').addClass('full-height');
 				$('footer').addClass('hidden');
 				$('#imgframe').addClass('hidden');
 				$('.directLink').addClass('hidden');

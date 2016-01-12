@@ -13,3 +13,4 @@ namespace OCA\Files_PdfViewer\AppInfo;
 use OCP\Util;
 
 Util::addScript('files_pdfviewer', 'previewplugin');
+Util::addStyle('files_pdfviewer', 'style');
