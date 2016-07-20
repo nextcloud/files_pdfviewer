@@ -3,7 +3,7 @@
     <id>files_pdfviewer</id>
     <name>PDF Viewer</name>
     <description>
-        This application integrates the PDF.js library into ownCloud. Using this
+        This application integrates the PDF.js library into Nextcloud. Using this
         application users can view their PDF files online without the need to
         download the file.
 
