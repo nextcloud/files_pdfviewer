@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <info>
     <id>files_pdfviewer</id>
-    <name>PDF Viewer</name>
+    <name>PDF viewer</name>
     <description>
         This application integrates the PDF.js library into Nextcloud. Using this
         application users can view their PDF files online without the need to
         download the file.
 
         When this application is enabled publicly shared PDF documents will also
-        get shown in the PDF Viewer instead of only showing a single static
+        get shown in the PDF viewer instead of only showing a single static
         snapshot of the document. The PDF viewer requires a modern browser and
         will not work with Microsoft® Internet Explorer® versions below 9.
 
