@@ -17,7 +17,7 @@
     </description>
     <licence>AGPL</licence>
     <author>Thomas Müller, Lukas Reschke</author>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <dependencies>
         <owncloud min-version="9.2" max-version="9.2" />
     </dependencies>
