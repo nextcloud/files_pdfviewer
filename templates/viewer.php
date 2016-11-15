@@ -239,7 +239,10 @@ See https://github.com/adobe-type-tools/cmap-resources
           </div>
         </div>
 
-        <button id="secondaryToolbarClose" class="toolbarButton" title="Close" tabindex="37" data-l10n-id="Close">
+        <button id="showToolbar" class="toolbarButton" title="More options" tabindex="37" data-l10n-id="More options">
+            <span data-l10n-id="more_label">More options</span>
+        </button>
+        <button id="secondaryToolbarClose" class="toolbarButton" title="Close" tabindex="38" data-l10n-id="Close">
             <span data-l10n-id="close_label">Close</span>
         </button>
 

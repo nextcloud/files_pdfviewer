@@ -85,6 +85,9 @@
 				} else {
 					iframe.find("#secondaryToolbarClose").addClass('hidden');
 				}
+				iframe.find('#showToolbar').click(function() {
+					iframe.find('.toolbar').toggleClass('hidden');
+				});
 			});
 
 			if(!$('html').hasClass('ie8')) {

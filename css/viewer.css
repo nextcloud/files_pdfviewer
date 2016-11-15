@@ -7,7 +7,7 @@ body {
     background-image: none;
 }
 .pdfViewer .page {
-    margin: 10px auto;
+    margin: 30px auto;
     border: 1px solid #ddd;
     border-image: none;
 }
@@ -49,29 +49,37 @@ html .doorHangerRight:before {
 }
 
 
+#toolbarViewerRight {
+    right: 88px !important;
+}
+
 /* replace icons with dark ones */
-.toolbarButton#secondaryToolbarClose {
+.toolbarButton#secondaryToolbarClose,
+.toolbarButton#showToolbar {
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 100;
+    background-image: url('../img/toolbarButton-secondaryToolbarClose.svg');
+    background-repeat: no-repeat;
+    background-size: 22px;
+    background-position: 10px 5px;
+    z-index: 9999;
     margin: 0;
     padding: 22px;
     border: none;
-}
-.toolbarButton#secondaryToolbarClose::before {
-    display: inline-block;
-    content: ' ';
-    background-image: url('../img/toolbarButton-secondaryToolbarClose.svg');
-    background-size: 22px;
-    height: 22px;
-    width: 22px;
     opacity: .5;
 }
+.toolbarButton#showToolbar {
+    right: 44px;
+    background-image: url('../img/more.svg');
+}
+.toolbarButton#showToolbar:hover,
+.toolbarButton#showToolbar:focus,
+.toolbarButton#showToolbar:active,
 .toolbarButton#secondaryToolbarClose:hover,
 .toolbarButton#secondaryToolbarClose:focus,
 .toolbarButton#secondaryToolbarClose:active {
-    background: none;
+    background-color: transparent;
     border: none;
     box-shadow: none;
     cursor: pointer;
