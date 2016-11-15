@@ -73,6 +73,7 @@
 			// if a filelist is present, the PDF viewer can be closed to go back there
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
+				iframe.find('.toolbar').addClass('hidden');
 				if ($('#fileList').length) {
 					iframe.find('#secondaryToolbarClose').click(function() {
 						if(!$('html').hasClass('ie8')) {

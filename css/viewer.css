@@ -1,3 +1,7 @@
+.toolbar.hidden ~ #viewerContainer {
+    top: 0;
+}
+
 body {
     background-color: #fff;
     background-image: none;
@@ -7,25 +11,27 @@ body {
     border: 1px solid #ddd;
     border-image: none;
 }
+
 #toolbarContainer,
 .findbar,
-.secondaryToolbar {
-    box-shadow: none;
+.secondaryToolbar,
+#toolbarSidebar,
+#sidebarContent,
+#overlayContainer > .container > .dialog {
+    background-color: #fff;
     background-image: none;
+    box-shadow: none !important;
+}
+.dropdownToolbarButton > select > option {
+    background: #fff;
+    color: #000;
 }
 
 #openFile {
     display: none;
 }
 
-.toolbarButton#secondaryToolbarClose::before {
-  display: block;
-  content: ' ';
-  background-image: url(../img/toolbarButton-secondaryToolbarClose.svg);
-  background-size: 16px 16px;
-  height: 16px;
-  width: 16px;
-}
+
 
 @media screen and (min-resolution: 2dppx) {
   #secondaryToolbarClose::before {
@@ -40,4 +46,79 @@ html .doorHangerRight:after {
 }
 html .doorHangerRight:before {
   right: 53px!important;
+}
+
+
+/* replace icons with dark ones */
+
+.toolbarButton#secondaryToolbarClose::before {
+    display: block;
+    content: ' ';
+    background-image: url('../img/toolbarButton-secondaryToolbarClose.svg');
+    background-size: 16px 16px;
+    height: 16px;
+    width: 16px;
+    opacity: .5;
+}
+
+#viewFind.toolbarButton::before {
+    content: url('../img/toolbarButton-search.svg');
+}
+
+.splitToolbarButtonSeparator {
+    opacity: .3;
+}
+
+#findInput[data-status="pending"],
+.dropdownToolbarButton,
+.toolbarButton#sidebarToggle::before,
+.toolbarButton#secondaryToolbarToggle::before,
+.toolbarButton.findPrevious::before,
+.toolbarButton.findNext::before,
+.toolbarButton.pageUp::before,
+.toolbarButton.pageDown::before,
+.toolbarButton.zoomOut::before,
+.toolbarButton.zoomIn::before,
+.toolbarButton.presentationMode::before,
+.secondaryToolbarButton.presentationMode::before,
+.toolbarButton.print::before,
+.secondaryToolbarButton.print::before,
+.toolbarButton.openFile::before,
+.secondaryToolbarButton.openFile::before,
+.toolbarButton.download::before,
+.secondaryToolbarButton.download::before,
+.toolbarButton.bookmark::before,
+.secondaryToolbarButton.bookmark::before,
+#viewThumbnail.toolbarButton::before,
+#viewOutline.toolbarButton::before,
+#viewAttachments.toolbarButton::before,
+.secondaryToolbarButton.firstPage::before,
+.secondaryToolbarButton.lastPage::before,
+.secondaryToolbarButton.rotateCcw::before,
+.secondaryToolbarButton.rotateCw::before,
+.secondaryToolbarButton.handTool::before,
+.secondaryToolbarButton.documentProperties::before,
+.toolbarField.pageNumber.visiblePageIsLoading,
+.outlineItemToggler::before,
+.outlineItemToggler.outlineItemsHidden::before {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    opacity: .5;
+}
+
+.toolbarLabel,
+.toolbarField,
+.outlineItem > a,
+.attachmentsItem > button,
+.toolbarButton,
+.dropdownToolbarButton,
+.secondaryToolbarButton,
+.overlayButton,
+.outlineItemToggler:hover,
+.outlineItemToggler:hover + a,
+.outlineItemToggler:hover ~ .outlineItems,
+.outlineItem > a:hover,
+.attachmentsItem > button:hover,
+.toolbarField.pageNumber.visiblePageIsLoading {
+    color: #777;
 }
