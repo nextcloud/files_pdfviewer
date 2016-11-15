@@ -50,14 +50,31 @@ html .doorHangerRight:before {
 
 
 /* replace icons with dark ones */
-
+.toolbarButton#secondaryToolbarClose {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    padding: 22px;
+    border: none;
+}
 .toolbarButton#secondaryToolbarClose::before {
-    display: block;
+    display: inline-block;
     content: ' ';
     background-image: url('../img/toolbarButton-secondaryToolbarClose.svg');
-    background-size: 16px 16px;
-    height: 16px;
-    width: 16px;
+    background-size: 22px;
+    height: 22px;
+    width: 22px;
+    opacity: .5;
+}
+.toolbarButton#secondaryToolbarClose:hover,
+.toolbarButton#secondaryToolbarClose:focus,
+.toolbarButton#secondaryToolbarClose:active {
+    background: none;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
     opacity: .5;
 }
 
