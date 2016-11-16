@@ -9,10 +9,11 @@ body {
 }
 
 #viewerContainer {
-    padding-top: 32px;
+    padding-top: 0;
 }
 .toolbar.hidden ~ #viewerContainer {
     top: 0;
+    padding-top: 32px;
 }
 
 #toolbarContainer,
