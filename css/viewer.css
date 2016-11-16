@@ -1,15 +1,18 @@
-.toolbar.hidden ~ #viewerContainer {
-    top: 0;
-}
-
 body {
     background-color: #fff;
     background-image: none;
 }
 .pdfViewer .page {
-    margin: 30px auto;
+    margin: 10px auto;
     border: 1px solid #ddd;
     border-image: none;
+}
+
+#viewerContainer {
+    padding-top: 32px;
+}
+.toolbar.hidden ~ #viewerContainer {
+    top: 0;
 }
 
 #toolbarContainer,
