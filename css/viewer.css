@@ -55,6 +55,9 @@ html .doorHangerRight:before {
 #toolbarViewerRight {
     right: 88px !important;
 }
+#secondaryToolbar {
+    right: 52px;
+}
 
 /* replace icons with dark ones */
 .toolbarButton#secondaryToolbarClose,
