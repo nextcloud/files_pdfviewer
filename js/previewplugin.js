@@ -146,3 +146,38 @@ $(document).ready(function(){
 		}
 	}
 });
+
+(function () {
+
+	var SidebarPreview = function () {	};
+
+	SidebarPreview.prototype = {
+		attach: function (manager) {
+			manager.addPreviewHandler('application/pdf', this.handlePreview.bind(this));
+		},
+
+		handlePreview: function (model, $thumbnailDiv, $thumbnailContainer, fallback) {
+			var previewWidth = Math.floor($thumbnailContainer.parent().width() + 50);  // 50px for negative margins
+			var previewHeight = Math.floor(previewWidth / (16 / 9));
+
+			var downloadUrl = Files.getDownloadUrl(model.get('name'), model.get('path'));
+
+			var viewer = OC.generateUrl('/apps/files_pdfviewer/?minmode=true&file={file}', {file: downloadUrl});
+			var $iframe = $('<iframe id="pdframe" style="width:100%;height:' + previewHeight + 'px;display:block;" src="' + viewer + '" sandbox="allow-scripts allow-same-origin allow-popups allow-modals" />');
+			$thumbnailDiv.append($iframe);
+
+			$iframe.on('load', function() {
+				$thumbnailDiv.removeClass('icon-loading icon-32');
+				$thumbnailContainer.addClass('large');
+				$thumbnailDiv.children('.stretcher').remove();
+				$thumbnailContainer.css("max-height", previewHeight);
+			});
+		},
+
+		getFileContent: function (path) {
+			return $.get(OC.linkToRemoteBase('files' + path));
+		}
+	};
+
+	OC.Plugins.register('OCA.Files.SidebarPreviewManager', new SidebarPreview());
+})();

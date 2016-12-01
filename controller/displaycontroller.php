@@ -37,11 +37,13 @@ class DisplayController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param bool $minmode
 	 * @return TemplateResponse
 	 */
-	public function showPdfViewer() {
+	public function showPdfViewer($minmode = false) {
 		$params = [
-			'urlGenerator' => $this->urlGenerator
+			'urlGenerator' => $this->urlGenerator,
+			'minmode' => $minmode
 		];
 		$response = new TemplateResponse($this->appName, 'viewer', $params, 'blank');
 
