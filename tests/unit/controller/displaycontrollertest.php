@@ -48,7 +48,8 @@ class DisplayControllerTest extends TestCase {
 
 	public function testShowPdfViewer() {
 		$params = [
-			'urlGenerator' => $this->urlGenerator
+			'urlGenerator' => $this->urlGenerator,
+			'minmode' => false
 		];
 		$expectedResponse = new TemplateResponse($this->appName, 'viewer', $params, 'blank');
 		$policy = new ContentSecurityPolicy();
