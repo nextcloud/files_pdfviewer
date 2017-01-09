@@ -3,9 +3,9 @@
     <id>files_pdfviewer</id>
     <name>PDF viewer</name>
     <description>
-        This application integrates the PDF.js library into Nextcloud. Using this
-        application users can view their PDF files online without the need to
-        download the file.
+This application integrates the PDF.js library into Nextcloud. Using this
+application users can view their PDF files online without the need to
+download the file.
 
 When this application is enabled publicly shared PDF documents will also
 get shown in the PDF viewer instead of only showing a single static
