@@ -109,18 +109,10 @@
 				mime: 'application/pdf',
 				permissions: OC.PERMISSION_READ,
 				actionHandler: function(fileName, context) {
-					var downloadUrl = '';
-					if($('#isPublic').val()) {
-						var sharingToken = $('#sharingToken').val();
-						downloadUrl = OC.generateUrl('/s/{token}/download?files={files}&path={path}', {
-							token: sharingToken,
-							files: fileName,
-							path: context.dir
-						});
-					} else {
-						downloadUrl = Files.getDownloadUrl(fileName, context.dir);
+					var downloadUrl = context.fileList.getDownloadUrl(fileName);
+					if (downloadUrl && downloadUrl !== '#') {
+						self.show(downloadUrl, true);
 					}
-					self.show(downloadUrl, true);
 				}
 			});
 			fileActions.setDefault('application/pdf', 'view');
