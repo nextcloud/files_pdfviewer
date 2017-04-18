@@ -15,3 +15,7 @@ redirectIfNotDisplayedInFrame();
 PDFJS.openExternalLinksInNewWindow = true;
 PDFJS.isEvalSupported = false;
 PDFJS.workerSrc = document.getElementsByTagName('head')[0].getAttribute('data-workersrc');
+
+PDFViewerApplication.download = function() {
+	window.open(decodeURIComponent(window.location.search.substr(6)), '_blank');
+};
