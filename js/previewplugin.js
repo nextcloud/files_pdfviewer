@@ -121,21 +121,15 @@
 
 })(OCA);
 
-// Doesn't work with IE below 9
-if(!$.browser.msie || ($.browser.msie && $.browser.version >= 9)){
-	OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
-}
+OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
 
 // FIXME: Hack for single public file view since it is not attached to the fileslist
 $(document).ready(function(){
-	// Doesn't work with IE below 9
-	if(!$.browser.msie || ($.browser.msie && $.browser.version >= 9)){
-		if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
-			var sharingToken = $('#sharingToken').val();
-			var downloadUrl = OC.generateUrl('/s/{token}/download', {token: sharingToken});
-			var viewer = OCA.FilesPdfViewer.PreviewPlugin;
-			viewer.show(downloadUrl, false);
-		}
+	if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
+		var sharingToken = $('#sharingToken').val();
+		var downloadUrl = OC.generateUrl('/s/{token}/download', {token: sharingToken});
+		var viewer = OCA.FilesPdfViewer.PreviewPlugin;
+		viewer.show(downloadUrl, false);
 	}
 });
 
