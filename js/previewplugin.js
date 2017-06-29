@@ -76,26 +76,16 @@
 				var iframe = $('#pdframe').contents();
 				if ($('#fileList').length)
 				{
-					iframe.find('#secondaryToolbarClose').click(function() 
-					{
-						if(!$('html').hasClass('ie8')) {
-							history.back();
-						} else {
-							self.hide();
-						}
+					iframe.find('#secondaryToolbarClose').click(function() {
+						self.hide();
 					});
 
 					// Go back on ESC
 					$(document).keyup(function(e) {
-					     if (shown && e.keyCode == 27) // escape key maps to keycode `27`
-					     { 
-					     	shown = false;
-					        if(!$('html').hasClass('ie8')) {
-								history.back();
-							} else {
-								self.hide();
-							}
-					     }
+						if (shown && e.keyCode == 27) {
+							shown = false;
+							self.hide();
+						}
 					});
 				} else {
 					iframe.find("#secondaryToolbarClose").addClass('hidden');
