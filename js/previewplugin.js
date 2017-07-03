@@ -44,6 +44,7 @@
 		 */
 		show: function(downloadUrl, isFileList) {
 			var self = this;
+			var shown = true;
 			var $iframe;
 			var viewer = OC.generateUrl('/apps/files_pdfviewer/?file={file}', {file: downloadUrl});
 			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;z-index:141;" src="'+viewer+'" sandbox="allow-scripts allow-same-origin allow-popups allow-modals allow-top-navigation" />');
@@ -73,11 +74,16 @@
 			// if a filelist is present, the PDF viewer can be closed to go back there
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
-				if ($('#fileList').length) {
+				if ($('#fileList').length)
+				{
 					iframe.find('#secondaryToolbarClose').click(function() {
-						if(!$('html').hasClass('ie8')) {
-							history.back();
-						} else {
+						self.hide();
+					});
+
+					// Go back on ESC
+					$(document).keyup(function(e) {
+						if (shown && e.keyCode == 27) {
+							shown = false;
 							self.hide();
 						}
 					});
