@@ -115,7 +115,7 @@
 				mime: 'application/pdf',
 				permissions: OC.PERMISSION_READ,
 				actionHandler: function(fileName, context) {
-					var downloadUrl = context.fileList.getDownloadUrl(fileName);
+					var downloadUrl = context.fileList.getDownloadUrl(fileName, context.dir);
 					if (downloadUrl && downloadUrl !== '#') {
 						self.show(downloadUrl, true);
 					}
