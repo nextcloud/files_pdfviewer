@@ -155,7 +155,7 @@ $(document).ready(function(){
 			var downloadUrl = Files.getDownloadUrl(model.get('name'), model.get('path'));
 
 			var viewer = OC.generateUrl('/apps/files_pdfviewer/?minmode=true&file={file}', {file: downloadUrl});
-			var $iframe = $('<iframe id="pdframe" style="width:100%;height:' + previewHeight + 'px;display:block;" src="' + viewer + '" sandbox="allow-scripts allow-same-origin allow-popups allow-modals" />');
+			var $iframe = $('<iframe id="pdframe-sidebar" style="width:100%;height:' + previewHeight + 'px;display:block;" src="' + viewer + '" sandbox="allow-scripts allow-same-origin allow-popups allow-modals" />');
 			$thumbnailDiv.append($iframe);
 
 			$iframe.on('load', function() {
