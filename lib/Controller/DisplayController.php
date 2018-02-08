@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @author Lukas Reschke
  * @copyright 2014 Lukas Reschke lukas@owncloud.com
@@ -26,7 +27,7 @@ class DisplayController extends Controller {
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
 	 */
-	public function __construct($AppName,
+	public function __construct(string $AppName,
 								IRequest $request,
 								IURLGenerator $urlGenerator) {
 		parent::__construct($AppName, $request);
@@ -40,7 +41,7 @@ class DisplayController extends Controller {
 	 * @param bool $minmode
 	 * @return TemplateResponse
 	 */
-	public function showPdfViewer($minmode = false) {
+	public function showPdfViewer(bool $minmode = false): TemplateResponse {
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => $minmode
