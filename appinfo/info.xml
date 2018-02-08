@@ -17,7 +17,8 @@ about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.
     </description>
     <licence>AGPL</licence>
     <author>Thomas Müller, Lukas Reschke</author>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
+    <namespace>Files_PdfViewer</namespace>
     <dependencies>
 		<nextcloud min-version="14" max-version="14" />
     </dependencies>
