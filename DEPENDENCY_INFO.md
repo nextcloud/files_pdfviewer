@@ -1,7 +1,7 @@
 NextCloud Files PDFViewer Dependency Info
 ==========================================
 
-JavaScript libs bundled in `vendor/`.
+JavaScript libs bundled in `js/vendor/`.
 
 | Library | Version | License           | Comment/Patch Info (if applicable)  |
 | ---     | ---     | ---               | ---                                 |

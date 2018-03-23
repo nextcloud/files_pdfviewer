@@ -14,7 +14,7 @@
 		<whitelist>
 			<directory suffix=".php">../../files_pdfviewer</directory>
 			<exclude>
-				<directory suffix=".php">../../files_pdfviewer/vendor</directory>
+				<directory suffix=".php">../../files_pdfviewer/js/vendor</directory>
 				<directory suffix=".php">../../files_pdfviewer/templates</directory>
 				<directory suffix=".php">../../files_pdfviewer/tests</directory>
 			</exclude>

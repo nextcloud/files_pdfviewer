@@ -1,6 +1,6 @@
 filter:
     excluded_paths:
-        - 'vendor/*'
+        - 'js/vendor/*'
         - 'tests/*'
 
 imports:
