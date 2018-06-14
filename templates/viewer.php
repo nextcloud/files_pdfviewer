@@ -2,7 +2,7 @@
   /** @var array $_ */
   /** @var OCP\IURLGenerator $urlGenerator */
   $urlGenerator = $_['urlGenerator'];
-  $version = \OC::$server->getAppManager()->getAppVersion($app);
+  $version = \OC::$server->getAppManager()->getAppVersion('files_pdfviewer');
 ?>
 <!DOCTYPE html>
 <!--
