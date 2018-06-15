@@ -32,8 +32,47 @@ function initializeCustomPDFViewerApplication() {
 	PDFJS.isEvalSupported = false;
 	PDFJS.workerSrc = document.getElementsByTagName('head')[0].getAttribute('data-workersrc');
 
+	// The download has to be forced to use the URL of the file; by default
+	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
+	// (at least, in Firefox) when trying to download it.
 	PDFViewerApplication.download = function() {
-		window.open(decodeURIComponent(window.location.search.substr(6)), '_blank');
+		// "isDataSchema()" and "getPDFFileNameFromURL()" are copied from
+		// "vendor/pdfjs/web/viewer.js", as the functions defined in that file
+		// can not be accessed from the outside.
+		function isDataSchema(url) {
+			var i = 0,
+				ii = url.length;
+			while (i < ii && url[i].trim() === '') {
+				i++;
+			}
+			return url.substr(i, 5).toLowerCase() === 'data:';
+		}
+
+		function getPDFFileNameFromURL(url) {
+			var defaultFilename = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'document.pdf';
+
+			if (isDataSchema(url)) {
+				console.warn('getPDFFileNameFromURL: ' + 'ignoring "data:" URL for performance reasons.');
+				return defaultFilename;
+			}
+			var reURI = /^(?:(?:[^:]+:)?\/\/[^\/]+)?([^?#]*)(\?[^#]*)?(#.*)?$/;
+			var reFilename = /[^\/?#=]+\.pdf\b(?!.*\.pdf\b)/i;
+			var splitURI = reURI.exec(url);
+			var suggestedFilename = reFilename.exec(splitURI[1]) || reFilename.exec(splitURI[2]) || reFilename.exec(splitURI[3]);
+			if (suggestedFilename) {
+				suggestedFilename = suggestedFilename[0];
+				if (suggestedFilename.indexOf('%') !== -1) {
+					try {
+						suggestedFilename = reFilename.exec(decodeURIComponent(suggestedFilename))[0];
+					} catch (ex) {}
+				}
+			}
+			return suggestedFilename || defaultFilename;
+		}
+
+		var url = decodeURIComponent(window.location.search.substr(6));
+
+		this.downloadManager.downloadUrl(url, getPDFFileNameFromURL(url));
 	};
 }
 
