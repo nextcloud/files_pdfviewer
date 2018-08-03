@@ -18,6 +18,7 @@ about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.
     <licence>agpl</licence>
     <author>Thomas Müller, Lukas Reschke</author>
     <namespace>Files_PdfViewer</namespace>
+    <default_enable/>
     <category>files</category>
     <category>office</category>
     <bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
