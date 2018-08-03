@@ -6,3 +6,9 @@
 	display: block;
 }
 
+#pdframe {
+	/* The PDF frame uses an absolute position and thus fills the whole padding
+	 * box of the content, so the top padding is needed here too to not overlap
+	 * the header. */
+	padding-top: inherit;
+}
