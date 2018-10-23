@@ -40,14 +40,15 @@
 
 		/**
 		 * @param downloadUrl
+		 * @param param
 		 * @param isFileList
 		 */
-		show: function(downloadUrl, isFileList) {
+		show: function(downloadUrl, param, isFileList) {
 			var self = this;
 			var shown = true;
 			var $iframe;
 			var viewer = OC.generateUrl('/apps/files_pdfviewer/?file={file}', {file: downloadUrl});
-			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;z-index:1041;left:0;" src="'+viewer+'" sandbox="allow-scripts allow-same-origin allow-popups allow-modals allow-top-navigation" allowfullscreen="true"/>');
+			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;z-index:1041;left:0;" src="'+viewer+param+'" sandbox="allow-scripts allow-same-origin allow-popups allow-modals allow-top-navigation" allowfullscreen="true"/>');
 
 			if(isFileList === true) {
 				FileList.setViewerMode(true);
@@ -117,7 +118,7 @@
 				actionHandler: function(fileName, context) {
 					var downloadUrl = context.fileList.getDownloadUrl(fileName, context.dir);
 					if (downloadUrl && downloadUrl !== '#') {
-						self.show(downloadUrl, true);
+						self.show(downloadUrl, param, true);
 					}
 				}
 			});
@@ -132,10 +133,15 @@ OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
 // FIXME: Hack for single public file view since it is not attached to the fileslist
 $(document).ready(function(){
 	if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
+		$.urlParam = function(name){
+			var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+			return results[1] || 0;
+		};
 		var sharingToken = $('#sharingToken').val();
+		var page = '#page='+$.urlParam('page');
 		var downloadUrl = OC.generateUrl('/s/{token}/download', {token: sharingToken});
 		var viewer = OCA.FilesPdfViewer.PreviewPlugin;
-		viewer.show(downloadUrl, false);
+		viewer.show(downloadUrl, page, false);
 	}
 });
 
