@@ -118,7 +118,7 @@
 				actionHandler: function(fileName, context) {
 					var downloadUrl = context.fileList.getDownloadUrl(fileName, context.dir);
 					if (downloadUrl && downloadUrl !== '#') {
-						self.show(downloadUrl, param, true);
+						self.show(downloadUrl, '', true);
 					}
 				}
 			});
