@@ -32,7 +32,9 @@
 				$('footer').removeClass('hidden');
 			}
 
-			FileList.setViewerMode(false);
+			if (typeof FileList !== 'undefined') {
+				FileList.setViewerMode(false);
+			}
 
 			// replace the controls with our own
 			$('#app-content #controls').removeClass('hidden');
