@@ -28,6 +28,10 @@ redirectIfNotDisplayedInFrame();
 // calling it directly or adding it as a "DOMContentLoaded" event handler (using
 // the same conditions as in "vendor/pdfjs/web/viewer.js").
 function initializeCustomPDFViewerApplication() {
+	var PDFJS = window["pdfjs-dist/build/pdf"];
+
+	console.info('using pds.js version ' + PDFJS.version);
+
 	PDFJS.openExternalLinksInNewWindow = true;
 	PDFJS.isEvalSupported = false;
 	PDFJS.workerSrc = document.getElementsByTagName('head')[0].getAttribute('data-workersrc');
