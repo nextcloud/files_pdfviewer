@@ -31,6 +31,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFJS.openExternalLinksInNewWindow = true;
 	PDFJS.isEvalSupported = false;
 	PDFJS.workerSrc = document.getElementsByTagName('head')[0].getAttribute('data-workersrc');
+	PDFJS.cMapUrl = document.getElementsByTagName('head')[0].getAttribute('data-cmapurl');
 
 	// The download has to be forced to use the URL of the file; by default
 	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
