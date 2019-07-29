@@ -8,6 +8,10 @@
  *
  */
 
+var isSecureViewerAvailable = function () {
+	return $('#hideDownload').val() === 'true' && typeof OCA.RichDocuments !== 'undefined';
+};
+
 (function(OCA) {
 
 	OCA.FilesPdfViewer = OCA.FilesPdfViewer || {};
@@ -77,6 +81,10 @@
 			// if a filelist is present, the PDF viewer can be closed to go back there
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
+				if ($('#hideDownload').val() === 'true') {
+					iframe.find('.toolbarButton.download').hide()
+					iframe.find('.toolbarButton.print').hide()
+				}
 				if ($('#fileList').length)
 				{
 					iframe.find('#secondaryToolbarClose').click(function() {
@@ -117,6 +125,9 @@
 		 */
 		_extendFileActions: function(fileActions) {
 			var self = this;
+			if (isSecureViewerAvailable()) {
+				return;
+			}
 			fileActions.registerAction({
 				name: 'view',
 				displayName: 'Favorite',
@@ -139,7 +150,7 @@ OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
 
 // FIXME: Hack for single public file view since it is not attached to the fileslist
 $(document).ready(function(){
-	if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
+	if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf' && !isSecureViewerAvailable()) {
 		$.urlParam = function(name){
 			var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 			if (results == null) {
