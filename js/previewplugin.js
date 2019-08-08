@@ -93,6 +93,11 @@
 				} else {
 					iframe.find("#secondaryToolbarClose").addClass('hidden');
 				}
+
+				var hideDownload = $('#hideDownload').val();
+				if (hideDownload === 'true') {
+					iframe.find('.download').addClass('hidden');
+				}
 			});
 
 			if(!$('html').hasClass('ie8')) {
