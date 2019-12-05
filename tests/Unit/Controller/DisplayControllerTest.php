@@ -8,8 +8,9 @@
  * See the COPYING-README file.
  */
 
-namespace OCA\Files_PdfViewer\Controller;
+namespace OCA\Files_PdfViewer\Tests\Unit\Controller;
 
+use OCA\Files_PdfViewer\Controller\DisplayController;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
@@ -23,20 +24,15 @@ class DisplayControllerTest extends TestCase {
 	private $request;
 	/** @var IURLGenerator */
 	private $urlGenerator;
-	/** @var DisplayController */
+	/** @var DisplayController
+	 */
 	private $controller;
 
-	public function setUp(){
+	protected function setUp(): void {
 		$this->appName = 'files_pdfviewer';
 
-		$this->request = $this->getMockBuilder(
-			'\OCP\IRequest')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->urlGenerator = $this->getMockBuilder(
-			'\OCP\IUrlGenerator')
-			->disableOriginalConstructor()
-			->getMock();
+		$this->request = $this->createMock(IRequest::class);
+		$this->urlGenerator = $this->createMock(IURLGenerator::class);
 		$this->controller = new DisplayController(
 			$this->appName,
 			$this->request,
@@ -46,7 +42,7 @@ class DisplayControllerTest extends TestCase {
 		parent::setUp();
 	}
 
-	public function testShowPdfViewer() {
+	public function testShowPdfViewer(): void {
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => false
