@@ -11,7 +11,7 @@ services:
 
 env:
   global:
-    - CORE_BRANCH=master
+    - CORE_BRANCH=stable18
     - APP_NAME=files_pdfviewer
   matrix:
     - DB=sqlite
