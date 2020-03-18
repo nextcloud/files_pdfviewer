@@ -12,26 +12,21 @@ function redirectIfNotDisplayedInFrame () {
 }
 redirectIfNotDisplayedInFrame();
 
-// When "PDFViewerApplication.initialize" is executed it overwrites the value of
-// "PDFJS.workerSrc", so the custom initialization has to be executed after
-// that. As "PDFViewerApplication" does not provide any hookable point for
-// custom initialization in its initialization routine a dirty hack has to be
-// used.
-//
-// When "vendor/pdfjs/web/viewer.js" is parsed at the end it calls
-// "PDFViewerApplication.initialize" (either directly or as a "DOMContentLoaded"
-// event handler), and "PDFViewerApplication.initialize" sends an asynchronous
-// XHR request to initialize the locales, which causes the execution flow to
-// continue with the next script or the next "DOMContentLoaded" handler. Thanks
-// to this "initializeCustomPDFViewerApplication" can be executed at that point
-// by parsing "js/workersrc.js" after "vendor/pdfjs/web/viewer.js" and either
-// calling it directly or adding it as a "DOMContentLoaded" event handler (using
-// the same conditions as in "vendor/pdfjs/web/viewer.js").
+// When "PDFViewerApplication.webViewerInitialized" is executed (once
+// "PDFViewerApplication.initialize" is done) it opens the PDF file via URL,
+// which requires the PDFViewerApplication to be properly configured, so the
+// custom initialization has to be executed before that. This can be done by
+// listening to the "webviewerloaded" event, which is emitted after
+// "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
+// before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
-	PDFJS.openExternalLinksInNewWindow = true;
-	PDFJS.isEvalSupported = false;
-	PDFJS.workerSrc = document.getElementsByTagName('head')[0].getAttribute('data-workersrc');
-	PDFJS.cMapUrl = document.getElementsByTagName('head')[0].getAttribute('data-cmapurl');
+	// Preferences override options, so they must be disabled for
+	// "externalLinkTarget" to take effect.
+	PDFViewerApplicationOptions.set('disablePreferences', true);
+	PDFViewerApplicationOptions.set('externalLinkTarget', pdfjsLib.LinkTarget.BLANK);
+	PDFViewerApplicationOptions.set('isEvalSupported', false);
+	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'));
+	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'));
 
 	// The download has to be forced to use the URL of the file; by default
 	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
@@ -77,8 +72,4 @@ function initializeCustomPDFViewerApplication() {
 	};
 }
 
-if (document.readyState === 'interactive' || document.readyState === 'complete') {
-	initializeCustomPDFViewerApplication();
-} else {
-	document.addEventListener('DOMContentLoaded', initializeCustomPDFViewerApplication, true);
-}
+document.addEventListener('webviewerloaded', initializeCustomPDFViewerApplication, true);
