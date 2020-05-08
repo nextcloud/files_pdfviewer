@@ -14,7 +14,7 @@ will not work with Microsoft® Internet Explorer® versions below 9.
 
 PDF.js is a JavaScript library developed by Mozilla, you can learn more
 about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.github.io/pdf.js/)]]></description>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
     <licence>agpl</licence>
     <author>Thomas Müller, Lukas Reschke</author>
     <namespace>Files_PdfViewer</namespace>
@@ -23,6 +23,6 @@ about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.
     <category>office</category>
     <bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
     <dependencies>
-		<nextcloud min-version="19" max-version="19" />
+		<nextcloud min-version="20" max-version="20" />
     </dependencies>
 </info>
