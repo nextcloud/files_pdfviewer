@@ -21,3 +21,11 @@ html .doorHangerRight:after {
 html .doorHangerRight:before {
   right: 53px!important;
 }
+
+/* Prevent printing from the browser when the download of a share is hidden. */
+@media print {
+	.pdfViewer.disabledTextSelection {
+		visibility: hidden;
+		display: none;
+	}
+}
