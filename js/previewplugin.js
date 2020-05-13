@@ -97,6 +97,7 @@
 				var hideDownload = $('#hideDownload').val();
 				if (hideDownload === 'true') {
 					iframe.find('.download').addClass('hidden');
+					iframe.find('.pdfViewer').addClass('disabledTextSelection')
 				}
 			});
 
