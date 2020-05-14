@@ -83,7 +83,6 @@ var isSecureViewerAvailable = function () {
 				var iframe = $('#pdframe').contents();
 				if ($('#hideDownload').val() === 'true') {
 					iframe.find('.toolbarButton.download').hide()
-					iframe.find('.toolbarButton.print').hide()
 				}
 				if ($('#fileList').length)
 				{
