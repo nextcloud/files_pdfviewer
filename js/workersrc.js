@@ -70,6 +70,15 @@ function initializeCustomPDFViewerApplication() {
 
 		this.downloadManager.downloadUrl(url, getPDFFileNameFromURL(url));
 	};
+
+	var hideDownload = window.parent.document.getElementById('hideDownload').value === 'true';
+	if (hideDownload) {
+		// Disable download function when downloads are hidden, as even if the
+		// buttons in the UI are hidden the download could still be triggered
+		// with Ctrl|Meta+S.
+		PDFViewerApplication.download = function() {
+		}
+	}
 }
 
 document.addEventListener('webviewerloaded', initializeCustomPDFViewerApplication, true);
