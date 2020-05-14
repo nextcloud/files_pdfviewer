@@ -81,9 +81,6 @@ var isSecureViewerAvailable = function () {
 			// if a filelist is present, the PDF viewer can be closed to go back there
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
-				if ($('#hideDownload').val() === 'true') {
-					iframe.find('.toolbarButton.download').hide()
-				}
 				if ($('#fileList').length)
 				{
 					iframe.find('#secondaryToolbarClose').click(function() {
