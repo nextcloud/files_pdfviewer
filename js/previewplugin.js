@@ -81,10 +81,6 @@ var isSecureViewerAvailable = function () {
 			// if a filelist is present, the PDF viewer can be closed to go back there
 			$('#pdframe').load(function(){
 				var iframe = $('#pdframe').contents();
-				if ($('#hideDownload').val() === 'true') {
-					iframe.find('.toolbarButton.download').hide()
-					iframe.find('.toolbarButton.print').hide()
-				}
 				if ($('#fileList').length)
 				{
 					iframe.find('#secondaryToolbarClose').click(function() {
@@ -105,6 +101,7 @@ var isSecureViewerAvailable = function () {
 				var hideDownload = $('#hideDownload').val();
 				if (hideDownload === 'true') {
 					iframe.find('.download').addClass('hidden');
+					iframe.find('.pdfViewer').addClass('disabledTextSelection')
 				}
 			});
 
