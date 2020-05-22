@@ -70,6 +70,31 @@ function initializeCustomPDFViewerApplication() {
 
 		this.downloadManager.downloadUrl(url, getPDFFileNameFromURL(url));
 	};
+
+	var hideDownload = window.parent.document.getElementById('hideDownload').value === 'true';
+	if (hideDownload) {
+		// Disable download function when downloads are hidden, as even if the
+		// buttons in the UI are hidden the download could still be triggered
+		// with Ctrl|Meta+S.
+		PDFViewerApplication.download = function() {
+		}
+
+		// Disable printing service when downloads are hidden, as even if the
+		// buttons in the UI are hidden the printing could still be triggered
+		// with Ctrl|Meta+P.
+		// Abuse the "supportsPrinting" parameter, which signals that the
+		// browser does not fully support printing, to make PDFViewer disable
+		// the printing service.
+		// "supportsPrinting" is a getter function, so it needs to be deleted
+		// before replacing it with a simple value.
+		delete PDFViewerApplication.supportsPrinting;
+		PDFViewerApplication.supportsPrinting = false;
+		// When printing is not supported a warning is shown by the default
+		// "beforePrint" function when trying to print. That function needs to
+		// be replaced with an empty one to prevent that warning to be shown.
+		PDFViewerApplication.beforePrint = function() {
+		}
+	}
 }
 
 document.addEventListener('webviewerloaded', initializeCustomPDFViewerApplication, true);
