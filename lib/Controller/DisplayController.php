@@ -1,16 +1,33 @@
 <?php
+
 declare(strict_types=1);
+
 /**
- * @author Lukas Reschke
  * @copyright 2014 Lukas Reschke lukas@owncloud.com
  *
- * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * @author Lukas Reschke <lukas@owncloud.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license GNU AGPL version 3 or any later version
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-namespace OCA\Files_PdfViewer\Controller;
+namespace OCA\Files_PDFViewer\Controller;
 
+use OCA\Files_PDFViewer\AppInfo\Application;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -23,14 +40,12 @@ class DisplayController extends Controller {
 	private $urlGenerator;
 
 	/**
-	 * @param string $AppName
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
 	 */
-	public function __construct(string $AppName,
-								IRequest $request,
+	public function __construct(IRequest $request,
 								IURLGenerator $urlGenerator) {
-		parent::__construct($AppName, $request);
+		parent::__construct(Application::APP_ID, $request);
 		$this->urlGenerator = $urlGenerator;
 	}
 
@@ -46,7 +61,7 @@ class DisplayController extends Controller {
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => $minmode
 		];
-		$response = new TemplateResponse($this->appName, 'viewer', $params, 'blank');
+		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
 
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
@@ -57,5 +72,4 @@ class DisplayController extends Controller {
 
 		return $response;
 	}
-
 }

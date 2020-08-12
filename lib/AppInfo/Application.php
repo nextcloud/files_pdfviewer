@@ -1,10 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @copyright 2020 Morris Jobke <hey@morrisjobke.de>
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -20,15 +22,17 @@ declare(strict_types=1);
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-namespace OCA\Files_PdfViewer\AppInfo;
+namespace OCA\Files_PDFViewer\AppInfo;
 
+use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
+use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'files_pdfviewer';
@@ -38,10 +42,9 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
+		$context->registerEventListener(LoadViewer::class, LoadViewerListener::class);
 	}
 
 	public function boot(IBootContext $context): void {
-		Util::addScript('files_pdfviewer', 'previewplugin');
-		Util::addStyle('files_pdfviewer', 'style');
 	}
 }
