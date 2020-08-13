@@ -81,21 +81,21 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/workersrc.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/public.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/workersrc.js":
-/*!**************************!*\
-  !*** ./src/workersrc.js ***!
-  \**************************/
-/*! no static exports found */
+/***/ "./src/public.js":
+/*!***********************!*\
+  !*** ./src/public.js ***!
+  \***********************/
+/*! no exports provided */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/eslint-loader/dist/cjs.js):\nError: ENOENT: no such file or directory, open '/home/admin/Docker/apps2/files_pdfviewer/src/workersrc.js'");
+throw new Error("Module build failed (from ./node_modules/eslint-loader/dist/cjs.js):\nError: ENOENT: no such file or directory, open '/home/admin/Docker/apps2/files_pdfviewer/src/public.js'");
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=files_pdfviewer-workersrc.js.map?v=63ae0b7ab7d625e4182b
+//# sourceMappingURL=files_pdfviewer-public.js.map?v=6cf869b1cf9be68921e7
