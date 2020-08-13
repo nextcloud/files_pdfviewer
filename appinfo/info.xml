@@ -5,10 +5,10 @@
 	<summary>PDF viewer plugin for Nextcloud</summary>
 
 	<description><![CDATA[This application integrates the PDF.js library into Nextcloud. Using this
-application users can view their PDF files online without the need to
+application, users can view their PDF documents and Illustrator® (.ai) files online without the need to
 download the file.
 
-When this application is enabled publicly shared PDF documents will also
+When this application is enabled, publicly shared PDF documents and Illustrator® (.ai) files will also
 get shown in the PDF viewer instead of only showing a single static
 snapshot of the document. The PDF viewer requires a modern browser and
 will not work with Microsoft® Internet Explorer® versions below 9.
