@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <info>
-    <id>files_pdfviewer</id>
-    <name>PDF viewer</name>
-    <summary>A pdf viewer for Nextcloud</summary>
-    <description><![CDATA[This application integrates the PDF.js library into Nextcloud. Using this
+	<id>files_pdfviewer</id>
+	<name>PDF viewer</name>
+	<summary>PDF viewer plugin for Nextcloud</summary>
+
+	<description><![CDATA[This application integrates the PDF.js library into Nextcloud. Using this
 application users can view their PDF files online without the need to
 download the file.
 
@@ -14,16 +15,20 @@ will not work with Microsoft® Internet Explorer® versions below 9.
 
 PDF.js is a JavaScript library developed by Mozilla, you can learn more
 about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.github.io/pdf.js/)]]></description>
-    <version>1.3.2</version>
-    <licence>agpl</licence>
-    <author>Thomas Müller, Lukas Reschke</author>
-    <namespace>Files_PdfViewer</namespace>
-    <category>files</category>
-    <category>office</category>
-    <website>https://github.com/nextcloud/files_pdfviewer</website>
-    <repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
-    <bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
-    <dependencies>
-		<nextcloud min-version="14" max-version="14" />
-    </dependencies>
+	<version>2.0.O</version>
+	<licence>agpl</licence>
+	<author mail="skjnldsv@protonmail.com">John Molakvoæ</author>
+
+	<namespace>Files_PDFViewer</namespace>
+	<default_enable/>
+
+	<category>files</category>
+	<category>office</category>
+	<bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
+  <website>https://github.com/nextcloud/files_pdfviewer</website>
+  <repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
+  
+	<dependencies>
+		<nextcloud min-version="20" max-version="20" />
+	</dependencies>
 </info>

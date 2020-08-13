@@ -1,59 +1,84 @@
-app_name=files_pdfviewer
-
-project_dir=$(CURDIR)/../$(app_name)
-build_dir=$(CURDIR)/build/artifacts
-appstore_dir=$(build_dir)/appstore
-source_dir=$(build_dir)/source
-sign_dir=$(build_dir)/sign
-package_name=$(app_name)
+app_name=$(notdir $(CURDIR))
+project_directory=$(CURDIR)/../$(app_name)
+build_tools_directory=$(CURDIR)/build/tools
+source_build_directory=$(CURDIR)/build/artifacts/source
+source_package_name=$(source_build_directory)/$(app_name)
+appstore_build_directory=$(CURDIR)/build/artifacts/appstore
+appstore_package_name=$(appstore_build_directory)/$(app_name)
+sign_dir=$(appstore_build_directory)/sign
 cert_dir=$(HOME)/.nextcloud/certificates
-version+=1.3.2
 
-all: appstore
+all: dev-setup lint stylelint cslint build-js-production
 
-release: appstore create-tag
+# Dev env management
+dev-setup: clean clean-dev install-npm-deps-dev install-composer-deps-dev
 
-create-tag:
-	git tag -s -a v$(version) -m "Tagging the $(version) release."
-	git push origin v$(version)
+npm-update:
+	npm update
 
+composer.phar:
+	curl -sS https://getcomposer.org/installer | php
+
+install-deps: install-composer-deps-dev install-npm-deps-dev
+
+install-npm-deps-dev:
+	npm ci
+
+install-composer-deps: composer.phar
+	php composer.phar install --no-dev -o
+
+install-composer-deps-dev: composer.phar
+	php composer.phar install -o
+
+# Building
+build-js:
+	npm run dev
+
+build-js-production:
+	npm run build
+
+watch-js:
+	npm run watch
+
+# Linting
+lint:
+	npm run lint
+
+lint-fix:
+	npm run lint:fix
+
+# Style linting
+stylelint:
+	npm run stylelint
+
+stylelint-fix:
+	npm run stylelint:fix
+
+# Php linting
+cslint:
+	composer run cs:check
+
+cslint-fix:
+	composer run cs:fix
+
+# Cleaning
 clean:
-	rm -rf $(build_dir)
+	rm -rf js
+
+clean-dev:
 	rm -rf node_modules
+	rm -rf vendor
 
-appstore: clean
+appstore:
+	rm -rf $(appstore_build_directory)
+	mkdir -p $(appstore_build_directory)
 	mkdir -p $(sign_dir)
-	rsync -a \
-	--exclude=/build \
-	--exclude=/docs \
-	--exclude=/translationfiles \
-	--exclude=/.tx \
-	--exclude=/tests \
-	--exclude=/screenshots \
-	--exclude=/.git \
-	--exclude=/.github \
-	--exclude=/l10n/l10n.pl \
-	--exclude=/CONTRIBUTING.md \
-	--exclude=/issue_template.md \
-	--exclude=/README.md \
-	--exclude=/.gitattributes \
-	--exclude=/.gitignore \
-	--exclude=/.scrutinizer.yml \
-	--exclude=/.travis.yml \
-	--exclude=/Makefile \
-	--exclude=/.drone.yml \
-	$(project_dir)/ $(sign_dir)/$(app_name)
+	tar cvzf $(appstore_package_name).tar.gz \
+	--exclude-vcs \
+	$(project_directory)/appinfo \
+	$(project_directory)/css \
+	$(project_directory)/img \
+	$(project_directory)/js \
+	$(project_directory)/lib \
+	$(project_directory)/templates
 
-	@if [[ -f $(cert_dir)/$(app_name).key && -f $(cert_dir)/$(app_name).crt ]]; then \
-		../../occ integrity:sign-app --path $(sign_dir)/$(app_name) \
-			--privateKey $(cert_dir)/$(app_name).key \
-			--certificate $(cert_dir)/$(app_name).crt; \
-	fi
-
-	tar -czf $(build_dir)/$(app_name)-$(version).tar.gz \
-		-C $(sign_dir) $(app_name)
-
-	@if [ -f $(cert_dir)/$(app_name).key ]; then \
-		echo "Signing package…"; \
-		openssl dgst -sha512 -sign $(cert_dir)/$(app_name).key $(build_dir)/$(app_name)-$(version).tar.gz | openssl base64; \
-	fi

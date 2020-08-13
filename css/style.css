@@ -2,7 +2,14 @@
 #body-public .full-height {
 	height: 100%;
 }
-.ie #body-public .full-height {
-	display: block;
+
+#body-public footer.hidden {
+	display: none;
 }
 
+#pdframe {
+	/* The PDF frame uses an absolute position and thus fills the whole padding
+	 * box of the content, so the top padding is needed here too to not overlap
+	 * the header. */
+	padding-top: inherit;
+}
