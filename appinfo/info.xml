@@ -25,8 +25,8 @@ about the PDF.js project at [https://mozilla.github.io/pdf.js/](https://mozilla.
 	<category>files</category>
 	<category>office</category>
 	<bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
-  <website>https://github.com/nextcloud/files_pdfviewer</website>
-  <repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
+	<website>https://github.com/nextcloud/files_pdfviewer</website>
+	<repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
   
 	<dependencies>
 		<nextcloud min-version="20" max-version="20" />
