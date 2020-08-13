@@ -28,6 +28,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		mimes: [
 			'application/pdf',
+			'application/illustrator',
 		],
 
 		component: PDFView,
