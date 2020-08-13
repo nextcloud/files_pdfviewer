@@ -1,25 +1,26 @@
 .toolbarButton#secondaryToolbarClose::before {
-  display: block;
-  content: ' ';
-  background-image: url(../img/toolbarButton-secondaryToolbarClose.svg);
-  background-size: 16px 16px;
-  height: 16px;
-  width: 16px;
+	display: block;
+	content: ' ';
+	background-image: url(../img/toolbarButton-secondaryToolbarClose.svg);
+	background-size: 16px 16px;
+	height: 16px;
+	width: 16px;
 }
 
 @media screen and (min-resolution: 2dppx) {
-  #secondaryToolbarClose::before {
-    background-size: 32px 32px !important;
-    height: 32px !important;
-    width: 32px !important;
-  }
+	#secondaryToolbarClose::before {
+		background-size: 32px 32px !important;
+		height: 32px !important;
+		width: 32px !important;
+	}
 }
 
 html .doorHangerRight:after {
-  right: 53px!important;
+	right: 53px!important;
 }
+
 html .doorHangerRight:before {
-  right: 53px!important;
+	right: 53px!important;
 }
 
 /* Prevent printing from the browser when the download of a share is hidden. */
