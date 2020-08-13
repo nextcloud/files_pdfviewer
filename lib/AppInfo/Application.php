@@ -33,6 +33,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'files_pdfviewer';
@@ -46,5 +47,6 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
+		Util::addScript(self::APP_ID, 'files_pdfviewer-public');
 	}
 }

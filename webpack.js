@@ -10,4 +10,5 @@ request(`https://github.com/mozilla/pdf.js/releases/download/v${PDFJSversion}/pd
 console.info('Downloading pdf.js', PDFJSversion, '\n')
 
 webpackConfig.entry.workersrc = path.resolve(path.join('src', 'workersrc.js'))
+webpackConfig.entry.public = path.resolve(path.join('src', 'public.js'))
 module.exports = webpackConfig
