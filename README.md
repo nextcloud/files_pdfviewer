@@ -1,7 +1,8 @@
 files_pdfviewer
 ======
 
-This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) library into Nextcloud. 
+This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) library into Nextcloud's Viewer.
+You can view PDF files as well as Adobe© Illustrator files (AI)
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_pdfviewer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/files_pdfviewer/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_pdfviewer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/files_pdfviewer/?branch=master)
@@ -11,8 +12,9 @@ This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) libr
 ## 🏗 Development setup
 
 1. ☁ Clone this app into the `apps` folder of your Nextcloud: `git clone https://github.com/nextcloud/files_pdfviewer.git`
-2. 👩‍💻 In the folder of the app, run the command `npm ci && npm run dev` to install dependencies and build the Javascript.
-3. ✅ Enable the app through the app management of your Nextcloud
+1. ☁ Clone the viewer app into the `apps` folder of your Nextcloud: `git clone https://github.com/nextcloud/viewer.git`
+2. 👩‍💻 In the folder of the files_pdfviewer app, run the command `npm ci && npm run dev` to install dependencies and build the Javascript.
+3. ✅ Enable the app through the app management of your Nextcloud (viewer should be enabled by default)
 4. 🎉 Partytime! Help fix [some issues](https://github.com/nextcloud/files_pdfviewer/issues) and [review pull requests](https://github.com/nextcloud/files_pdfviewer/pulls) 👍
 
 
