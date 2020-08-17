@@ -1,19 +1,34 @@
-/* eslint-disable no-undef */
+
+/**
+ * @copyright Copyright (c) 2020 Daniel Calviño Sánchez <danxuliu@gmail.com>
+ *
+ * @author Daniel Calviño Sánchez <danxuliu@gmail.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license GNU AGPL version 3 or any later version
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+import canDownload from './utils/canDownload'
+import redirectIfNotIframe from './utils/redirectIfNotIframe'
+
 /**
  * Checks if the page is displayed in an iframe. If not redirect to /.
  **/
-function redirectIfNotDisplayedInFrame() {
-	try {
-		if (window.frameElement) {
-			return
-		}
-	} catch (e) {
-		console.debug(e)
-	}
-
-	window.location.href = '/'
-}
-redirectIfNotDisplayedInFrame()
+redirectIfNotIframe()
 
 // When "PDFViewerApplication.webViewerInitialized" is executed (once
 // "PDFViewerApplication.initialize" is done) it opens the PDF file via URL,
@@ -76,12 +91,15 @@ function initializeCustomPDFViewerApplication() {
 		this.downloadManager.downloadUrl(url, getPDFFileNameFromURL(url))
 	}
 
-	const hideDownload = window.parent.document.getElementById('hideDownload').value === 'true'
-	if (hideDownload) {
+	if (!canDownload()) {
 		// Disable download function when downloads are hidden, as even if the
 		// buttons in the UI are hidden the download could still be triggered
 		// with Ctrl|Meta+S.
 		PDFViewerApplication.download = function() {
+		}
+		const downloadButton = document.getElementById('toolbarViewerRight').querySelector('button.download')
+		if (downloadButton) {
+			downloadButton.style.display = 'none'
 		}
 
 		// Disable printing service when downloads are hidden, as even if the
@@ -94,11 +112,17 @@ function initializeCustomPDFViewerApplication() {
 		// before replacing it with a simple value.
 		delete PDFViewerApplication.supportsPrinting
 		PDFViewerApplication.supportsPrinting = false
+
 		// When printing is not supported a warning is shown by the default
 		// "beforePrint" function when trying to print. That function needs to
 		// be replaced with an empty one to prevent that warning to be shown.
 		PDFViewerApplication.beforePrint = function() {
 		}
+
+		// For css properties
+		document.getElementById('viewer').classList.add('disabledTextSelection')
+
+		console.debug('Files_PDFViewer, download and print disabled')
 	}
 }
 
