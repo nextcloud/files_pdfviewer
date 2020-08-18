@@ -29,7 +29,6 @@
 		"@nextcloud/dialogs": "^1.4.0",
 		"@nextcloud/router": "^1.1.0",
 		"@nextcloud/vue": "^1.5.0",
-		"pdf.js": "git://github.com/mozilla/pdf.js.git#v2.4.456",
 		"pdfjs-dist": "^2.4.456",
 		"vue": "^2.6.11"
 	},
