@@ -40,6 +40,9 @@ export default {
 
 	async mounted() {
 		this.doneLoading()
+		this.$nextTick(function() {
+			this.$el.focus()
+		})
 	},
 }
 </script>
