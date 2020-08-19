@@ -23,4 +23,4 @@
 
 const hideDownloadElmt = document.getElementById('hideDownload')
 // true = hidden download
-export default () => hideDownloadElmt && hideDownloadElmt.value !== 'true'
+export default () => !hideDownloadElmt || (hideDownloadElmt && hideDownloadElmt.value !== 'true')
