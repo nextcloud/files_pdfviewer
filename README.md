@@ -2,7 +2,7 @@ files_pdfviewer
 ======
 
 This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) library into Nextcloud's Viewer.
-You can view PDF files as well as Adobe© Illustrator files (AI)
+You can view PDF files as well as Adobe Illustrator files (.ai)
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_pdfviewer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/files_pdfviewer/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_pdfviewer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/files_pdfviewer/?branch=master)
