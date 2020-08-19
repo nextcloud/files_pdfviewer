@@ -1,4 +1,3 @@
-
 /**
  * @copyright Copyright (c) 2020 John Molakvoæ <skjnldsv@protonmail.com>
  *
@@ -22,17 +21,18 @@
  */
 import { generateUrl } from '@nextcloud/router'
 
-const hideDownloadElmt = document.getElementById('hideDownload')
-const isPublicElmt = document.getElementById('isPublic')
-const mimetypeElmt = document.getElementById('mimetype')
-
-const isSecureViewerAvailable = function() {
-	return hideDownloadElmt && hideDownloadElmt.value === 'true' && typeof OCA.RichDocuments !== 'undefined'
-}
+import canDownload from './utils/canDownload'
+import isPublicPage from './utils/isPublicPage'
+import isPdf from './utils/isPdf'
+import isSecureViewerAvailable from './utils/isSecureViewerAvailable'
 
 window.addEventListener('DOMContentLoaded', function() {
-	if (isPublicElmt && isPublicElmt.value && mimetypeElmt && mimetypeElmt.value === 'application/pdf' && !isSecureViewerAvailable()) {
-		console.debug('Files_PDFViewer initiamized for public page')
+	if (isPublicPage() && isPdf() && !isSecureViewerAvailable()) {
+		console.debug('Files_PDFViewer initialized for public page', {
+			isPublicPage: isPublicPage(),
+			canDownload: canDownload(),
+			isSecureViewerAvailable: isSecureViewerAvailable(),
+		})
 
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
