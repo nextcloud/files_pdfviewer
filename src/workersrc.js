@@ -24,6 +24,7 @@
 
 import canDownload from './utils/canDownload'
 import redirectIfNotIframe from './utils/redirectIfNotIframe'
+import { loadState } from '@nextcloud/initial-state'
 
 /**
  * Checks if the page is displayed in an iframe. If not redirect to /.
@@ -38,16 +39,17 @@ redirectIfNotIframe()
 // "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
 // before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
+	const workerSrc = loadState(appName, 'workerSrc')
+	const cmapUrl = loadState(appName, 'cmapUrl')
+	console.debug('[DEBUG] files_pdfviewer:', { workerSrc, cmapUrl })
 
 	// Preferences override options, so they must be disabled for
 	// "externalLinkTarget" to take effect.
 	PDFViewerApplicationOptions.set('disablePreferences', true)
 	PDFViewerApplicationOptions.set('externalLinkTarget', pdfjsLib.LinkTarget.BLANK)
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
-	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
-	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
-
-	console.debug('Initialized files_pdfviewer', PDFViewerApplicationOptions.getAll())
+	PDFViewerApplicationOptions.set('workerSrc', workerSrc)
+	PDFViewerApplicationOptions.set('cMapUrl', cmapUrl)
 
 	// The download has to be forced to use the URL of the file; by default
 	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
@@ -129,4 +131,6 @@ function initializeCustomPDFViewerApplication() {
 	}
 }
 
+// Needed by PDF.js webViewerLoad init
+window.PDFJSDev = /(PRODUCTION|GENERIC)/
 document.addEventListener('DOMContentLoaded', initializeCustomPDFViewerApplication, true)

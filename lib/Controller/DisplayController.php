@@ -30,23 +30,32 @@ namespace OCA\Files_PDFViewer\Controller;
 use OCA\Files_PDFViewer\AppInfo\Application;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\StandaloneTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IInitialStateService;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\Util;
 
 class DisplayController extends Controller {
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var IInitialStateService */
+	private $initialStateService;
+
 	/**
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function __construct(IRequest $request,
-								IURLGenerator $urlGenerator) {
+								IURLGenerator $urlGenerator,
+								IInitialStateService $initialStateService) {
 		parent::__construct(Application::APP_ID, $request);
+
 		$this->urlGenerator = $urlGenerator;
+		$this->initialStateService = $initialStateService;
 	}
 
 	/**
@@ -54,15 +63,29 @@ class DisplayController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 * @param bool $minmode
-	 * @return TemplateResponse
+	 * @return StandaloneTemplateResponse
 	 */
-	public function showPdfViewer(bool $minmode = false): TemplateResponse {
-		$params = [
-			'urlGenerator' => $this->urlGenerator,
-			'minmode' => $minmode
-		];
+	public function showPdfViewer(bool $minmode = false): StandaloneTemplateResponse {
+		if ($minmode) {
+			Util::addStyle(Application::APP_ID, 'minmode');
+		}
 
-		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
+		Util::addScript(Application::APP_ID, 'files_pdfviewer-workersrc');
+		Util::addScript(Application::APP_ID, 'pdfjs/build/pdf');
+		Util::addScript(Application::APP_ID, 'pdfjs/web/viewer');
+
+		Util::addStyle(Application::APP_ID, 'style');
+		Util::addStyle(Application::APP_ID, '../js/pdfjs/web/viewer');
+
+		$workerSrc = $this->urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.worker.js');
+		$cmapUrl = $this->urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/cmaps/');
+		$localeUrl = $this->urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/locale/locale.properties');
+
+		$this->initialStateService->provideInitialState(Application::APP_ID, 'workerSrc', $workerSrc);
+		$this->initialStateService->provideInitialState(Application::APP_ID, 'cmapUrl', $cmapUrl);
+		Util::addHeader('link', ['rel' => 'resource', 'type' => 'application/l10n', 'href' => $localeUrl]);
+
+		$response = new StandaloneTemplateResponse(Application::APP_ID, 'viewer', [], TemplateResponse::RENDER_AS_BASE);
 
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
