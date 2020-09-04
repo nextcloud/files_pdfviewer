@@ -123,229 +123,34 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "addLinkAttributes", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.addLinkAttributes;
-  }
-});
-Object.defineProperty(exports, "getFilenameFromUrl", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.getFilenameFromUrl;
-  }
-});
-Object.defineProperty(exports, "LinkTarget", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.LinkTarget;
-  }
-});
-Object.defineProperty(exports, "loadScript", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.loadScript;
-  }
-});
-Object.defineProperty(exports, "PDFDateString", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.PDFDateString;
-  }
-});
-Object.defineProperty(exports, "RenderingCancelledException", {
-  enumerable: true,
-  get: function () {
-    return _display_utils.RenderingCancelledException;
-  }
-});
-Object.defineProperty(exports, "build", {
-  enumerable: true,
-  get: function () {
-    return _api.build;
-  }
-});
-Object.defineProperty(exports, "getDocument", {
-  enumerable: true,
-  get: function () {
-    return _api.getDocument;
-  }
-});
-Object.defineProperty(exports, "LoopbackPort", {
-  enumerable: true,
-  get: function () {
-    return _api.LoopbackPort;
-  }
-});
-Object.defineProperty(exports, "PDFDataRangeTransport", {
-  enumerable: true,
-  get: function () {
-    return _api.PDFDataRangeTransport;
-  }
-});
-Object.defineProperty(exports, "PDFWorker", {
-  enumerable: true,
-  get: function () {
-    return _api.PDFWorker;
-  }
-});
-Object.defineProperty(exports, "version", {
-  enumerable: true,
-  get: function () {
-    return _api.version;
-  }
-});
-Object.defineProperty(exports, "CMapCompressionType", {
-  enumerable: true,
-  get: function () {
-    return _util.CMapCompressionType;
-  }
-});
-Object.defineProperty(exports, "createObjectURL", {
-  enumerable: true,
-  get: function () {
-    return _util.createObjectURL;
-  }
-});
-Object.defineProperty(exports, "createPromiseCapability", {
-  enumerable: true,
-  get: function () {
-    return _util.createPromiseCapability;
-  }
-});
-Object.defineProperty(exports, "createValidAbsoluteUrl", {
-  enumerable: true,
-  get: function () {
-    return _util.createValidAbsoluteUrl;
-  }
-});
-Object.defineProperty(exports, "InvalidPDFException", {
-  enumerable: true,
-  get: function () {
-    return _util.InvalidPDFException;
-  }
-});
-Object.defineProperty(exports, "MissingPDFException", {
-  enumerable: true,
-  get: function () {
-    return _util.MissingPDFException;
-  }
-});
-Object.defineProperty(exports, "OPS", {
-  enumerable: true,
-  get: function () {
-    return _util.OPS;
-  }
-});
-Object.defineProperty(exports, "PasswordResponses", {
-  enumerable: true,
-  get: function () {
-    return _util.PasswordResponses;
-  }
-});
-Object.defineProperty(exports, "PermissionFlag", {
-  enumerable: true,
-  get: function () {
-    return _util.PermissionFlag;
-  }
-});
-Object.defineProperty(exports, "removeNullCharacters", {
-  enumerable: true,
-  get: function () {
-    return _util.removeNullCharacters;
-  }
-});
-Object.defineProperty(exports, "shadow", {
-  enumerable: true,
-  get: function () {
-    return _util.shadow;
-  }
-});
-Object.defineProperty(exports, "UnexpectedResponseException", {
-  enumerable: true,
-  get: function () {
-    return _util.UnexpectedResponseException;
-  }
-});
-Object.defineProperty(exports, "UNSUPPORTED_FEATURES", {
-  enumerable: true,
-  get: function () {
-    return _util.UNSUPPORTED_FEATURES;
-  }
-});
-Object.defineProperty(exports, "Util", {
-  enumerable: true,
-  get: function () {
-    return _util.Util;
-  }
-});
-Object.defineProperty(exports, "VerbosityLevel", {
-  enumerable: true,
-  get: function () {
-    return _util.VerbosityLevel;
-  }
-});
-Object.defineProperty(exports, "AnnotationLayer", {
-  enumerable: true,
-  get: function () {
-    return _annotation_layer.AnnotationLayer;
-  }
-});
-Object.defineProperty(exports, "apiCompatibilityParams", {
-  enumerable: true,
-  get: function () {
-    return _api_compatibility.apiCompatibilityParams;
-  }
-});
-Object.defineProperty(exports, "GlobalWorkerOptions", {
-  enumerable: true,
-  get: function () {
-    return _worker_options.GlobalWorkerOptions;
-  }
-});
-Object.defineProperty(exports, "renderTextLayer", {
-  enumerable: true,
-  get: function () {
-    return _text_layer.renderTextLayer;
-  }
-});
-Object.defineProperty(exports, "SVGGraphics", {
-  enumerable: true,
-  get: function () {
-    return _svg.SVGGraphics;
-  }
-});
+var pdfjsVersion = '2.4.456';
+var pdfjsBuild = '228a591c';
 
-var _display_utils = __w_pdfjs_require__(1);
+var pdfjsSharedUtil = __w_pdfjs_require__(1);
 
-var _api = __w_pdfjs_require__(5);
+var pdfjsDisplayAPI = __w_pdfjs_require__(3);
 
-var _util = __w_pdfjs_require__(2);
+var pdfjsDisplayTextLayer = __w_pdfjs_require__(16);
 
-var _annotation_layer = __w_pdfjs_require__(16);
+var pdfjsDisplayAnnotationLayer = __w_pdfjs_require__(17);
 
-var _api_compatibility = __w_pdfjs_require__(7);
+var pdfjsDisplayDisplayUtils = __w_pdfjs_require__(4);
 
-var _worker_options = __w_pdfjs_require__(10);
+var pdfjsDisplaySVG = __w_pdfjs_require__(18);
 
-var _text_layer = __w_pdfjs_require__(17);
+const pdfjsDisplayWorkerOptions = __w_pdfjs_require__(10);
 
-var _svg = __w_pdfjs_require__(18);
+const pdfjsDisplayAPICompatibility = __w_pdfjs_require__(6);
 
-const pdfjsVersion = '2.5.207';
-const pdfjsBuild = '0974d6052';
 {
   const {
     isNodeJS
-  } = __w_pdfjs_require__(4);
+  } = __w_pdfjs_require__(7);
 
   if (isNodeJS) {
     const PDFNodeStream = __w_pdfjs_require__(19).PDFNodeStream;
 
-    (0, _api.setPDFNetworkStreamFactory)(params => {
+    pdfjsDisplayAPI.setPDFNetworkStreamFactory(params => {
       return new PDFNodeStream(params);
     });
   } else {
@@ -353,12 +158,12 @@ const pdfjsBuild = '0974d6052';
 
     let PDFFetchStream;
 
-    if ((0, _display_utils.isFetchSupported)()) {
+    if (pdfjsDisplayDisplayUtils.isFetchSupported()) {
       PDFFetchStream = __w_pdfjs_require__(23).PDFFetchStream;
     }
 
-    (0, _api.setPDFNetworkStreamFactory)(params => {
-      if (PDFFetchStream && (0, _display_utils.isValidFetchUrl)(params.url)) {
+    pdfjsDisplayAPI.setPDFNetworkStreamFactory(params => {
+      if (PDFFetchStream && pdfjsDisplayDisplayUtils.isValidFetchUrl(params.url)) {
         return new PDFFetchStream(params);
       }
 
@@ -366,509 +171,42 @@ const pdfjsBuild = '0974d6052';
     });
   }
 }
+exports.build = pdfjsDisplayAPI.build;
+exports.version = pdfjsDisplayAPI.version;
+exports.getDocument = pdfjsDisplayAPI.getDocument;
+exports.LoopbackPort = pdfjsDisplayAPI.LoopbackPort;
+exports.PDFDataRangeTransport = pdfjsDisplayAPI.PDFDataRangeTransport;
+exports.PDFWorker = pdfjsDisplayAPI.PDFWorker;
+exports.renderTextLayer = pdfjsDisplayTextLayer.renderTextLayer;
+exports.AnnotationLayer = pdfjsDisplayAnnotationLayer.AnnotationLayer;
+exports.createPromiseCapability = pdfjsSharedUtil.createPromiseCapability;
+exports.PasswordResponses = pdfjsSharedUtil.PasswordResponses;
+exports.InvalidPDFException = pdfjsSharedUtil.InvalidPDFException;
+exports.MissingPDFException = pdfjsSharedUtil.MissingPDFException;
+exports.SVGGraphics = pdfjsDisplaySVG.SVGGraphics;
+exports.NativeImageDecoding = pdfjsSharedUtil.NativeImageDecoding;
+exports.CMapCompressionType = pdfjsSharedUtil.CMapCompressionType;
+exports.PermissionFlag = pdfjsSharedUtil.PermissionFlag;
+exports.UnexpectedResponseException = pdfjsSharedUtil.UnexpectedResponseException;
+exports.OPS = pdfjsSharedUtil.OPS;
+exports.VerbosityLevel = pdfjsSharedUtil.VerbosityLevel;
+exports.UNSUPPORTED_FEATURES = pdfjsSharedUtil.UNSUPPORTED_FEATURES;
+exports.createValidAbsoluteUrl = pdfjsSharedUtil.createValidAbsoluteUrl;
+exports.createObjectURL = pdfjsSharedUtil.createObjectURL;
+exports.removeNullCharacters = pdfjsSharedUtil.removeNullCharacters;
+exports.shadow = pdfjsSharedUtil.shadow;
+exports.Util = pdfjsSharedUtil.Util;
+exports.RenderingCancelledException = pdfjsDisplayDisplayUtils.RenderingCancelledException;
+exports.getFilenameFromUrl = pdfjsDisplayDisplayUtils.getFilenameFromUrl;
+exports.LinkTarget = pdfjsDisplayDisplayUtils.LinkTarget;
+exports.addLinkAttributes = pdfjsDisplayDisplayUtils.addLinkAttributes;
+exports.loadScript = pdfjsDisplayDisplayUtils.loadScript;
+exports.PDFDateString = pdfjsDisplayDisplayUtils.PDFDateString;
+exports.GlobalWorkerOptions = pdfjsDisplayWorkerOptions.GlobalWorkerOptions;
+exports.apiCompatibilityParams = pdfjsDisplayAPICompatibility.apiCompatibilityParams;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __w_pdfjs_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.addLinkAttributes = addLinkAttributes;
-exports.getFilenameFromUrl = getFilenameFromUrl;
-exports.isFetchSupported = isFetchSupported;
-exports.isValidFetchUrl = isValidFetchUrl;
-exports.loadScript = loadScript;
-exports.deprecated = deprecated;
-exports.PDFDateString = exports.StatTimer = exports.DOMSVGFactory = exports.DOMCMapReaderFactory = exports.DOMCanvasFactory = exports.DEFAULT_LINK_REL = exports.LinkTarget = exports.RenderingCancelledException = exports.PageViewport = void 0;
-
-var _util = __w_pdfjs_require__(2);
-
-const DEFAULT_LINK_REL = "noopener noreferrer nofollow";
-exports.DEFAULT_LINK_REL = DEFAULT_LINK_REL;
-const SVG_NS = "http://www.w3.org/2000/svg";
-
-class DOMCanvasFactory {
-  create(width, height) {
-    if (width <= 0 || height <= 0) {
-      throw new Error("Invalid canvas size");
-    }
-
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = width;
-    canvas.height = height;
-    return {
-      canvas,
-      context
-    };
-  }
-
-  reset(canvasAndContext, width, height) {
-    if (!canvasAndContext.canvas) {
-      throw new Error("Canvas is not specified");
-    }
-
-    if (width <= 0 || height <= 0) {
-      throw new Error("Invalid canvas size");
-    }
-
-    canvasAndContext.canvas.width = width;
-    canvasAndContext.canvas.height = height;
-  }
-
-  destroy(canvasAndContext) {
-    if (!canvasAndContext.canvas) {
-      throw new Error("Canvas is not specified");
-    }
-
-    canvasAndContext.canvas.width = 0;
-    canvasAndContext.canvas.height = 0;
-    canvasAndContext.canvas = null;
-    canvasAndContext.context = null;
-  }
-
-}
-
-exports.DOMCanvasFactory = DOMCanvasFactory;
-
-class DOMCMapReaderFactory {
-  constructor({
-    baseUrl = null,
-    isCompressed = false
-  }) {
-    this.baseUrl = baseUrl;
-    this.isCompressed = isCompressed;
-  }
-
-  async fetch({
-    name
-  }) {
-    if (!this.baseUrl) {
-      throw new Error('The CMap "baseUrl" parameter must be specified, ensure that ' + 'the "cMapUrl" and "cMapPacked" API parameters are provided.');
-    }
-
-    if (!name) {
-      throw new Error("CMap name must be specified.");
-    }
-
-    const url = this.baseUrl + name + (this.isCompressed ? ".bcmap" : "");
-    const compressionType = this.isCompressed ? _util.CMapCompressionType.BINARY : _util.CMapCompressionType.NONE;
-
-    if (isFetchSupported() && isValidFetchUrl(url, document.baseURI)) {
-      return fetch(url).then(async response => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-
-        let cMapData;
-
-        if (this.isCompressed) {
-          cMapData = new Uint8Array(await response.arrayBuffer());
-        } else {
-          cMapData = (0, _util.stringToBytes)(await response.text());
-        }
-
-        return {
-          cMapData,
-          compressionType
-        };
-      }).catch(reason => {
-        throw new Error(`Unable to load ${this.isCompressed ? "binary " : ""}` + `CMap at: ${url}`);
-      });
-    }
-
-    return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-      request.open("GET", url, true);
-
-      if (this.isCompressed) {
-        request.responseType = "arraybuffer";
-      }
-
-      request.onreadystatechange = () => {
-        if (request.readyState !== XMLHttpRequest.DONE) {
-          return;
-        }
-
-        if (request.status === 200 || request.status === 0) {
-          let cMapData;
-
-          if (this.isCompressed && request.response) {
-            cMapData = new Uint8Array(request.response);
-          } else if (!this.isCompressed && request.responseText) {
-            cMapData = (0, _util.stringToBytes)(request.responseText);
-          }
-
-          if (cMapData) {
-            resolve({
-              cMapData,
-              compressionType
-            });
-            return;
-          }
-        }
-
-        reject(new Error(request.statusText));
-      };
-
-      request.send(null);
-    }).catch(reason => {
-      throw new Error(`Unable to load ${this.isCompressed ? "binary " : ""}` + `CMap at: ${url}`);
-    });
-  }
-
-}
-
-exports.DOMCMapReaderFactory = DOMCMapReaderFactory;
-
-class DOMSVGFactory {
-  create(width, height) {
-    (0, _util.assert)(width > 0 && height > 0, "Invalid SVG dimensions");
-    const svg = document.createElementNS(SVG_NS, "svg:svg");
-    svg.setAttribute("version", "1.1");
-    svg.setAttribute("width", width + "px");
-    svg.setAttribute("height", height + "px");
-    svg.setAttribute("preserveAspectRatio", "none");
-    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
-    return svg;
-  }
-
-  createElement(type) {
-    (0, _util.assert)(typeof type === "string", "Invalid SVG element type");
-    return document.createElementNS(SVG_NS, type);
-  }
-
-}
-
-exports.DOMSVGFactory = DOMSVGFactory;
-
-class PageViewport {
-  constructor({
-    viewBox,
-    scale,
-    rotation,
-    offsetX = 0,
-    offsetY = 0,
-    dontFlip = false
-  }) {
-    this.viewBox = viewBox;
-    this.scale = scale;
-    this.rotation = rotation;
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-    const centerX = (viewBox[2] + viewBox[0]) / 2;
-    const centerY = (viewBox[3] + viewBox[1]) / 2;
-    let rotateA, rotateB, rotateC, rotateD;
-    rotation = rotation % 360;
-    rotation = rotation < 0 ? rotation + 360 : rotation;
-
-    switch (rotation) {
-      case 180:
-        rotateA = -1;
-        rotateB = 0;
-        rotateC = 0;
-        rotateD = 1;
-        break;
-
-      case 90:
-        rotateA = 0;
-        rotateB = 1;
-        rotateC = 1;
-        rotateD = 0;
-        break;
-
-      case 270:
-        rotateA = 0;
-        rotateB = -1;
-        rotateC = -1;
-        rotateD = 0;
-        break;
-
-      case 0:
-        rotateA = 1;
-        rotateB = 0;
-        rotateC = 0;
-        rotateD = -1;
-        break;
-
-      default:
-        throw new Error("PageViewport: Invalid rotation, must be a multiple of 90 degrees.");
-    }
-
-    if (dontFlip) {
-      rotateC = -rotateC;
-      rotateD = -rotateD;
-    }
-
-    let offsetCanvasX, offsetCanvasY;
-    let width, height;
-
-    if (rotateA === 0) {
-      offsetCanvasX = Math.abs(centerY - viewBox[1]) * scale + offsetX;
-      offsetCanvasY = Math.abs(centerX - viewBox[0]) * scale + offsetY;
-      width = Math.abs(viewBox[3] - viewBox[1]) * scale;
-      height = Math.abs(viewBox[2] - viewBox[0]) * scale;
-    } else {
-      offsetCanvasX = Math.abs(centerX - viewBox[0]) * scale + offsetX;
-      offsetCanvasY = Math.abs(centerY - viewBox[1]) * scale + offsetY;
-      width = Math.abs(viewBox[2] - viewBox[0]) * scale;
-      height = Math.abs(viewBox[3] - viewBox[1]) * scale;
-    }
-
-    this.transform = [rotateA * scale, rotateB * scale, rotateC * scale, rotateD * scale, offsetCanvasX - rotateA * scale * centerX - rotateC * scale * centerY, offsetCanvasY - rotateB * scale * centerX - rotateD * scale * centerY];
-    this.width = width;
-    this.height = height;
-  }
-
-  clone({
-    scale = this.scale,
-    rotation = this.rotation,
-    offsetX = this.offsetX,
-    offsetY = this.offsetY,
-    dontFlip = false
-  } = {}) {
-    return new PageViewport({
-      viewBox: this.viewBox.slice(),
-      scale,
-      rotation,
-      offsetX,
-      offsetY,
-      dontFlip
-    });
-  }
-
-  convertToViewportPoint(x, y) {
-    return _util.Util.applyTransform([x, y], this.transform);
-  }
-
-  convertToViewportRectangle(rect) {
-    const topLeft = _util.Util.applyTransform([rect[0], rect[1]], this.transform);
-
-    const bottomRight = _util.Util.applyTransform([rect[2], rect[3]], this.transform);
-
-    return [topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]];
-  }
-
-  convertToPdfPoint(x, y) {
-    return _util.Util.applyInverseTransform([x, y], this.transform);
-  }
-
-}
-
-exports.PageViewport = PageViewport;
-
-class RenderingCancelledException extends _util.BaseException {
-  constructor(msg, type) {
-    super(msg);
-    this.type = type;
-  }
-
-}
-
-exports.RenderingCancelledException = RenderingCancelledException;
-const LinkTarget = {
-  NONE: 0,
-  SELF: 1,
-  BLANK: 2,
-  PARENT: 3,
-  TOP: 4
-};
-exports.LinkTarget = LinkTarget;
-
-function addLinkAttributes(link, {
-  url,
-  target,
-  rel,
-  enabled = true
-} = {}) {
-  (0, _util.assert)(url && typeof url === "string", 'addLinkAttributes: A valid "url" parameter must provided.');
-  const urlNullRemoved = (0, _util.removeNullCharacters)(url);
-
-  if (enabled) {
-    link.href = link.title = urlNullRemoved;
-  } else {
-    link.href = "";
-    link.title = `Disabled: ${urlNullRemoved}`;
-
-    link.onclick = () => {
-      return false;
-    };
-  }
-
-  let targetStr = "";
-
-  switch (target) {
-    case LinkTarget.NONE:
-      break;
-
-    case LinkTarget.SELF:
-      targetStr = "_self";
-      break;
-
-    case LinkTarget.BLANK:
-      targetStr = "_blank";
-      break;
-
-    case LinkTarget.PARENT:
-      targetStr = "_parent";
-      break;
-
-    case LinkTarget.TOP:
-      targetStr = "_top";
-      break;
-  }
-
-  link.target = targetStr;
-  link.rel = typeof rel === "string" ? rel : DEFAULT_LINK_REL;
-}
-
-function getFilenameFromUrl(url) {
-  const anchor = url.indexOf("#");
-  const query = url.indexOf("?");
-  const end = Math.min(anchor > 0 ? anchor : url.length, query > 0 ? query : url.length);
-  return url.substring(url.lastIndexOf("/", end) + 1, end);
-}
-
-class StatTimer {
-  constructor() {
-    this.started = Object.create(null);
-    this.times = [];
-  }
-
-  time(name) {
-    if (name in this.started) {
-      (0, _util.warn)(`Timer is already running for ${name}`);
-    }
-
-    this.started[name] = Date.now();
-  }
-
-  timeEnd(name) {
-    if (!(name in this.started)) {
-      (0, _util.warn)(`Timer has not been started for ${name}`);
-    }
-
-    this.times.push({
-      name,
-      start: this.started[name],
-      end: Date.now()
-    });
-    delete this.started[name];
-  }
-
-  toString() {
-    const outBuf = [];
-    let longest = 0;
-
-    for (const time of this.times) {
-      const name = time.name;
-
-      if (name.length > longest) {
-        longest = name.length;
-      }
-    }
-
-    for (const time of this.times) {
-      const duration = time.end - time.start;
-      outBuf.push(`${time.name.padEnd(longest)} ${duration}ms\n`);
-    }
-
-    return outBuf.join("");
-  }
-
-}
-
-exports.StatTimer = StatTimer;
-
-function isFetchSupported() {
-  return typeof fetch !== "undefined" && typeof Response !== "undefined" && "body" in Response.prototype && typeof ReadableStream !== "undefined";
-}
-
-function isValidFetchUrl(url, baseUrl) {
-  try {
-    const {
-      protocol
-    } = baseUrl ? new URL(url, baseUrl) : new URL(url);
-    return protocol === "http:" || protocol === "https:";
-  } catch (ex) {
-    return false;
-  }
-}
-
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = resolve;
-
-    script.onerror = function () {
-      reject(new Error(`Cannot load script at: ${script.src}`));
-    };
-
-    (document.head || document.documentElement).appendChild(script);
-  });
-}
-
-function deprecated(details) {
-  console.log("Deprecated API usage: " + details);
-}
-
-let pdfDateStringRegex;
-
-class PDFDateString {
-  static toDateObject(input) {
-    if (!input || !(0, _util.isString)(input)) {
-      return null;
-    }
-
-    if (!pdfDateStringRegex) {
-      pdfDateStringRegex = new RegExp("^D:" + "(\\d{4})" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "([Z|+|-])?" + "(\\d{2})?" + "'?" + "(\\d{2})?" + "'?");
-    }
-
-    const matches = pdfDateStringRegex.exec(input);
-
-    if (!matches) {
-      return null;
-    }
-
-    const year = parseInt(matches[1], 10);
-    let month = parseInt(matches[2], 10);
-    month = month >= 1 && month <= 12 ? month - 1 : 0;
-    let day = parseInt(matches[3], 10);
-    day = day >= 1 && day <= 31 ? day : 1;
-    let hour = parseInt(matches[4], 10);
-    hour = hour >= 0 && hour <= 23 ? hour : 0;
-    let minute = parseInt(matches[5], 10);
-    minute = minute >= 0 && minute <= 59 ? minute : 0;
-    let second = parseInt(matches[6], 10);
-    second = second >= 0 && second <= 59 ? second : 0;
-    const universalTimeRelation = matches[7] || "Z";
-    let offsetHour = parseInt(matches[8], 10);
-    offsetHour = offsetHour >= 0 && offsetHour <= 23 ? offsetHour : 0;
-    let offsetMinute = parseInt(matches[9], 10) || 0;
-    offsetMinute = offsetMinute >= 0 && offsetMinute <= 59 ? offsetMinute : 0;
-
-    if (universalTimeRelation === "-") {
-      hour += offsetHour;
-      minute += offsetMinute;
-    } else if (universalTimeRelation === "+") {
-      hour -= offsetHour;
-      minute -= offsetMinute;
-    }
-
-    return new Date(Date.UTC(year, month, day, hour, minute, second));
-  }
-
-}
-
-exports.PDFDateString = PDFDateString;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
 "use strict";
@@ -902,14 +240,20 @@ exports.stringToUTF8String = stringToUTF8String;
 exports.utf8StringToString = utf8StringToString;
 exports.warn = warn;
 exports.unreachable = unreachable;
-exports.IsEvalSupportedCached = exports.IsLittleEndianCached = exports.createObjectURL = exports.FormatError = exports.Util = exports.UnknownErrorException = exports.UnexpectedResponseException = exports.TextRenderingMode = exports.StreamType = exports.PermissionFlag = exports.PasswordResponses = exports.PasswordException = exports.MissingPDFException = exports.InvalidPDFException = exports.AbortException = exports.CMapCompressionType = exports.ImageKind = exports.FontType = exports.AnnotationType = exports.AnnotationStateModelType = exports.AnnotationReviewState = exports.AnnotationReplyType = exports.AnnotationMarkedState = exports.AnnotationFlag = exports.AnnotationFieldFlag = exports.AnnotationBorderStyleType = exports.UNSUPPORTED_FEATURES = exports.VerbosityLevel = exports.OPS = exports.IDENTITY_MATRIX = exports.FONT_IDENTITY_MATRIX = exports.BaseException = void 0;
+exports.IsEvalSupportedCached = exports.IsLittleEndianCached = exports.createObjectURL = exports.FormatError = exports.Util = exports.UnknownErrorException = exports.UnexpectedResponseException = exports.TextRenderingMode = exports.StreamType = exports.PermissionFlag = exports.PasswordResponses = exports.PasswordException = exports.NativeImageDecoding = exports.MissingPDFException = exports.InvalidPDFException = exports.AbortException = exports.CMapCompressionType = exports.ImageKind = exports.FontType = exports.AnnotationType = exports.AnnotationStateModelType = exports.AnnotationReviewState = exports.AnnotationReplyType = exports.AnnotationMarkedState = exports.AnnotationFlag = exports.AnnotationFieldFlag = exports.AnnotationBorderStyleType = exports.UNSUPPORTED_FEATURES = exports.VerbosityLevel = exports.OPS = exports.IDENTITY_MATRIX = exports.FONT_IDENTITY_MATRIX = exports.BaseException = void 0;
 
-__w_pdfjs_require__(3);
+__w_pdfjs_require__(2);
 
 const IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0];
 exports.IDENTITY_MATRIX = IDENTITY_MATRIX;
 const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
 exports.FONT_IDENTITY_MATRIX = FONT_IDENTITY_MATRIX;
+const NativeImageDecoding = {
+  NONE: "none",
+  DECODE: "decode",
+  DISPLAY: "display"
+};
+exports.NativeImageDecoding = NativeImageDecoding;
 const PermissionFlag = {
   PRINT: 0x04,
   MODIFY_CONTENTS: 0x08,
@@ -1174,19 +518,7 @@ const UNSUPPORTED_FEATURES = {
   javaScript: "javaScript",
   smask: "smask",
   shadingPattern: "shadingPattern",
-  font: "font",
-  errorTilingPattern: "errorTilingPattern",
-  errorExtGState: "errorExtGState",
-  errorXObject: "errorXObject",
-  errorFontLoadType3: "errorFontLoadType3",
-  errorFontState: "errorFontState",
-  errorFontMissing: "errorFontMissing",
-  errorFontTranslate: "errorFontTranslate",
-  errorColorSpace: "errorColorSpace",
-  errorOperatorList: "errorOperatorList",
-  errorFontToUnicode: "errorFontToUnicode",
-  errorFontLoadNative: "errorFontLoadNative",
-  errorFontGetPath: "errorFontGetPath"
+  font: "font"
 };
 exports.UNSUPPORTED_FEATURES = UNSUPPORTED_FEATURES;
 const PasswordResponses = {
@@ -1399,7 +731,7 @@ function arrayByteLength(arr) {
     return arr.length;
   }
 
-  assert(arr.byteLength !== undefined, "arrayByteLength - invalid argument.");
+  assert(arr.byteLength !== undefined);
   return arr.byteLength;
 }
 
@@ -1696,32 +1028,16 @@ const createObjectURL = function createObjectURLClosure() {
 exports.createObjectURL = createObjectURL;
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
 "use strict";
 
-
-var _is_node = __w_pdfjs_require__(4);
 
 ;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __w_pdfjs_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isNodeJS = void 0;
-const isNodeJS = typeof process === "object" && process + "" === "[object process]" && !process.versions.nw && !process.versions.electron;
-exports.isNodeJS = isNodeJS;
-
-/***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
 "use strict";
@@ -1734,19 +1050,19 @@ exports.getDocument = getDocument;
 exports.setPDFNetworkStreamFactory = setPDFNetworkStreamFactory;
 exports.build = exports.version = exports.PDFPageProxy = exports.PDFDocumentProxy = exports.PDFWorker = exports.PDFDataRangeTransport = exports.LoopbackPort = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
-var _display_utils = __w_pdfjs_require__(1);
+var _display_utils = __w_pdfjs_require__(4);
 
-var _font_loader = __w_pdfjs_require__(6);
+var _font_loader = __w_pdfjs_require__(5);
 
-var _api_compatibility = __w_pdfjs_require__(7);
+var _api_compatibility = __w_pdfjs_require__(6);
 
 var _canvas = __w_pdfjs_require__(8);
 
 var _worker_options = __w_pdfjs_require__(10);
 
-var _is_node = __w_pdfjs_require__(4);
+var _is_node = __w_pdfjs_require__(7);
 
 var _message_handler = __w_pdfjs_require__(11);
 
@@ -1828,8 +1144,12 @@ function getDocument(src) {
   params.rangeChunkSize = params.rangeChunkSize || DEFAULT_RANGE_CHUNK_SIZE;
   params.CMapReaderFactory = params.CMapReaderFactory || _display_utils.DOMCMapReaderFactory;
   params.ignoreErrors = params.stopAtErrors !== true;
-  params.fontExtraProperties = params.fontExtraProperties === true;
   params.pdfBug = params.pdfBug === true;
+  const NativeImageDecoderValues = Object.values(_util.NativeImageDecoding);
+
+  if (params.nativeImageDecoderSupport === undefined || !NativeImageDecoderValues.includes(params.nativeImageDecoderSupport)) {
+    params.nativeImageDecoderSupport = _api_compatibility.apiCompatibilityParams.nativeImageDecoderSupport || _util.NativeImageDecoding.DECODE;
+  }
 
   if (!Number.isInteger(params.maxImageSize)) {
     params.maxImageSize = -1;
@@ -1855,6 +1175,10 @@ function getDocument(src) {
     params.disableAutoFetch = false;
   }
 
+  if (typeof params.disableCreateObjectURL !== "boolean") {
+    params.disableCreateObjectURL = _api_compatibility.apiCompatibilityParams.disableCreateObjectURL || false;
+  }
+
   (0, _util.setVerbosityLevel)(params.verbosity);
 
   if (!worker) {
@@ -1872,9 +1196,11 @@ function getDocument(src) {
       throw new Error("Loading aborted");
     }
 
-    const workerIdPromise = _fetchDocument(worker, params, rangeTransport, docId);
+    return _fetchDocument(worker, params, rangeTransport, docId).then(function (workerId) {
+      if (task.destroyed) {
+        throw new Error("Loading aborted");
+      }
 
-    const networkStreamPromise = new Promise(function (resolve) {
       let networkStream;
 
       if (rangeTransport) {
@@ -1895,13 +1221,6 @@ function getDocument(src) {
           disableRange: params.disableRange,
           disableStream: params.disableStream
         });
-      }
-
-      resolve(networkStream);
-    });
-    return Promise.all([workerIdPromise, networkStreamPromise]).then(function ([workerId, networkStream]) {
-      if (task.destroyed) {
-        throw new Error("Loading aborted");
       }
 
       const messageHandler = new _message_handler.MessageHandler(docId, workerId, worker.port);
@@ -1927,7 +1246,7 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
 
   return worker.messageHandler.sendWithPromise("GetDocRequest", {
     docId,
-    apiVersion: '2.5.207',
+    apiVersion: '2.4.456',
     source: {
       data: source.data,
       url: source.url,
@@ -1938,11 +1257,12 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
     },
     maxImageSize: source.maxImageSize,
     disableFontFace: source.disableFontFace,
+    disableCreateObjectURL: source.disableCreateObjectURL,
     postMessageTransfers: worker.postMessageTransfers,
     docBaseUrl: source.docBaseUrl,
+    nativeImageDecoderSupport: source.nativeImageDecoderSupport,
     ignoreErrors: source.ignoreErrors,
-    isEvalSupported: source.isEvalSupported,
-    fontExtraProperties: source.fontExtraProperties
+    isEvalSupported: source.isEvalSupported
   }).then(function (workerId) {
     if (worker.destroyed) {
       throw new Error("Worker was destroyed");
@@ -1983,6 +1303,10 @@ const PDFDocumentLoadingTask = function PDFDocumentLoadingTaskClosure() {
           this._worker = null;
         }
       });
+    }
+
+    then(onFulfilled, onRejected) {
+      throw new Error("Removed API method: " + "PDFDocumentLoadingTask.then, use the `promise` getter instead.");
     }
 
   }
@@ -2213,6 +1537,10 @@ class PDFPageProxy {
     offsetY = 0,
     dontFlip = false
   } = {}) {
+    if (arguments.length > 1 || typeof arguments[0] === "number") {
+      throw new Error("PDFPageProxy.getViewport is called with obsolete arguments.");
+    }
+
     return new _display_utils.PageViewport({
       viewBox: this.view,
       scale,
@@ -3122,7 +2450,7 @@ class WorkerTransport {
       loadingTask
     } = this;
     messageHandler.on("GetReader", (data, sink) => {
-      (0, _util.assert)(this._networkStream, "GetReader - no `IPDFStream` instance available.");
+      (0, _util.assert)(this._networkStream);
       this._fullReader = this._networkStream.getFullReader();
 
       this._fullReader.onProgress = evt => {
@@ -3142,7 +2470,7 @@ class WorkerTransport {
             return;
           }
 
-          (0, _util.assert)((0, _util.isArrayBuffer)(value), "GetReader - expected an ArrayBuffer.");
+          (0, _util.assert)((0, _util.isArrayBuffer)(value));
           sink.enqueue(new Uint8Array(value), 1, [value]);
         }).catch(reason => {
           sink.error(reason);
@@ -3181,7 +2509,7 @@ class WorkerTransport {
       return headersCapability.promise;
     });
     messageHandler.on("GetRangeReader", (data, sink) => {
-      (0, _util.assert)(this._networkStream, "GetRangeReader - no `IPDFStream` instance available.");
+      (0, _util.assert)(this._networkStream);
 
       const rangeReader = this._networkStream.getRangeReader(data.begin, data.end);
 
@@ -3200,7 +2528,7 @@ class WorkerTransport {
             return;
           }
 
-          (0, _util.assert)((0, _util.isArrayBuffer)(value), "GetRangeReader - expected an ArrayBuffer.");
+          (0, _util.assert)((0, _util.isArrayBuffer)(value));
           sink.enqueue(new Uint8Array(value), 1, [value]);
         }).catch(reason => {
           sink.error(reason);
@@ -3325,22 +2653,19 @@ class WorkerTransport {
             onUnsupportedFeature: this._onUnsupportedFeature.bind(this),
             fontRegistry
           });
-          this.fontLoader.bind(font).catch(reason => {
-            return messageHandler.sendWithPromise("FontFallback", {
-              id
-            });
-          }).finally(() => {
-            if (!params.fontExtraProperties && font.data) {
-              font.data = null;
-            }
-
+          this.fontLoader.bind(font).then(() => {
             this.commonObjs.resolve(id, font);
+          }, reason => {
+            messageHandler.sendWithPromise("FontFallback", {
+              id
+            }).finally(() => {
+              this.commonObjs.resolve(id, font);
+            });
           });
           break;
 
         case "FontPath":
         case "FontType3Res":
-        case "Image":
           this.commonObjs.resolve(id, exportedData);
           break;
 
@@ -3361,6 +2686,24 @@ class WorkerTransport {
       }
 
       switch (type) {
+        case "JpegStream":
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+
+            img.onload = function () {
+              resolve(img);
+            };
+
+            img.onerror = function () {
+              reject(new Error("Error during JPEG image loading"));
+              (0, _display_utils.releaseImageResources)(img);
+            };
+
+            img.src = imageData;
+          }).then(img => {
+            pageProxy.objs.resolve(id, img);
+          });
+
         case "Image":
           pageProxy.objs.resolve(id, imageData);
           const MAX_IMAGE_SIZE_TO_STORE = 8000000;
@@ -3390,6 +2733,71 @@ class WorkerTransport {
       }
     });
     messageHandler.on("UnsupportedFeature", this._onUnsupportedFeature.bind(this));
+    messageHandler.on("JpegDecode", data => {
+      if (this.destroyed) {
+        return Promise.reject(new Error("Worker was destroyed"));
+      }
+
+      if (typeof document === "undefined") {
+        return Promise.reject(new Error('"document" is not defined.'));
+      }
+
+      const [imageUrl, components] = data;
+
+      if (components !== 3 && components !== 1) {
+        return Promise.reject(new Error("Only 3 components or 1 component can be returned"));
+      }
+
+      return new Promise(function (resolve, reject) {
+        const img = new Image();
+
+        img.onload = function () {
+          const {
+            width,
+            height
+          } = img;
+          const size = width * height;
+          const rgbaLength = size * 4;
+          const buf = new Uint8ClampedArray(size * components);
+          let tmpCanvas = document.createElement("canvas");
+          tmpCanvas.width = width;
+          tmpCanvas.height = height;
+          let tmpCtx = tmpCanvas.getContext("2d");
+          tmpCtx.drawImage(img, 0, 0);
+          const data = tmpCtx.getImageData(0, 0, width, height).data;
+
+          if (components === 3) {
+            for (let i = 0, j = 0; i < rgbaLength; i += 4, j += 3) {
+              buf[j] = data[i];
+              buf[j + 1] = data[i + 1];
+              buf[j + 2] = data[i + 2];
+            }
+          } else if (components === 1) {
+            for (let i = 0, j = 0; i < rgbaLength; i += 4, j++) {
+              buf[j] = data[i];
+            }
+          }
+
+          resolve({
+            data: buf,
+            width,
+            height
+          });
+          (0, _display_utils.releaseImageResources)(img);
+          tmpCanvas.width = 0;
+          tmpCanvas.height = 0;
+          tmpCanvas = null;
+          tmpCtx = null;
+        };
+
+        img.onerror = function () {
+          reject(new Error("JpegDecode failed to load image"));
+          (0, _display_utils.releaseImageResources)(img);
+        };
+
+        img.src = imageUrl;
+      });
+    });
     messageHandler.on("FetchBuiltInCMap", (data, sink) => {
       if (this.destroyed) {
         sink.error(new Error("Worker was destroyed"));
@@ -3558,7 +2966,9 @@ class WorkerTransport {
     const params = this._params;
     return (0, _util.shadow)(this, "loadingParams", {
       disableAutoFetch: params.disableAutoFetch,
-      disableFontFace: params.disableFontFace
+      disableCreateObjectURL: params.disableCreateObjectURL,
+      disableFontFace: params.disableFontFace,
+      nativeImageDecoderSupport: params.nativeImageDecoderSupport
     });
   }
 
@@ -3611,6 +3021,16 @@ class PDFObjects {
   }
 
   clear() {
+    for (const objId in this._objs) {
+      const {
+        data
+      } = this._objs[objId];
+
+      if (typeof Image !== "undefined" && data instanceof Image) {
+        (0, _display_utils.releaseImageResources)(data);
+      }
+    }
+
     this._objs = Object.create(null);
   }
 
@@ -3628,6 +3048,10 @@ class RenderTask {
 
   cancel() {
     this._internalRenderTask.cancel();
+  }
+
+  then(onFulfilled, onRejected) {
+    throw new Error("Removed API method: " + "RenderTask.then, use the `promise` getter instead.");
   }
 
 }
@@ -3798,13 +3222,522 @@ const InternalRenderTask = function InternalRenderTaskClosure() {
   return InternalRenderTask;
 }();
 
-const version = '2.5.207';
+const version = '2.4.456';
 exports.version = version;
-const build = '0974d6052';
+const build = '228a591c';
 exports.build = build;
 
 /***/ }),
-/* 6 */
+/* 4 */
+/***/ (function(module, exports, __w_pdfjs_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addLinkAttributes = addLinkAttributes;
+exports.getFilenameFromUrl = getFilenameFromUrl;
+exports.isFetchSupported = isFetchSupported;
+exports.isValidFetchUrl = isValidFetchUrl;
+exports.loadScript = loadScript;
+exports.deprecated = deprecated;
+exports.releaseImageResources = releaseImageResources;
+exports.PDFDateString = exports.StatTimer = exports.DOMSVGFactory = exports.DOMCMapReaderFactory = exports.DOMCanvasFactory = exports.DEFAULT_LINK_REL = exports.LinkTarget = exports.RenderingCancelledException = exports.PageViewport = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+const DEFAULT_LINK_REL = "noopener noreferrer nofollow";
+exports.DEFAULT_LINK_REL = DEFAULT_LINK_REL;
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+class DOMCanvasFactory {
+  create(width, height) {
+    if (width <= 0 || height <= 0) {
+      throw new Error("Invalid canvas size");
+    }
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+    return {
+      canvas,
+      context
+    };
+  }
+
+  reset(canvasAndContext, width, height) {
+    if (!canvasAndContext.canvas) {
+      throw new Error("Canvas is not specified");
+    }
+
+    if (width <= 0 || height <= 0) {
+      throw new Error("Invalid canvas size");
+    }
+
+    canvasAndContext.canvas.width = width;
+    canvasAndContext.canvas.height = height;
+  }
+
+  destroy(canvasAndContext) {
+    if (!canvasAndContext.canvas) {
+      throw new Error("Canvas is not specified");
+    }
+
+    canvasAndContext.canvas.width = 0;
+    canvasAndContext.canvas.height = 0;
+    canvasAndContext.canvas = null;
+    canvasAndContext.context = null;
+  }
+
+}
+
+exports.DOMCanvasFactory = DOMCanvasFactory;
+
+class DOMCMapReaderFactory {
+  constructor({
+    baseUrl = null,
+    isCompressed = false
+  }) {
+    this.baseUrl = baseUrl;
+    this.isCompressed = isCompressed;
+  }
+
+  async fetch({
+    name
+  }) {
+    if (!this.baseUrl) {
+      throw new Error('The CMap "baseUrl" parameter must be specified, ensure that ' + 'the "cMapUrl" and "cMapPacked" API parameters are provided.');
+    }
+
+    if (!name) {
+      throw new Error("CMap name must be specified.");
+    }
+
+    const url = this.baseUrl + name + (this.isCompressed ? ".bcmap" : "");
+    const compressionType = this.isCompressed ? _util.CMapCompressionType.BINARY : _util.CMapCompressionType.NONE;
+
+    if (isFetchSupported() && isValidFetchUrl(url, document.baseURI)) {
+      return fetch(url).then(async response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        let cMapData;
+
+        if (this.isCompressed) {
+          cMapData = new Uint8Array((await response.arrayBuffer()));
+        } else {
+          cMapData = (0, _util.stringToBytes)((await response.text()));
+        }
+
+        return {
+          cMapData,
+          compressionType
+        };
+      }).catch(reason => {
+        throw new Error(`Unable to load ${this.isCompressed ? "binary " : ""}` + `CMap at: ${url}`);
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open("GET", url, true);
+
+      if (this.isCompressed) {
+        request.responseType = "arraybuffer";
+      }
+
+      request.onreadystatechange = () => {
+        if (request.readyState !== XMLHttpRequest.DONE) {
+          return;
+        }
+
+        if (request.status === 200 || request.status === 0) {
+          let cMapData;
+
+          if (this.isCompressed && request.response) {
+            cMapData = new Uint8Array(request.response);
+          } else if (!this.isCompressed && request.responseText) {
+            cMapData = (0, _util.stringToBytes)(request.responseText);
+          }
+
+          if (cMapData) {
+            resolve({
+              cMapData,
+              compressionType
+            });
+            return;
+          }
+        }
+
+        reject(new Error(request.statusText));
+      };
+
+      request.send(null);
+    }).catch(reason => {
+      throw new Error(`Unable to load ${this.isCompressed ? "binary " : ""}` + `CMap at: ${url}`);
+    });
+  }
+
+}
+
+exports.DOMCMapReaderFactory = DOMCMapReaderFactory;
+
+class DOMSVGFactory {
+  create(width, height) {
+    (0, _util.assert)(width > 0 && height > 0, "Invalid SVG dimensions");
+    const svg = document.createElementNS(SVG_NS, "svg:svg");
+    svg.setAttribute("version", "1.1");
+    svg.setAttribute("width", width + "px");
+    svg.setAttribute("height", height + "px");
+    svg.setAttribute("preserveAspectRatio", "none");
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    return svg;
+  }
+
+  createElement(type) {
+    (0, _util.assert)(typeof type === "string", "Invalid SVG element type");
+    return document.createElementNS(SVG_NS, type);
+  }
+
+}
+
+exports.DOMSVGFactory = DOMSVGFactory;
+
+class PageViewport {
+  constructor({
+    viewBox,
+    scale,
+    rotation,
+    offsetX = 0,
+    offsetY = 0,
+    dontFlip = false
+  }) {
+    this.viewBox = viewBox;
+    this.scale = scale;
+    this.rotation = rotation;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+    const centerX = (viewBox[2] + viewBox[0]) / 2;
+    const centerY = (viewBox[3] + viewBox[1]) / 2;
+    let rotateA, rotateB, rotateC, rotateD;
+    rotation = rotation % 360;
+    rotation = rotation < 0 ? rotation + 360 : rotation;
+
+    switch (rotation) {
+      case 180:
+        rotateA = -1;
+        rotateB = 0;
+        rotateC = 0;
+        rotateD = 1;
+        break;
+
+      case 90:
+        rotateA = 0;
+        rotateB = 1;
+        rotateC = 1;
+        rotateD = 0;
+        break;
+
+      case 270:
+        rotateA = 0;
+        rotateB = -1;
+        rotateC = -1;
+        rotateD = 0;
+        break;
+
+      default:
+        rotateA = 1;
+        rotateB = 0;
+        rotateC = 0;
+        rotateD = -1;
+        break;
+    }
+
+    if (dontFlip) {
+      rotateC = -rotateC;
+      rotateD = -rotateD;
+    }
+
+    let offsetCanvasX, offsetCanvasY;
+    let width, height;
+
+    if (rotateA === 0) {
+      offsetCanvasX = Math.abs(centerY - viewBox[1]) * scale + offsetX;
+      offsetCanvasY = Math.abs(centerX - viewBox[0]) * scale + offsetY;
+      width = Math.abs(viewBox[3] - viewBox[1]) * scale;
+      height = Math.abs(viewBox[2] - viewBox[0]) * scale;
+    } else {
+      offsetCanvasX = Math.abs(centerX - viewBox[0]) * scale + offsetX;
+      offsetCanvasY = Math.abs(centerY - viewBox[1]) * scale + offsetY;
+      width = Math.abs(viewBox[2] - viewBox[0]) * scale;
+      height = Math.abs(viewBox[3] - viewBox[1]) * scale;
+    }
+
+    this.transform = [rotateA * scale, rotateB * scale, rotateC * scale, rotateD * scale, offsetCanvasX - rotateA * scale * centerX - rotateC * scale * centerY, offsetCanvasY - rotateB * scale * centerX - rotateD * scale * centerY];
+    this.width = width;
+    this.height = height;
+  }
+
+  clone({
+    scale = this.scale,
+    rotation = this.rotation,
+    offsetX = this.offsetX,
+    offsetY = this.offsetY,
+    dontFlip = false
+  } = {}) {
+    return new PageViewport({
+      viewBox: this.viewBox.slice(),
+      scale,
+      rotation,
+      offsetX,
+      offsetY,
+      dontFlip
+    });
+  }
+
+  convertToViewportPoint(x, y) {
+    return _util.Util.applyTransform([x, y], this.transform);
+  }
+
+  convertToViewportRectangle(rect) {
+    const topLeft = _util.Util.applyTransform([rect[0], rect[1]], this.transform);
+
+    const bottomRight = _util.Util.applyTransform([rect[2], rect[3]], this.transform);
+
+    return [topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]];
+  }
+
+  convertToPdfPoint(x, y) {
+    return _util.Util.applyInverseTransform([x, y], this.transform);
+  }
+
+}
+
+exports.PageViewport = PageViewport;
+
+class RenderingCancelledException extends _util.BaseException {
+  constructor(msg, type) {
+    super(msg);
+    this.type = type;
+  }
+
+}
+
+exports.RenderingCancelledException = RenderingCancelledException;
+const LinkTarget = {
+  NONE: 0,
+  SELF: 1,
+  BLANK: 2,
+  PARENT: 3,
+  TOP: 4
+};
+exports.LinkTarget = LinkTarget;
+
+function addLinkAttributes(link, {
+  url,
+  target,
+  rel,
+  enabled = true
+} = {}) {
+  (0, _util.assert)(url && typeof url === "string", 'addLinkAttributes: A valid "url" parameter must provided.');
+  const urlNullRemoved = (0, _util.removeNullCharacters)(url);
+
+  if (enabled) {
+    link.href = link.title = urlNullRemoved;
+  } else {
+    link.href = "";
+    link.title = `Disabled: ${urlNullRemoved}`;
+
+    link.onclick = () => {
+      return false;
+    };
+  }
+
+  let targetStr = "";
+
+  switch (target) {
+    case LinkTarget.NONE:
+      break;
+
+    case LinkTarget.SELF:
+      targetStr = "_self";
+      break;
+
+    case LinkTarget.BLANK:
+      targetStr = "_blank";
+      break;
+
+    case LinkTarget.PARENT:
+      targetStr = "_parent";
+      break;
+
+    case LinkTarget.TOP:
+      targetStr = "_top";
+      break;
+  }
+
+  link.target = targetStr;
+  link.rel = typeof rel === "string" ? rel : DEFAULT_LINK_REL;
+}
+
+function getFilenameFromUrl(url) {
+  const anchor = url.indexOf("#");
+  const query = url.indexOf("?");
+  const end = Math.min(anchor > 0 ? anchor : url.length, query > 0 ? query : url.length);
+  return url.substring(url.lastIndexOf("/", end) + 1, end);
+}
+
+class StatTimer {
+  constructor() {
+    this.started = Object.create(null);
+    this.times = [];
+  }
+
+  time(name) {
+    if (name in this.started) {
+      (0, _util.warn)(`Timer is already running for ${name}`);
+    }
+
+    this.started[name] = Date.now();
+  }
+
+  timeEnd(name) {
+    if (!(name in this.started)) {
+      (0, _util.warn)(`Timer has not been started for ${name}`);
+    }
+
+    this.times.push({
+      name,
+      start: this.started[name],
+      end: Date.now()
+    });
+    delete this.started[name];
+  }
+
+  toString() {
+    const outBuf = [];
+    let longest = 0;
+
+    for (const time of this.times) {
+      const name = time.name;
+
+      if (name.length > longest) {
+        longest = name.length;
+      }
+    }
+
+    for (const time of this.times) {
+      const duration = time.end - time.start;
+      outBuf.push(`${time.name.padEnd(longest)} ${duration}ms\n`);
+    }
+
+    return outBuf.join("");
+  }
+
+}
+
+exports.StatTimer = StatTimer;
+
+function isFetchSupported() {
+  return typeof fetch !== "undefined" && typeof Response !== "undefined" && "body" in Response.prototype && typeof ReadableStream !== "undefined";
+}
+
+function isValidFetchUrl(url, baseUrl) {
+  try {
+    const {
+      protocol
+    } = baseUrl ? new URL(url, baseUrl) : new URL(url);
+    return protocol === "http:" || protocol === "https:";
+  } catch (ex) {
+    return false;
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+
+    script.onerror = function () {
+      reject(new Error(`Cannot load script at: ${script.src}`));
+    };
+
+    (document.head || document.documentElement).appendChild(script);
+  });
+}
+
+function deprecated(details) {
+  console.log("Deprecated API usage: " + details);
+}
+
+function releaseImageResources(img) {
+  (0, _util.assert)(img instanceof Image, "Invalid `img` parameter.");
+  const url = img.src;
+
+  if (typeof url === "string" && url.startsWith("blob:") && URL.revokeObjectURL) {
+    URL.revokeObjectURL(url);
+  }
+
+  img.removeAttribute("src");
+}
+
+let pdfDateStringRegex;
+
+class PDFDateString {
+  static toDateObject(input) {
+    if (!input || !(0, _util.isString)(input)) {
+      return null;
+    }
+
+    if (!pdfDateStringRegex) {
+      pdfDateStringRegex = new RegExp("^D:" + "(\\d{4})" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "(\\d{2})?" + "([Z|+|-])?" + "(\\d{2})?" + "'?" + "(\\d{2})?" + "'?");
+    }
+
+    const matches = pdfDateStringRegex.exec(input);
+
+    if (!matches) {
+      return null;
+    }
+
+    const year = parseInt(matches[1], 10);
+    let month = parseInt(matches[2], 10);
+    month = month >= 1 && month <= 12 ? month - 1 : 0;
+    let day = parseInt(matches[3], 10);
+    day = day >= 1 && day <= 31 ? day : 1;
+    let hour = parseInt(matches[4], 10);
+    hour = hour >= 0 && hour <= 23 ? hour : 0;
+    let minute = parseInt(matches[5], 10);
+    minute = minute >= 0 && minute <= 59 ? minute : 0;
+    let second = parseInt(matches[6], 10);
+    second = second >= 0 && second <= 59 ? second : 0;
+    const universalTimeRelation = matches[7] || "Z";
+    let offsetHour = parseInt(matches[8], 10);
+    offsetHour = offsetHour >= 0 && offsetHour <= 23 ? offsetHour : 0;
+    let offsetMinute = parseInt(matches[9], 10) || 0;
+    offsetMinute = offsetMinute >= 0 && offsetMinute <= 59 ? offsetMinute : 0;
+
+    if (universalTimeRelation === "-") {
+      hour += offsetHour;
+      minute += offsetMinute;
+    } else if (universalTimeRelation === "+") {
+      hour -= offsetHour;
+      minute -= offsetMinute;
+    }
+
+    return new Date(Date.UTC(year, month, day, hour, minute, second));
+  }
+
+}
+
+exports.PDFDateString = PDFDateString;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
 "use strict";
@@ -3815,7 +3748,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FontLoader = exports.FontFaceObject = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 class BaseFontLoader {
   constructor({
@@ -3879,7 +3812,7 @@ class BaseFontLoader {
           await nativeFontFace.loaded;
         } catch (ex) {
           this._onUnsupportedFeature({
-            featureId: _util.UNSUPPORTED_FEATURES.errorFontLoadNative
+            featureId: _util.UNSUPPORTED_FEATURES.font
           });
 
           (0, _util.warn)(`Failed to load font '${nativeFontFace.family}': '${ex}'.`);
@@ -4146,7 +4079,7 @@ class FontFaceObject {
 
       if (this._onUnsupportedFeature) {
         this._onUnsupportedFeature({
-          featureId: _util.UNSUPPORTED_FEATURES.errorFontGetPath
+          featureId: _util.UNSUPPORTED_FEATURES.font
         });
       }
 
@@ -4191,6 +4124,38 @@ class FontFaceObject {
 exports.FontFaceObject = FontFaceObject;
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __w_pdfjs_require__) {
+
+"use strict";
+
+
+const compatibilityParams = Object.create(null);
+{
+  const {
+    isNodeJS
+  } = __w_pdfjs_require__(7);
+
+  const userAgent = typeof navigator !== "undefined" && navigator.userAgent || "";
+  const isIE = /Trident/.test(userAgent);
+  const isIOSChrome = /CriOS/.test(userAgent);
+
+  (function checkOnBlobSupport() {
+    if (isIE || isIOSChrome) {
+      compatibilityParams.disableCreateObjectURL = true;
+    }
+  })();
+
+  (function checkFontFaceAndImage() {
+    if (isNodeJS) {
+      compatibilityParams.disableFontFace = true;
+      compatibilityParams.nativeImageDecoderSupport = "none";
+    }
+  })();
+}
+exports.apiCompatibilityParams = Object.freeze(compatibilityParams);
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
@@ -4200,20 +4165,9 @@ exports.FontFaceObject = FontFaceObject;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.apiCompatibilityParams = void 0;
-
-var _is_node = __w_pdfjs_require__(4);
-
-const compatibilityParams = Object.create(null);
-{
-  (function checkFontFace() {
-    if (_is_node.isNodeJS) {
-      compatibilityParams.disableFontFace = true;
-    }
-  })();
-}
-const apiCompatibilityParams = Object.freeze(compatibilityParams);
-exports.apiCompatibilityParams = apiCompatibilityParams;
+exports.isNodeJS = void 0;
+const isNodeJS = typeof process === "object" && process + "" === "[object process]" && !process.versions["nw"] && !process.versions["electron"];
+exports.isNodeJS = isNodeJS;
 
 /***/ }),
 /* 8 */
@@ -4227,7 +4181,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CanvasGraphics = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _pattern_helper = __w_pdfjs_require__(9);
 
@@ -4531,12 +4485,12 @@ function compileType3Glyph(imgData) {
     c.translate(0, -height);
     c.beginPath();
 
-    for (let k = 0, kk = outlines.length; k < kk; k++) {
-      var o = outlines[k];
+    for (var i = 0, ii = outlines.length; i < ii; i++) {
+      var o = outlines[i];
       c.moveTo(o[0], o[1]);
 
-      for (let l = 2, ll = o.length; l < ll; l += 2) {
-        c.lineTo(o[l], o[l + 1]);
+      for (var j = 2, jj = o.length; j < jj; j += 2) {
+        c.lineTo(o[j], o[j + 1]);
       }
     }
 
@@ -5488,7 +5442,7 @@ var CanvasGraphics = function CanvasGraphicsClosure() {
       var fontSize = current.fontSize / current.fontSizeScale;
       var fillStrokeMode = textRenderingMode & _util.TextRenderingMode.FILL_STROKE_MASK;
       var isAddToPathSet = !!(textRenderingMode & _util.TextRenderingMode.ADD_TO_PATH_FLAG);
-      const patternFill = current.patternFill && !font.missingFile;
+      const patternFill = current.patternFill && font.data;
       var addToPath;
 
       if (font.disableFontFace || isAddToPathSet || patternFill) {
@@ -5996,6 +5950,33 @@ var CanvasGraphics = function CanvasGraphicsClosure() {
     endAnnotation: function CanvasGraphics_endAnnotation() {
       this.restore();
     },
+    paintJpegXObject: function CanvasGraphics_paintJpegXObject(objId, w, h) {
+      const domImage = this.processingType3 ? this.commonObjs.get(objId) : this.objs.get(objId);
+
+      if (!domImage) {
+        (0, _util.warn)("Dependent image isn't ready yet");
+        return;
+      }
+
+      this.save();
+      var ctx = this.ctx;
+      ctx.scale(1 / w, -1 / h);
+      ctx.drawImage(domImage, 0, 0, domImage.width, domImage.height, 0, -h, w, h);
+
+      if (this.imageLayer) {
+        var currentTransform = ctx.mozCurrentTransformInverse;
+        var position = this.getCanvasPosition(0, 0);
+        this.imageLayer.appendImage({
+          objId,
+          left: position[0],
+          top: position[1],
+          width: w / currentTransform[0],
+          height: h / currentTransform[3]
+        });
+      }
+
+      this.restore();
+    },
     paintImageMaskXObject: function CanvasGraphics_paintImageMaskXObject(img) {
       var ctx = this.ctx;
       var width = img.width,
@@ -6079,7 +6060,7 @@ var CanvasGraphics = function CanvasGraphicsClosure() {
       }
     },
     paintImageXObject: function CanvasGraphics_paintImageXObject(objId) {
-      const imgData = objId.startsWith("g_") ? this.commonObjs.get(objId) : this.objs.get(objId);
+      const imgData = this.processingType3 ? this.commonObjs.get(objId) : this.objs.get(objId);
 
       if (!imgData) {
         (0, _util.warn)("Dependent image isn't ready yet");
@@ -6089,7 +6070,7 @@ var CanvasGraphics = function CanvasGraphicsClosure() {
       this.paintInlineImageXObject(imgData);
     },
     paintImageXObjectRepeat: function CanvasGraphics_paintImageXObjectRepeat(objId, scaleX, scaleY, positions) {
-      const imgData = objId.startsWith("g_") ? this.commonObjs.get(objId) : this.objs.get(objId);
+      const imgData = this.processingType3 ? this.commonObjs.get(objId) : this.objs.get(objId);
 
       if (!imgData) {
         (0, _util.warn)("Dependent image isn't ready yet");
@@ -6274,7 +6255,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getShadingPatternFromIR = getShadingPatternFromIR;
 exports.TilingPattern = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var ShadingIRs = {};
 
@@ -6434,7 +6415,7 @@ var createMeshCanvas = function createMeshCanvasClosure() {
       var j = rowSize * y + x1_ * 4;
 
       for (var x = x1_; x <= x2_; x++) {
-        k = (xa - x) / (xa - xb);
+        let k = (xa - x) / (xa - xb);
 
         if (k < 0) {
           k = 0;
@@ -6770,7 +6751,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MessageHandler = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 const CallbackKind = {
   UNKNOWN: 0,
@@ -6866,22 +6847,22 @@ class MessageHandler {
       }
 
       if (data.callbackId) {
-        const cbSourceName = this.sourceName;
-        const cbTargetName = data.sourceName;
+        const sourceName = this.sourceName;
+        const targetName = data.sourceName;
         new Promise(function (resolve) {
           resolve(action(data.data));
         }).then(function (result) {
           comObj.postMessage({
-            sourceName: cbSourceName,
-            targetName: cbTargetName,
+            sourceName,
+            targetName,
             callback: CallbackKind.DATA,
             callbackId: data.callbackId,
             data: result
           });
         }, function (reason) {
           comObj.postMessage({
-            sourceName: cbSourceName,
-            targetName: cbTargetName,
+            sourceName,
+            targetName,
             callback: CallbackKind.ERROR,
             callbackId: data.callbackId,
             reason: wrapReason(reason)
@@ -7271,7 +7252,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Metadata = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _xml_parser = __w_pdfjs_require__(13);
 
@@ -7842,11 +7823,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PDFDataTransportStream = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 class PDFDataTransportStream {
   constructor(params, pdfDataRangeTransport) {
-    (0, _util.assert)(pdfDataRangeTransport, 'PDFDataTransportStream - missing required "pdfDataRangeTransport" argument.');
+    (0, _util.assert)(pdfDataRangeTransport);
     this._queuedChunks = [];
     this._progressiveDone = params.progressiveDone || false;
     const initialData = params.initialData;
@@ -7911,7 +7892,7 @@ class PDFDataTransportStream {
         return true;
       });
 
-      (0, _util.assert)(found, "_onReceiveData - no `PDFDataTransportStreamRangeReader` instance found.");
+      (0, _util.assert)(found);
     }
   }
 
@@ -7957,7 +7938,7 @@ class PDFDataTransportStream {
   }
 
   getFullReader() {
-    (0, _util.assert)(!this._fullRequestReader, "PDFDataTransportStream.getFullReader can only be called once.");
+    (0, _util.assert)(!this._fullRequestReader);
     const queuedChunks = this._queuedChunks;
     this._queuedChunks = null;
     return new PDFDataTransportStreamReader(this, queuedChunks, this._progressiveDone);
@@ -8197,7 +8178,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WebGLContext = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 class WebGLContext {
   constructor({
@@ -8642,11 +8623,694 @@ var WebGLUtils = function WebGLUtilsClosure() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.renderTextLayer = void 0;
+
+var _util = __w_pdfjs_require__(1);
+
+var renderTextLayer = function renderTextLayerClosure() {
+  var MAX_TEXT_DIVS_TO_RENDER = 100000;
+  var NonWhitespaceRegexp = /\S/;
+
+  function isAllWhitespace(str) {
+    return !NonWhitespaceRegexp.test(str);
+  }
+
+  function appendText(task, geom, styles) {
+    var textDiv = document.createElement("span");
+    var textDivProperties = {
+      angle: 0,
+      canvasWidth: 0,
+      isWhitespace: false,
+      originalTransform: null,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+      paddingTop: 0,
+      scale: 1
+    };
+
+    task._textDivs.push(textDiv);
+
+    if (isAllWhitespace(geom.str)) {
+      textDivProperties.isWhitespace = true;
+
+      task._textDivProperties.set(textDiv, textDivProperties);
+
+      return;
+    }
+
+    var tx = _util.Util.transform(task._viewport.transform, geom.transform);
+
+    var angle = Math.atan2(tx[1], tx[0]);
+    var style = styles[geom.fontName];
+
+    if (style.vertical) {
+      angle += Math.PI / 2;
+    }
+
+    var fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]);
+    var fontAscent = fontHeight;
+
+    if (style.ascent) {
+      fontAscent = style.ascent * fontAscent;
+    } else if (style.descent) {
+      fontAscent = (1 + style.descent) * fontAscent;
+    }
+
+    let left, top;
+
+    if (angle === 0) {
+      left = tx[4];
+      top = tx[5] - fontAscent;
+    } else {
+      left = tx[4] + fontAscent * Math.sin(angle);
+      top = tx[5] - fontAscent * Math.cos(angle);
+    }
+
+    textDiv.style.left = `${left}px`;
+    textDiv.style.top = `${top}px`;
+    textDiv.style.fontSize = `${fontHeight}px`;
+    textDiv.style.fontFamily = style.fontFamily;
+    textDiv.textContent = geom.str;
+
+    if (task._fontInspectorEnabled) {
+      textDiv.dataset.fontName = geom.fontName;
+    }
+
+    if (angle !== 0) {
+      textDivProperties.angle = angle * (180 / Math.PI);
+    }
+
+    if (geom.str.length > 1) {
+      if (style.vertical) {
+        textDivProperties.canvasWidth = geom.height * task._viewport.scale;
+      } else {
+        textDivProperties.canvasWidth = geom.width * task._viewport.scale;
+      }
+    }
+
+    task._textDivProperties.set(textDiv, textDivProperties);
+
+    if (task._textContentStream) {
+      task._layoutText(textDiv);
+    }
+
+    if (task._enhanceTextSelection) {
+      var angleCos = 1,
+          angleSin = 0;
+
+      if (angle !== 0) {
+        angleCos = Math.cos(angle);
+        angleSin = Math.sin(angle);
+      }
+
+      var divWidth = (style.vertical ? geom.height : geom.width) * task._viewport.scale;
+      var divHeight = fontHeight;
+      var m, b;
+
+      if (angle !== 0) {
+        m = [angleCos, angleSin, -angleSin, angleCos, left, top];
+        b = _util.Util.getAxialAlignedBoundingBox([0, 0, divWidth, divHeight], m);
+      } else {
+        b = [left, top, left + divWidth, top + divHeight];
+      }
+
+      task._bounds.push({
+        left: b[0],
+        top: b[1],
+        right: b[2],
+        bottom: b[3],
+        div: textDiv,
+        size: [divWidth, divHeight],
+        m
+      });
+    }
+  }
+
+  function render(task) {
+    if (task._canceled) {
+      return;
+    }
+
+    var textDivs = task._textDivs;
+    var capability = task._capability;
+    var textDivsLength = textDivs.length;
+
+    if (textDivsLength > MAX_TEXT_DIVS_TO_RENDER) {
+      task._renderingDone = true;
+      capability.resolve();
+      return;
+    }
+
+    if (!task._textContentStream) {
+      for (var i = 0; i < textDivsLength; i++) {
+        task._layoutText(textDivs[i]);
+      }
+    }
+
+    task._renderingDone = true;
+    capability.resolve();
+  }
+
+  function expand(task) {
+    var bounds = task._bounds;
+    var viewport = task._viewport;
+    var expanded = expandBounds(viewport.width, viewport.height, bounds);
+
+    for (var i = 0; i < expanded.length; i++) {
+      var div = bounds[i].div;
+
+      var divProperties = task._textDivProperties.get(div);
+
+      if (divProperties.angle === 0) {
+        divProperties.paddingLeft = bounds[i].left - expanded[i].left;
+        divProperties.paddingTop = bounds[i].top - expanded[i].top;
+        divProperties.paddingRight = expanded[i].right - bounds[i].right;
+        divProperties.paddingBottom = expanded[i].bottom - bounds[i].bottom;
+
+        task._textDivProperties.set(div, divProperties);
+
+        continue;
+      }
+
+      var e = expanded[i],
+          b = bounds[i];
+      var m = b.m,
+          c = m[0],
+          s = m[1];
+      var points = [[0, 0], [0, b.size[1]], [b.size[0], 0], b.size];
+      var ts = new Float64Array(64);
+      points.forEach(function (p, i) {
+        var t = _util.Util.applyTransform(p, m);
+
+        ts[i + 0] = c && (e.left - t[0]) / c;
+        ts[i + 4] = s && (e.top - t[1]) / s;
+        ts[i + 8] = c && (e.right - t[0]) / c;
+        ts[i + 12] = s && (e.bottom - t[1]) / s;
+        ts[i + 16] = s && (e.left - t[0]) / -s;
+        ts[i + 20] = c && (e.top - t[1]) / c;
+        ts[i + 24] = s && (e.right - t[0]) / -s;
+        ts[i + 28] = c && (e.bottom - t[1]) / c;
+        ts[i + 32] = c && (e.left - t[0]) / -c;
+        ts[i + 36] = s && (e.top - t[1]) / -s;
+        ts[i + 40] = c && (e.right - t[0]) / -c;
+        ts[i + 44] = s && (e.bottom - t[1]) / -s;
+        ts[i + 48] = s && (e.left - t[0]) / s;
+        ts[i + 52] = c && (e.top - t[1]) / -c;
+        ts[i + 56] = s && (e.right - t[0]) / s;
+        ts[i + 60] = c && (e.bottom - t[1]) / -c;
+      });
+
+      var findPositiveMin = function (ts, offset, count) {
+        var result = 0;
+
+        for (var i = 0; i < count; i++) {
+          var t = ts[offset++];
+
+          if (t > 0) {
+            result = result ? Math.min(t, result) : t;
+          }
+        }
+
+        return result;
+      };
+
+      var boxScale = 1 + Math.min(Math.abs(c), Math.abs(s));
+      divProperties.paddingLeft = findPositiveMin(ts, 32, 16) / boxScale;
+      divProperties.paddingTop = findPositiveMin(ts, 48, 16) / boxScale;
+      divProperties.paddingRight = findPositiveMin(ts, 0, 16) / boxScale;
+      divProperties.paddingBottom = findPositiveMin(ts, 16, 16) / boxScale;
+
+      task._textDivProperties.set(div, divProperties);
+    }
+  }
+
+  function expandBounds(width, height, boxes) {
+    var bounds = boxes.map(function (box, i) {
+      return {
+        x1: box.left,
+        y1: box.top,
+        x2: box.right,
+        y2: box.bottom,
+        index: i,
+        x1New: undefined,
+        x2New: undefined
+      };
+    });
+    expandBoundsLTR(width, bounds);
+    var expanded = new Array(boxes.length);
+    bounds.forEach(function (b) {
+      var i = b.index;
+      expanded[i] = {
+        left: b.x1New,
+        top: 0,
+        right: b.x2New,
+        bottom: 0
+      };
+    });
+    boxes.map(function (box, i) {
+      var e = expanded[i],
+          b = bounds[i];
+      b.x1 = box.top;
+      b.y1 = width - e.right;
+      b.x2 = box.bottom;
+      b.y2 = width - e.left;
+      b.index = i;
+      b.x1New = undefined;
+      b.x2New = undefined;
+    });
+    expandBoundsLTR(height, bounds);
+    bounds.forEach(function (b) {
+      var i = b.index;
+      expanded[i].top = b.x1New;
+      expanded[i].bottom = b.x2New;
+    });
+    return expanded;
+  }
+
+  function expandBoundsLTR(width, bounds) {
+    bounds.sort(function (a, b) {
+      return a.x1 - b.x1 || a.index - b.index;
+    });
+    var fakeBoundary = {
+      x1: -Infinity,
+      y1: -Infinity,
+      x2: 0,
+      y2: Infinity,
+      index: -1,
+      x1New: 0,
+      x2New: 0
+    };
+    var horizon = [{
+      start: -Infinity,
+      end: Infinity,
+      boundary: fakeBoundary
+    }];
+    bounds.forEach(function (boundary) {
+      var i = 0;
+
+      while (i < horizon.length && horizon[i].end <= boundary.y1) {
+        i++;
+      }
+
+      var j = horizon.length - 1;
+
+      while (j >= 0 && horizon[j].start >= boundary.y2) {
+        j--;
+      }
+
+      var horizonPart, affectedBoundary;
+      var q,
+          k,
+          maxXNew = -Infinity;
+
+      for (q = i; q <= j; q++) {
+        horizonPart = horizon[q];
+        affectedBoundary = horizonPart.boundary;
+        var xNew;
+
+        if (affectedBoundary.x2 > boundary.x1) {
+          xNew = affectedBoundary.index > boundary.index ? affectedBoundary.x1New : boundary.x1;
+        } else if (affectedBoundary.x2New === undefined) {
+          xNew = (affectedBoundary.x2 + boundary.x1) / 2;
+        } else {
+          xNew = affectedBoundary.x2New;
+        }
+
+        if (xNew > maxXNew) {
+          maxXNew = xNew;
+        }
+      }
+
+      boundary.x1New = maxXNew;
+
+      for (q = i; q <= j; q++) {
+        horizonPart = horizon[q];
+        affectedBoundary = horizonPart.boundary;
+
+        if (affectedBoundary.x2New === undefined) {
+          if (affectedBoundary.x2 > boundary.x1) {
+            if (affectedBoundary.index > boundary.index) {
+              affectedBoundary.x2New = affectedBoundary.x2;
+            }
+          } else {
+            affectedBoundary.x2New = maxXNew;
+          }
+        } else if (affectedBoundary.x2New > maxXNew) {
+          affectedBoundary.x2New = Math.max(maxXNew, affectedBoundary.x2);
+        }
+      }
+
+      var changedHorizon = [],
+          lastBoundary = null;
+
+      for (q = i; q <= j; q++) {
+        horizonPart = horizon[q];
+        affectedBoundary = horizonPart.boundary;
+        var useBoundary = affectedBoundary.x2 > boundary.x2 ? affectedBoundary : boundary;
+
+        if (lastBoundary === useBoundary) {
+          changedHorizon[changedHorizon.length - 1].end = horizonPart.end;
+        } else {
+          changedHorizon.push({
+            start: horizonPart.start,
+            end: horizonPart.end,
+            boundary: useBoundary
+          });
+          lastBoundary = useBoundary;
+        }
+      }
+
+      if (horizon[i].start < boundary.y1) {
+        changedHorizon[0].start = boundary.y1;
+        changedHorizon.unshift({
+          start: horizon[i].start,
+          end: boundary.y1,
+          boundary: horizon[i].boundary
+        });
+      }
+
+      if (boundary.y2 < horizon[j].end) {
+        changedHorizon[changedHorizon.length - 1].end = boundary.y2;
+        changedHorizon.push({
+          start: boundary.y2,
+          end: horizon[j].end,
+          boundary: horizon[j].boundary
+        });
+      }
+
+      for (q = i; q <= j; q++) {
+        horizonPart = horizon[q];
+        affectedBoundary = horizonPart.boundary;
+
+        if (affectedBoundary.x2New !== undefined) {
+          continue;
+        }
+
+        var used = false;
+
+        for (k = i - 1; !used && k >= 0 && horizon[k].start >= affectedBoundary.y1; k--) {
+          used = horizon[k].boundary === affectedBoundary;
+        }
+
+        for (k = j + 1; !used && k < horizon.length && horizon[k].end <= affectedBoundary.y2; k++) {
+          used = horizon[k].boundary === affectedBoundary;
+        }
+
+        for (k = 0; !used && k < changedHorizon.length; k++) {
+          used = changedHorizon[k].boundary === affectedBoundary;
+        }
+
+        if (!used) {
+          affectedBoundary.x2New = maxXNew;
+        }
+      }
+
+      Array.prototype.splice.apply(horizon, [i, j - i + 1].concat(changedHorizon));
+    });
+    horizon.forEach(function (horizonPart) {
+      var affectedBoundary = horizonPart.boundary;
+
+      if (affectedBoundary.x2New === undefined) {
+        affectedBoundary.x2New = Math.max(width, affectedBoundary.x2);
+      }
+    });
+  }
+
+  function TextLayerRenderTask({
+    textContent,
+    textContentStream,
+    container,
+    viewport,
+    textDivs,
+    textContentItemsStr,
+    enhanceTextSelection
+  }) {
+    this._textContent = textContent;
+    this._textContentStream = textContentStream;
+    this._container = container;
+    this._viewport = viewport;
+    this._textDivs = textDivs || [];
+    this._textContentItemsStr = textContentItemsStr || [];
+    this._enhanceTextSelection = !!enhanceTextSelection;
+    this._fontInspectorEnabled = !!(globalThis.FontInspector && globalThis.FontInspector.enabled);
+    this._reader = null;
+    this._layoutTextLastFontSize = null;
+    this._layoutTextLastFontFamily = null;
+    this._layoutTextCtx = null;
+    this._textDivProperties = new WeakMap();
+    this._renderingDone = false;
+    this._canceled = false;
+    this._capability = (0, _util.createPromiseCapability)();
+    this._renderTimer = null;
+    this._bounds = [];
+
+    this._capability.promise.finally(() => {
+      if (this._layoutTextCtx) {
+        this._layoutTextCtx.canvas.width = 0;
+        this._layoutTextCtx.canvas.height = 0;
+        this._layoutTextCtx = null;
+      }
+    }).catch(() => {});
+  }
+
+  TextLayerRenderTask.prototype = {
+    get promise() {
+      return this._capability.promise;
+    },
+
+    cancel: function TextLayer_cancel() {
+      this._canceled = true;
+
+      if (this._reader) {
+        this._reader.cancel(new _util.AbortException("TextLayer task cancelled."));
+
+        this._reader = null;
+      }
+
+      if (this._renderTimer !== null) {
+        clearTimeout(this._renderTimer);
+        this._renderTimer = null;
+      }
+
+      this._capability.reject(new Error("TextLayer task cancelled."));
+    },
+
+    _processItems(items, styleCache) {
+      for (let i = 0, len = items.length; i < len; i++) {
+        this._textContentItemsStr.push(items[i].str);
+
+        appendText(this, items[i], styleCache);
+      }
+    },
+
+    _layoutText(textDiv) {
+      const textDivProperties = this._textDivProperties.get(textDiv);
+
+      if (textDivProperties.isWhitespace) {
+        return;
+      }
+
+      let transform = "";
+
+      if (textDivProperties.canvasWidth !== 0) {
+        const {
+          fontSize,
+          fontFamily
+        } = textDiv.style;
+
+        if (fontSize !== this._layoutTextLastFontSize || fontFamily !== this._layoutTextLastFontFamily) {
+          this._layoutTextCtx.font = `${fontSize} ${fontFamily}`;
+          this._layoutTextLastFontSize = fontSize;
+          this._layoutTextLastFontFamily = fontFamily;
+        }
+
+        const {
+          width
+        } = this._layoutTextCtx.measureText(textDiv.textContent);
+
+        if (width > 0) {
+          textDivProperties.scale = textDivProperties.canvasWidth / width;
+          transform = `scaleX(${textDivProperties.scale})`;
+        }
+      }
+
+      if (textDivProperties.angle !== 0) {
+        transform = `rotate(${textDivProperties.angle}deg) ${transform}`;
+      }
+
+      if (transform.length > 0) {
+        if (this._enhanceTextSelection) {
+          textDivProperties.originalTransform = transform;
+        }
+
+        textDiv.style.transform = transform;
+      }
+
+      this._textDivProperties.set(textDiv, textDivProperties);
+
+      this._container.appendChild(textDiv);
+    },
+
+    _render: function TextLayer_render(timeout) {
+      const capability = (0, _util.createPromiseCapability)();
+      let styleCache = Object.create(null);
+      const canvas = document.createElement("canvas");
+      canvas.mozOpaque = true;
+      this._layoutTextCtx = canvas.getContext("2d", {
+        alpha: false
+      });
+
+      if (this._textContent) {
+        const textItems = this._textContent.items;
+        const textStyles = this._textContent.styles;
+
+        this._processItems(textItems, textStyles);
+
+        capability.resolve();
+      } else if (this._textContentStream) {
+        const pump = () => {
+          this._reader.read().then(({
+            value,
+            done
+          }) => {
+            if (done) {
+              capability.resolve();
+              return;
+            }
+
+            Object.assign(styleCache, value.styles);
+
+            this._processItems(value.items, styleCache);
+
+            pump();
+          }, capability.reject);
+        };
+
+        this._reader = this._textContentStream.getReader();
+        pump();
+      } else {
+        throw new Error('Neither "textContent" nor "textContentStream"' + " parameters specified.");
+      }
+
+      capability.promise.then(() => {
+        styleCache = null;
+
+        if (!timeout) {
+          render(this);
+        } else {
+          this._renderTimer = setTimeout(() => {
+            render(this);
+            this._renderTimer = null;
+          }, timeout);
+        }
+      }, this._capability.reject);
+    },
+    expandTextDivs: function TextLayer_expandTextDivs(expandDivs) {
+      if (!this._enhanceTextSelection || !this._renderingDone) {
+        return;
+      }
+
+      if (this._bounds !== null) {
+        expand(this);
+        this._bounds = null;
+      }
+
+      const transformBuf = [],
+            paddingBuf = [];
+
+      for (var i = 0, ii = this._textDivs.length; i < ii; i++) {
+        const div = this._textDivs[i];
+
+        const divProps = this._textDivProperties.get(div);
+
+        if (divProps.isWhitespace) {
+          continue;
+        }
+
+        if (expandDivs) {
+          transformBuf.length = 0;
+          paddingBuf.length = 0;
+
+          if (divProps.originalTransform) {
+            transformBuf.push(divProps.originalTransform);
+          }
+
+          if (divProps.paddingTop > 0) {
+            paddingBuf.push(`${divProps.paddingTop}px`);
+            transformBuf.push(`translateY(${-divProps.paddingTop}px)`);
+          } else {
+            paddingBuf.push(0);
+          }
+
+          if (divProps.paddingRight > 0) {
+            paddingBuf.push(`${divProps.paddingRight / divProps.scale}px`);
+          } else {
+            paddingBuf.push(0);
+          }
+
+          if (divProps.paddingBottom > 0) {
+            paddingBuf.push(`${divProps.paddingBottom}px`);
+          } else {
+            paddingBuf.push(0);
+          }
+
+          if (divProps.paddingLeft > 0) {
+            paddingBuf.push(`${divProps.paddingLeft / divProps.scale}px`);
+            transformBuf.push(`translateX(${-divProps.paddingLeft / divProps.scale}px)`);
+          } else {
+            paddingBuf.push(0);
+          }
+
+          div.style.padding = paddingBuf.join(" ");
+
+          if (transformBuf.length) {
+            div.style.transform = transformBuf.join(" ");
+          }
+        } else {
+          div.style.padding = null;
+          div.style.transform = divProps.originalTransform;
+        }
+      }
+    }
+  };
+
+  function renderTextLayer(renderParameters) {
+    var task = new TextLayerRenderTask({
+      textContent: renderParameters.textContent,
+      textContentStream: renderParameters.textContentStream,
+      container: renderParameters.container,
+      viewport: renderParameters.viewport,
+      textDivs: renderParameters.textDivs,
+      textContentItemsStr: renderParameters.textContentItemsStr,
+      enhanceTextSelection: renderParameters.enhanceTextSelection
+    });
+
+    task._render(renderParameters.timeout);
+
+    return task;
+  }
+
+  return renderTextLayer;
+}();
+
+exports.renderTextLayer = renderTextLayer;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __w_pdfjs_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.AnnotationLayer = void 0;
 
-var _display_utils = __w_pdfjs_require__(1);
+var _display_utils = __w_pdfjs_require__(4);
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 class AnnotationElementFactory {
   static create(parameters) {
@@ -8965,7 +9629,6 @@ class TextWidgetAnnotationElement extends WidgetAnnotationElement {
       }
 
       element.disabled = this.data.readOnly;
-      element.name = this.data.fieldName;
 
       if (this.data.maxLen !== null) {
         element.maxLength = this.data.maxLen;
@@ -9035,7 +9698,6 @@ class CheckboxWidgetAnnotationElement extends WidgetAnnotationElement {
     const element = document.createElement("input");
     element.disabled = this.data.readOnly;
     element.type = "checkbox";
-    element.name = this.data.fieldName;
 
     if (this.data.fieldValue && this.data.fieldValue !== "Off") {
       element.setAttribute("checked", true);
@@ -9087,7 +9749,6 @@ class ChoiceWidgetAnnotationElement extends WidgetAnnotationElement {
     this.container.className = "choiceWidgetAnnotation";
     const selectElement = document.createElement("select");
     selectElement.disabled = this.data.readOnly;
-    selectElement.name = this.data.fieldName;
 
     if (!this.data.combo) {
       selectElement.size = this.data.options.length;
@@ -9669,701 +10330,6 @@ class AnnotationLayer {
 exports.AnnotationLayer = AnnotationLayer;
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports, __w_pdfjs_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderTextLayer = void 0;
-
-var _util = __w_pdfjs_require__(2);
-
-var renderTextLayer = function renderTextLayerClosure() {
-  var MAX_TEXT_DIVS_TO_RENDER = 100000;
-  var NonWhitespaceRegexp = /\S/;
-
-  function isAllWhitespace(str) {
-    return !NonWhitespaceRegexp.test(str);
-  }
-
-  function appendText(task, geom, styles) {
-    var textDiv = document.createElement("span");
-    var textDivProperties = {
-      angle: 0,
-      canvasWidth: 0,
-      isWhitespace: false,
-      originalTransform: null,
-      paddingBottom: 0,
-      paddingLeft: 0,
-      paddingRight: 0,
-      paddingTop: 0,
-      scale: 1
-    };
-
-    task._textDivs.push(textDiv);
-
-    if (isAllWhitespace(geom.str)) {
-      textDivProperties.isWhitespace = true;
-
-      task._textDivProperties.set(textDiv, textDivProperties);
-
-      return;
-    }
-
-    var tx = _util.Util.transform(task._viewport.transform, geom.transform);
-
-    var angle = Math.atan2(tx[1], tx[0]);
-    var style = styles[geom.fontName];
-
-    if (style.vertical) {
-      angle += Math.PI / 2;
-    }
-
-    var fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]);
-    var fontAscent = fontHeight;
-
-    if (style.ascent) {
-      fontAscent = style.ascent * fontAscent;
-    } else if (style.descent) {
-      fontAscent = (1 + style.descent) * fontAscent;
-    }
-
-    let left, top;
-
-    if (angle === 0) {
-      left = tx[4];
-      top = tx[5] - fontAscent;
-    } else {
-      left = tx[4] + fontAscent * Math.sin(angle);
-      top = tx[5] - fontAscent * Math.cos(angle);
-    }
-
-    textDiv.style.left = `${left}px`;
-    textDiv.style.top = `${top}px`;
-    textDiv.style.fontSize = `${fontHeight}px`;
-    textDiv.style.fontFamily = style.fontFamily;
-    textDiv.textContent = geom.str;
-
-    if (task._fontInspectorEnabled) {
-      textDiv.dataset.fontName = geom.fontName;
-    }
-
-    if (angle !== 0) {
-      textDivProperties.angle = angle * (180 / Math.PI);
-    }
-
-    let shouldScaleText = false;
-
-    if (geom.str.length > 1) {
-      shouldScaleText = true;
-    } else if (geom.transform[0] !== geom.transform[3]) {
-      const absScaleX = Math.abs(geom.transform[0]),
-            absScaleY = Math.abs(geom.transform[3]);
-
-      if (absScaleX !== absScaleY && Math.max(absScaleX, absScaleY) / Math.min(absScaleX, absScaleY) > 1.5) {
-        shouldScaleText = true;
-      }
-    }
-
-    if (shouldScaleText) {
-      if (style.vertical) {
-        textDivProperties.canvasWidth = geom.height * task._viewport.scale;
-      } else {
-        textDivProperties.canvasWidth = geom.width * task._viewport.scale;
-      }
-    }
-
-    task._textDivProperties.set(textDiv, textDivProperties);
-
-    if (task._textContentStream) {
-      task._layoutText(textDiv);
-    }
-
-    if (task._enhanceTextSelection) {
-      var angleCos = 1,
-          angleSin = 0;
-
-      if (angle !== 0) {
-        angleCos = Math.cos(angle);
-        angleSin = Math.sin(angle);
-      }
-
-      var divWidth = (style.vertical ? geom.height : geom.width) * task._viewport.scale;
-      var divHeight = fontHeight;
-      var m, b;
-
-      if (angle !== 0) {
-        m = [angleCos, angleSin, -angleSin, angleCos, left, top];
-        b = _util.Util.getAxialAlignedBoundingBox([0, 0, divWidth, divHeight], m);
-      } else {
-        b = [left, top, left + divWidth, top + divHeight];
-      }
-
-      task._bounds.push({
-        left: b[0],
-        top: b[1],
-        right: b[2],
-        bottom: b[3],
-        div: textDiv,
-        size: [divWidth, divHeight],
-        m
-      });
-    }
-  }
-
-  function render(task) {
-    if (task._canceled) {
-      return;
-    }
-
-    var textDivs = task._textDivs;
-    var capability = task._capability;
-    var textDivsLength = textDivs.length;
-
-    if (textDivsLength > MAX_TEXT_DIVS_TO_RENDER) {
-      task._renderingDone = true;
-      capability.resolve();
-      return;
-    }
-
-    if (!task._textContentStream) {
-      for (var i = 0; i < textDivsLength; i++) {
-        task._layoutText(textDivs[i]);
-      }
-    }
-
-    task._renderingDone = true;
-    capability.resolve();
-  }
-
-  function findPositiveMin(ts, offset, count) {
-    let result = 0;
-
-    for (let i = 0; i < count; i++) {
-      const t = ts[offset++];
-
-      if (t > 0) {
-        result = result ? Math.min(t, result) : t;
-      }
-    }
-
-    return result;
-  }
-
-  function expand(task) {
-    var bounds = task._bounds;
-    var viewport = task._viewport;
-    var expanded = expandBounds(viewport.width, viewport.height, bounds);
-
-    for (var i = 0; i < expanded.length; i++) {
-      var div = bounds[i].div;
-
-      var divProperties = task._textDivProperties.get(div);
-
-      if (divProperties.angle === 0) {
-        divProperties.paddingLeft = bounds[i].left - expanded[i].left;
-        divProperties.paddingTop = bounds[i].top - expanded[i].top;
-        divProperties.paddingRight = expanded[i].right - bounds[i].right;
-        divProperties.paddingBottom = expanded[i].bottom - bounds[i].bottom;
-
-        task._textDivProperties.set(div, divProperties);
-
-        continue;
-      }
-
-      var e = expanded[i],
-          b = bounds[i];
-      var m = b.m,
-          c = m[0],
-          s = m[1];
-      var points = [[0, 0], [0, b.size[1]], [b.size[0], 0], b.size];
-      var ts = new Float64Array(64);
-      points.forEach(function (p, j) {
-        var t = _util.Util.applyTransform(p, m);
-
-        ts[j + 0] = c && (e.left - t[0]) / c;
-        ts[j + 4] = s && (e.top - t[1]) / s;
-        ts[j + 8] = c && (e.right - t[0]) / c;
-        ts[j + 12] = s && (e.bottom - t[1]) / s;
-        ts[j + 16] = s && (e.left - t[0]) / -s;
-        ts[j + 20] = c && (e.top - t[1]) / c;
-        ts[j + 24] = s && (e.right - t[0]) / -s;
-        ts[j + 28] = c && (e.bottom - t[1]) / c;
-        ts[j + 32] = c && (e.left - t[0]) / -c;
-        ts[j + 36] = s && (e.top - t[1]) / -s;
-        ts[j + 40] = c && (e.right - t[0]) / -c;
-        ts[j + 44] = s && (e.bottom - t[1]) / -s;
-        ts[j + 48] = s && (e.left - t[0]) / s;
-        ts[j + 52] = c && (e.top - t[1]) / -c;
-        ts[j + 56] = s && (e.right - t[0]) / s;
-        ts[j + 60] = c && (e.bottom - t[1]) / -c;
-      });
-      var boxScale = 1 + Math.min(Math.abs(c), Math.abs(s));
-      divProperties.paddingLeft = findPositiveMin(ts, 32, 16) / boxScale;
-      divProperties.paddingTop = findPositiveMin(ts, 48, 16) / boxScale;
-      divProperties.paddingRight = findPositiveMin(ts, 0, 16) / boxScale;
-      divProperties.paddingBottom = findPositiveMin(ts, 16, 16) / boxScale;
-
-      task._textDivProperties.set(div, divProperties);
-    }
-  }
-
-  function expandBounds(width, height, boxes) {
-    var bounds = boxes.map(function (box, i) {
-      return {
-        x1: box.left,
-        y1: box.top,
-        x2: box.right,
-        y2: box.bottom,
-        index: i,
-        x1New: undefined,
-        x2New: undefined
-      };
-    });
-    expandBoundsLTR(width, bounds);
-    var expanded = new Array(boxes.length);
-    bounds.forEach(function (b) {
-      var i = b.index;
-      expanded[i] = {
-        left: b.x1New,
-        top: 0,
-        right: b.x2New,
-        bottom: 0
-      };
-    });
-    boxes.map(function (box, i) {
-      var e = expanded[i],
-          b = bounds[i];
-      b.x1 = box.top;
-      b.y1 = width - e.right;
-      b.x2 = box.bottom;
-      b.y2 = width - e.left;
-      b.index = i;
-      b.x1New = undefined;
-      b.x2New = undefined;
-    });
-    expandBoundsLTR(height, bounds);
-    bounds.forEach(function (b) {
-      var i = b.index;
-      expanded[i].top = b.x1New;
-      expanded[i].bottom = b.x2New;
-    });
-    return expanded;
-  }
-
-  function expandBoundsLTR(width, bounds) {
-    bounds.sort(function (a, b) {
-      return a.x1 - b.x1 || a.index - b.index;
-    });
-    var fakeBoundary = {
-      x1: -Infinity,
-      y1: -Infinity,
-      x2: 0,
-      y2: Infinity,
-      index: -1,
-      x1New: 0,
-      x2New: 0
-    };
-    var horizon = [{
-      start: -Infinity,
-      end: Infinity,
-      boundary: fakeBoundary
-    }];
-    bounds.forEach(function (boundary) {
-      var i = 0;
-
-      while (i < horizon.length && horizon[i].end <= boundary.y1) {
-        i++;
-      }
-
-      var j = horizon.length - 1;
-
-      while (j >= 0 && horizon[j].start >= boundary.y2) {
-        j--;
-      }
-
-      var horizonPart, affectedBoundary;
-      var q,
-          k,
-          maxXNew = -Infinity;
-
-      for (q = i; q <= j; q++) {
-        horizonPart = horizon[q];
-        affectedBoundary = horizonPart.boundary;
-        var xNew;
-
-        if (affectedBoundary.x2 > boundary.x1) {
-          xNew = affectedBoundary.index > boundary.index ? affectedBoundary.x1New : boundary.x1;
-        } else if (affectedBoundary.x2New === undefined) {
-          xNew = (affectedBoundary.x2 + boundary.x1) / 2;
-        } else {
-          xNew = affectedBoundary.x2New;
-        }
-
-        if (xNew > maxXNew) {
-          maxXNew = xNew;
-        }
-      }
-
-      boundary.x1New = maxXNew;
-
-      for (q = i; q <= j; q++) {
-        horizonPart = horizon[q];
-        affectedBoundary = horizonPart.boundary;
-
-        if (affectedBoundary.x2New === undefined) {
-          if (affectedBoundary.x2 > boundary.x1) {
-            if (affectedBoundary.index > boundary.index) {
-              affectedBoundary.x2New = affectedBoundary.x2;
-            }
-          } else {
-            affectedBoundary.x2New = maxXNew;
-          }
-        } else if (affectedBoundary.x2New > maxXNew) {
-          affectedBoundary.x2New = Math.max(maxXNew, affectedBoundary.x2);
-        }
-      }
-
-      var changedHorizon = [],
-          lastBoundary = null;
-
-      for (q = i; q <= j; q++) {
-        horizonPart = horizon[q];
-        affectedBoundary = horizonPart.boundary;
-        var useBoundary = affectedBoundary.x2 > boundary.x2 ? affectedBoundary : boundary;
-
-        if (lastBoundary === useBoundary) {
-          changedHorizon[changedHorizon.length - 1].end = horizonPart.end;
-        } else {
-          changedHorizon.push({
-            start: horizonPart.start,
-            end: horizonPart.end,
-            boundary: useBoundary
-          });
-          lastBoundary = useBoundary;
-        }
-      }
-
-      if (horizon[i].start < boundary.y1) {
-        changedHorizon[0].start = boundary.y1;
-        changedHorizon.unshift({
-          start: horizon[i].start,
-          end: boundary.y1,
-          boundary: horizon[i].boundary
-        });
-      }
-
-      if (boundary.y2 < horizon[j].end) {
-        changedHorizon[changedHorizon.length - 1].end = boundary.y2;
-        changedHorizon.push({
-          start: boundary.y2,
-          end: horizon[j].end,
-          boundary: horizon[j].boundary
-        });
-      }
-
-      for (q = i; q <= j; q++) {
-        horizonPart = horizon[q];
-        affectedBoundary = horizonPart.boundary;
-
-        if (affectedBoundary.x2New !== undefined) {
-          continue;
-        }
-
-        var used = false;
-
-        for (k = i - 1; !used && k >= 0 && horizon[k].start >= affectedBoundary.y1; k--) {
-          used = horizon[k].boundary === affectedBoundary;
-        }
-
-        for (k = j + 1; !used && k < horizon.length && horizon[k].end <= affectedBoundary.y2; k++) {
-          used = horizon[k].boundary === affectedBoundary;
-        }
-
-        for (k = 0; !used && k < changedHorizon.length; k++) {
-          used = changedHorizon[k].boundary === affectedBoundary;
-        }
-
-        if (!used) {
-          affectedBoundary.x2New = maxXNew;
-        }
-      }
-
-      Array.prototype.splice.apply(horizon, [i, j - i + 1].concat(changedHorizon));
-    });
-    horizon.forEach(function (horizonPart) {
-      var affectedBoundary = horizonPart.boundary;
-
-      if (affectedBoundary.x2New === undefined) {
-        affectedBoundary.x2New = Math.max(width, affectedBoundary.x2);
-      }
-    });
-  }
-
-  function TextLayerRenderTask({
-    textContent,
-    textContentStream,
-    container,
-    viewport,
-    textDivs,
-    textContentItemsStr,
-    enhanceTextSelection
-  }) {
-    this._textContent = textContent;
-    this._textContentStream = textContentStream;
-    this._container = container;
-    this._viewport = viewport;
-    this._textDivs = textDivs || [];
-    this._textContentItemsStr = textContentItemsStr || [];
-    this._enhanceTextSelection = !!enhanceTextSelection;
-    this._fontInspectorEnabled = !!(globalThis.FontInspector && globalThis.FontInspector.enabled);
-    this._reader = null;
-    this._layoutTextLastFontSize = null;
-    this._layoutTextLastFontFamily = null;
-    this._layoutTextCtx = null;
-    this._textDivProperties = new WeakMap();
-    this._renderingDone = false;
-    this._canceled = false;
-    this._capability = (0, _util.createPromiseCapability)();
-    this._renderTimer = null;
-    this._bounds = [];
-
-    this._capability.promise.finally(() => {
-      if (this._layoutTextCtx) {
-        this._layoutTextCtx.canvas.width = 0;
-        this._layoutTextCtx.canvas.height = 0;
-        this._layoutTextCtx = null;
-      }
-    }).catch(() => {});
-  }
-
-  TextLayerRenderTask.prototype = {
-    get promise() {
-      return this._capability.promise;
-    },
-
-    cancel: function TextLayer_cancel() {
-      this._canceled = true;
-
-      if (this._reader) {
-        this._reader.cancel(new _util.AbortException("TextLayer task cancelled."));
-
-        this._reader = null;
-      }
-
-      if (this._renderTimer !== null) {
-        clearTimeout(this._renderTimer);
-        this._renderTimer = null;
-      }
-
-      this._capability.reject(new Error("TextLayer task cancelled."));
-    },
-
-    _processItems(items, styleCache) {
-      for (let i = 0, len = items.length; i < len; i++) {
-        this._textContentItemsStr.push(items[i].str);
-
-        appendText(this, items[i], styleCache);
-      }
-    },
-
-    _layoutText(textDiv) {
-      const textDivProperties = this._textDivProperties.get(textDiv);
-
-      if (textDivProperties.isWhitespace) {
-        return;
-      }
-
-      let transform = "";
-
-      if (textDivProperties.canvasWidth !== 0) {
-        const {
-          fontSize,
-          fontFamily
-        } = textDiv.style;
-
-        if (fontSize !== this._layoutTextLastFontSize || fontFamily !== this._layoutTextLastFontFamily) {
-          this._layoutTextCtx.font = `${fontSize} ${fontFamily}`;
-          this._layoutTextLastFontSize = fontSize;
-          this._layoutTextLastFontFamily = fontFamily;
-        }
-
-        const {
-          width
-        } = this._layoutTextCtx.measureText(textDiv.textContent);
-
-        if (width > 0) {
-          textDivProperties.scale = textDivProperties.canvasWidth / width;
-          transform = `scaleX(${textDivProperties.scale})`;
-        }
-      }
-
-      if (textDivProperties.angle !== 0) {
-        transform = `rotate(${textDivProperties.angle}deg) ${transform}`;
-      }
-
-      if (transform.length > 0) {
-        if (this._enhanceTextSelection) {
-          textDivProperties.originalTransform = transform;
-        }
-
-        textDiv.style.transform = transform;
-      }
-
-      this._textDivProperties.set(textDiv, textDivProperties);
-
-      this._container.appendChild(textDiv);
-    },
-
-    _render: function TextLayer_render(timeout) {
-      const capability = (0, _util.createPromiseCapability)();
-      let styleCache = Object.create(null);
-      const canvas = document.createElement("canvas");
-      canvas.mozOpaque = true;
-      this._layoutTextCtx = canvas.getContext("2d", {
-        alpha: false
-      });
-
-      if (this._textContent) {
-        const textItems = this._textContent.items;
-        const textStyles = this._textContent.styles;
-
-        this._processItems(textItems, textStyles);
-
-        capability.resolve();
-      } else if (this._textContentStream) {
-        const pump = () => {
-          this._reader.read().then(({
-            value,
-            done
-          }) => {
-            if (done) {
-              capability.resolve();
-              return;
-            }
-
-            Object.assign(styleCache, value.styles);
-
-            this._processItems(value.items, styleCache);
-
-            pump();
-          }, capability.reject);
-        };
-
-        this._reader = this._textContentStream.getReader();
-        pump();
-      } else {
-        throw new Error('Neither "textContent" nor "textContentStream"' + " parameters specified.");
-      }
-
-      capability.promise.then(() => {
-        styleCache = null;
-
-        if (!timeout) {
-          render(this);
-        } else {
-          this._renderTimer = setTimeout(() => {
-            render(this);
-            this._renderTimer = null;
-          }, timeout);
-        }
-      }, this._capability.reject);
-    },
-    expandTextDivs: function TextLayer_expandTextDivs(expandDivs) {
-      if (!this._enhanceTextSelection || !this._renderingDone) {
-        return;
-      }
-
-      if (this._bounds !== null) {
-        expand(this);
-        this._bounds = null;
-      }
-
-      const transformBuf = [],
-            paddingBuf = [];
-
-      for (var i = 0, ii = this._textDivs.length; i < ii; i++) {
-        const div = this._textDivs[i];
-
-        const divProps = this._textDivProperties.get(div);
-
-        if (divProps.isWhitespace) {
-          continue;
-        }
-
-        if (expandDivs) {
-          transformBuf.length = 0;
-          paddingBuf.length = 0;
-
-          if (divProps.originalTransform) {
-            transformBuf.push(divProps.originalTransform);
-          }
-
-          if (divProps.paddingTop > 0) {
-            paddingBuf.push(`${divProps.paddingTop}px`);
-            transformBuf.push(`translateY(${-divProps.paddingTop}px)`);
-          } else {
-            paddingBuf.push(0);
-          }
-
-          if (divProps.paddingRight > 0) {
-            paddingBuf.push(`${divProps.paddingRight / divProps.scale}px`);
-          } else {
-            paddingBuf.push(0);
-          }
-
-          if (divProps.paddingBottom > 0) {
-            paddingBuf.push(`${divProps.paddingBottom}px`);
-          } else {
-            paddingBuf.push(0);
-          }
-
-          if (divProps.paddingLeft > 0) {
-            paddingBuf.push(`${divProps.paddingLeft / divProps.scale}px`);
-            transformBuf.push(`translateX(${-divProps.paddingLeft / divProps.scale}px)`);
-          } else {
-            paddingBuf.push(0);
-          }
-
-          div.style.padding = paddingBuf.join(" ");
-
-          if (transformBuf.length) {
-            div.style.transform = transformBuf.join(" ");
-          }
-        } else {
-          div.style.padding = null;
-          div.style.transform = divProps.originalTransform;
-        }
-      }
-    }
-  };
-
-  function renderTextLayer(renderParameters) {
-    var task = new TextLayerRenderTask({
-      textContent: renderParameters.textContent,
-      textContentStream: renderParameters.textContentStream,
-      container: renderParameters.container,
-      viewport: renderParameters.viewport,
-      textDivs: renderParameters.textDivs,
-      textContentItemsStr: renderParameters.textContentItemsStr,
-      enhanceTextSelection: renderParameters.enhanceTextSelection
-    });
-
-    task._render(renderParameters.timeout);
-
-    return task;
-  }
-
-  return renderTextLayer;
-}();
-
-exports.renderTextLayer = renderTextLayer;
-
-/***/ }),
 /* 18 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
 
@@ -10375,11 +10341,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SVGGraphics = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
-var _display_utils = __w_pdfjs_require__(1);
+var _display_utils = __w_pdfjs_require__(4);
 
-var _is_node = __w_pdfjs_require__(4);
+var _is_node = __w_pdfjs_require__(7);
 
 let SVGGraphics = function () {
   throw new Error("Not implemented: SVGGraphics");
@@ -10715,7 +10681,7 @@ exports.SVGGraphics = SVGGraphics;
   let maskCount = 0;
   let shadingCount = 0;
   exports.SVGGraphics = SVGGraphics = class SVGGraphics {
-    constructor(commonObjs, objs, forceDataSchema = false) {
+    constructor(commonObjs, objs, forceDataSchema) {
       this.svgFactory = new _display_utils.DOMSVGFactory();
       this.current = new SVGExtraState();
       this.transformMatrix = _util.IDENTITY_MATRIX;
@@ -10963,6 +10929,10 @@ exports.SVGGraphics = SVGGraphics;
             this.paintSolidColorImageMask();
             break;
 
+          case _util.OPS.paintJpegXObject:
+            this.paintJpegXObject(args[0], args[1], args[2]);
+            break;
+
           case _util.OPS.paintImageXObject:
             this.paintImageXObject(args[0]);
             break;
@@ -11045,7 +11015,6 @@ exports.SVGGraphics = SVGGraphics;
       current.x = current.lineX = 0;
       current.y = current.lineY = 0;
       current.xcoords = [];
-      current.ycoords = [];
       current.tspan = this.svgFactory.createElement("svg:tspan");
       current.tspan.setAttributeNS(null, "font-family", current.fontFamily);
       current.tspan.setAttributeNS(null, "font-size", `${pf(current.fontSize)}px`);
@@ -11065,7 +11034,6 @@ exports.SVGGraphics = SVGGraphics;
       current.txtElement = this.svgFactory.createElement("svg:text");
       current.txtgrp = this.svgFactory.createElement("svg:g");
       current.xcoords = [];
-      current.ycoords = [];
     }
 
     moveText(x, y) {
@@ -11073,7 +11041,6 @@ exports.SVGGraphics = SVGGraphics;
       current.x = current.lineX += x;
       current.y = current.lineY += y;
       current.xcoords = [];
-      current.ycoords = [];
       current.tspan = this.svgFactory.createElement("svg:tspan");
       current.tspan.setAttributeNS(null, "font-family", current.fontFamily);
       current.tspan.setAttributeNS(null, "font-size", `${pf(current.fontSize)}px`);
@@ -11089,14 +11056,11 @@ exports.SVGGraphics = SVGGraphics;
         return;
       }
 
-      const fontSizeScale = current.fontSizeScale;
       const charSpacing = current.charSpacing;
       const wordSpacing = current.wordSpacing;
       const fontDirection = current.fontDirection;
       const textHScale = current.textHScale * fontDirection;
       const vertical = font.vertical;
-      const spacingDir = vertical ? 1 : -1;
-      const defaultVMetrics = font.defaultVMetrics;
       const widthAdvanceScale = fontSize * current.fontMatrix[0];
       let x = 0;
 
@@ -11105,64 +11069,33 @@ exports.SVGGraphics = SVGGraphics;
           x += fontDirection * wordSpacing;
           continue;
         } else if ((0, _util.isNum)(glyph)) {
-          x += spacingDir * glyph * fontSize / 1000;
+          x += -glyph * fontSize * 0.001;
           continue;
         }
 
-        const spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
+        const width = glyph.width;
         const character = glyph.fontChar;
-        let scaledX, scaledY;
-        let width = glyph.width;
+        const spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
+        const charWidth = width * widthAdvanceScale + spacing * fontDirection;
 
-        if (vertical) {
-          let vx;
-          const vmetric = glyph.vmetric || defaultVMetrics;
-          vx = glyph.vmetric ? vmetric[1] : width * 0.5;
-          vx = -vx * widthAdvanceScale;
-          const vy = vmetric[2] * widthAdvanceScale;
-          width = vmetric ? -vmetric[0] : width;
-          scaledX = vx / fontSizeScale;
-          scaledY = (x + vy) / fontSizeScale;
-        } else {
-          scaledX = x / fontSizeScale;
-          scaledY = 0;
+        if (!glyph.isInFont && !font.missingFile) {
+          x += charWidth;
+          continue;
         }
 
-        if (glyph.isInFont || font.missingFile) {
-          current.xcoords.push(current.x + scaledX);
-
-          if (vertical) {
-            current.ycoords.push(-current.y + scaledY);
-          }
-
-          current.tspan.textContent += character;
-        } else {}
-
-        let charWidth;
-
-        if (vertical) {
-          charWidth = width * widthAdvanceScale - spacing * fontDirection;
-        } else {
-          charWidth = width * widthAdvanceScale + spacing * fontDirection;
-        }
-
+        current.xcoords.push(current.x + x);
+        current.tspan.textContent += character;
         x += charWidth;
       }
 
-      current.tspan.setAttributeNS(null, "x", current.xcoords.map(pf).join(" "));
-
       if (vertical) {
-        current.tspan.setAttributeNS(null, "y", current.ycoords.map(pf).join(" "));
-      } else {
-        current.tspan.setAttributeNS(null, "y", pf(-current.y));
-      }
-
-      if (vertical) {
-        current.y -= x;
+        current.y -= x * textHScale;
       } else {
         current.x += x * textHScale;
       }
 
+      current.tspan.setAttributeNS(null, "x", current.xcoords.map(pf).join(" "));
+      current.tspan.setAttributeNS(null, "y", pf(-current.y));
       current.tspan.setAttributeNS(null, "font-family", current.fontFamily);
       current.tspan.setAttributeNS(null, "font-size", `${pf(current.fontSize)}px`);
 
@@ -11217,10 +11150,6 @@ exports.SVGGraphics = SVGGraphics;
     }
 
     addFontStyle(fontObj) {
-      if (!fontObj.data) {
-        throw new Error("addFontStyle: No font data available, " + 'ensure that the "fontExtraProperties" API parameter is set.');
-      }
-
       if (!this.cssStyle) {
         this.cssStyle = this.svgFactory.createElement("svg:style");
         this.cssStyle.setAttributeNS(null, "type", "text/css");
@@ -11237,7 +11166,7 @@ exports.SVGGraphics = SVGGraphics;
       let size = details[1];
       current.font = fontObj;
 
-      if (this.embedFonts && !fontObj.missingFile && !this.embeddedFonts[fontObj.loadedName]) {
+      if (this.embedFonts && fontObj.data && !this.embeddedFonts[fontObj.loadedName]) {
         this.addFontStyle(fontObj);
         this.embeddedFonts[fontObj.loadedName] = fontObj;
       }
@@ -11267,7 +11196,6 @@ exports.SVGGraphics = SVGGraphics;
       current.tspan = this.svgFactory.createElement("svg:tspan");
       current.tspan.setAttributeNS(null, "y", pf(-current.y));
       current.xcoords = [];
-      current.ycoords = [];
     }
 
     endText() {
@@ -11314,7 +11242,6 @@ exports.SVGGraphics = SVGGraphics;
       this.current.fillColor = _util.Util.makeCssRgb(r, g, b);
       this.current.tspan = this.svgFactory.createElement("svg:tspan");
       this.current.xcoords = [];
-      this.current.ycoords = [];
     }
 
     setStrokeColorN(args) {
@@ -11349,10 +11276,6 @@ exports.SVGGraphics = SVGGraphics;
       rect.setAttributeNS(null, "width", x1 - x0);
       rect.setAttributeNS(null, "height", y1 - y0);
       rect.setAttributeNS(null, "fill", this._makeShadingPattern(args));
-
-      if (this.current.fillAlpha < 1) {
-        rect.setAttributeNS(null, "fill-opacity", this.current.fillAlpha);
-      }
 
       this._ensureTransformGroup().appendChild(rect);
     }
@@ -11768,6 +11691,19 @@ exports.SVGGraphics = SVGGraphics;
       this._ensureTransformGroup().appendChild(rect);
     }
 
+    paintJpegXObject(objId, w, h) {
+      const imgObj = this.objs.get(objId);
+      const imgEl = this.svgFactory.createElement("svg:image");
+      imgEl.setAttributeNS(XLINK_NS, "xlink:href", imgObj.src);
+      imgEl.setAttributeNS(null, "width", pf(w));
+      imgEl.setAttributeNS(null, "height", pf(h));
+      imgEl.setAttributeNS(null, "x", "0");
+      imgEl.setAttributeNS(null, "y", pf(-h));
+      imgEl.setAttributeNS(null, "transform", `scale(${pf(1 / w)} ${pf(-1 / h)})`);
+
+      this._ensureTransformGroup().appendChild(imgEl);
+    }
+
     paintImageXObject(objId) {
       const imgData = this.objs.get(objId);
 
@@ -11901,11 +11837,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PDFNodeStream = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _network_utils = __w_pdfjs_require__(20);
-
-;
 
 const fs = require("fs");
 
@@ -11951,7 +11885,7 @@ class PDFNodeStream {
   }
 
   getFullReader() {
-    (0, _util.assert)(!this._fullRequestReader, "PDFNodeStream.getFullReader can only be called once.");
+    (0, _util.assert)(!this._fullRequestReader);
     this._fullRequestReader = this.isFsUrl ? new PDFNodeStreamFsFullReader(this) : new PDFNodeStreamFullReader(this);
     return this._fullRequestReader;
   }
@@ -12198,13 +12132,13 @@ class BaseRangeReader {
 
 }
 
-function createRequestOptions(parsedUrl, headers) {
+function createRequestOptions(url, headers) {
   return {
-    protocol: parsedUrl.protocol,
-    auth: parsedUrl.auth,
-    host: parsedUrl.hostname,
-    port: parsedUrl.port,
-    path: parsedUrl.path,
+    protocol: url.protocol,
+    auth: url.auth,
+    host: url.hostname,
+    port: url.port,
+    path: url.path,
     method: "GET",
     headers
   };
@@ -12280,7 +12214,7 @@ class PDFNodeStreamRangeReader extends BaseRangeReader {
       this._httpHeaders[property] = value;
     }
 
-    this._httpHeaders.Range = `bytes=${start}-${end - 1}`;
+    this._httpHeaders["Range"] = `bytes=${start}-${end - 1}`;
 
     const handleResponse = response => {
       if (response.statusCode === 404) {
@@ -12373,7 +12307,7 @@ exports.extractFilenameFromHeader = extractFilenameFromHeader;
 exports.validateRangeRequestCapabilities = validateRangeRequestCapabilities;
 exports.validateResponseStatus = validateResponseStatus;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _content_disposition = __w_pdfjs_require__(21);
 
@@ -12535,12 +12469,12 @@ function getFilenameFromContentDispositionHeader(contentDisposition) {
     return value;
   }
 
-  function rfc2231getparam(contentDispositionStr) {
+  function rfc2231getparam(contentDisposition) {
     const matches = [];
     let match;
     const iter = toParamRegExp("filename\\*((?!0\\d)\\d+)(\\*?)", "ig");
 
-    while ((match = iter.exec(contentDispositionStr)) !== null) {
+    while ((match = iter.exec(contentDisposition)) !== null) {
       let [, n, quot, part] = match;
       n = parseInt(n, 10);
 
@@ -12618,10 +12552,10 @@ function getFilenameFromContentDispositionHeader(contentDisposition) {
       return value;
     }
 
-    return value.replace(/=\?([\w-]*)\?([QqBb])\?((?:[^?]|\?(?!=))*)\?=/g, function (matches, charset, encoding, text) {
+    return value.replace(/=\?([\w-]*)\?([QqBb])\?((?:[^?]|\?(?!=))*)\?=/g, function (_, charset, encoding, text) {
       if (encoding === "q" || encoding === "Q") {
         text = text.replace(/_/g, " ");
-        text = text.replace(/=([0-9a-fA-F]{2})/g, function (match, hex) {
+        text = text.replace(/=([0-9a-fA-F]{2})/g, function (_, hex) {
           return String.fromCharCode(parseInt(hex, 16));
         });
         return textdecode(charset, text);
@@ -12650,7 +12584,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PDFNetworkStream = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _network_utils = __w_pdfjs_require__(20);
 
@@ -12871,7 +12805,7 @@ class PDFNetworkStream {
   }
 
   getFullReader() {
-    (0, _util.assert)(!this._fullRequestReader, "PDFNetworkStream.getFullReader can only be called once.");
+    (0, _util.assert)(!this._fullRequestReader);
     this._fullRequestReader = new PDFNetworkStreamFullRequestReader(this._manager, this._source);
     return this._fullRequestReader;
   }
@@ -13207,11 +13141,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PDFFetchStream = void 0;
 
-var _util = __w_pdfjs_require__(2);
+var _util = __w_pdfjs_require__(1);
 
 var _network_utils = __w_pdfjs_require__(20);
-
-;
 
 function createFetchOptions(headers, withCredentials, abortController) {
   return {
@@ -13254,7 +13186,7 @@ class PDFFetchStream {
   }
 
   getFullReader() {
-    (0, _util.assert)(!this._fullRequestReader, "PDFFetchStream.getFullReader can only be called once.");
+    (0, _util.assert)(!this._fullRequestReader);
     this._fullRequestReader = new PDFFetchStreamReader(this);
     return this._fullRequestReader;
   }
