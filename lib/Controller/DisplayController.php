@@ -61,6 +61,7 @@ class DisplayController extends Controller {
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => $minmode
 		];
+
 		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
 
 		$policy = new ContentSecurityPolicy();

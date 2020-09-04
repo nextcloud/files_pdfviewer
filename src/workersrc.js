@@ -38,6 +38,7 @@ redirectIfNotIframe()
 // "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
 // before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
+
 	// Preferences override options, so they must be disabled for
 	// "externalLinkTarget" to take effect.
 	PDFViewerApplicationOptions.set('disablePreferences', true)
@@ -45,6 +46,8 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
 	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
+
+	console.debug('Initialized files_pdfviewer', PDFViewerApplicationOptions.getAll())
 
 	// The download has to be forced to use the URL of the file; by default
 	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
@@ -126,4 +129,4 @@ function initializeCustomPDFViewerApplication() {
 	}
 }
 
-document.addEventListener('webviewerloaded', initializeCustomPDFViewerApplication, true)
+document.addEventListener('DOMContentLoaded', initializeCustomPDFViewerApplication, true)
