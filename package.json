@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@nextcloud/router": "^1.2.0",
 		"pdfjs-dist": "^2.4.456",
-		"vue": "^2.6.11"
+		"vue": "^2.6.12"
 	},
 	"browserslist": [
 		"extends @nextcloud/browserslist-config"
@@ -71,7 +71,7 @@
 		"unzipper": "^0.10.11",
 		"url-loader": "^4.1.0",
 		"vue-loader": "^15.9.3",
-		"vue-template-compiler": "^2.6.11",
+		"vue-template-compiler": "^2.6.12",
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
 		"webpack-merge": "^5.1.3"
