@@ -24,6 +24,11 @@ To build the Javascript whenever you make changes, you can also use `npm run bui
 
 You run all tests by using `make test`.
 
+### 📦 Update pdf.js
+
+When a new release of pdf.js is available on https://github.com/mozilla/pdf.js/releases
+Uupdate the version number on https://github.com/nextcloud/files_pdfviewer/blob/master/pdfjs-get.js#L8 and compile the app again.
+
 
 ## ♥ How to create a pull request
 
