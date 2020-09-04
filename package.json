@@ -47,7 +47,7 @@
 		"babel-loader": "^8.1.0",
 		"babel-loader-exclude-node-modules-except": "^1.0.3",
 		"cli-progress": "^3.8.2",
-		"copy-webpack-plugin": "^6.0.3",
+		"copy-webpack-plugin": "^6.1.0",
 		"css-loader": "^3.6.0",
 		"eslint": "^6.8.0",
 		"eslint-config-standard": "^14.1.1",
