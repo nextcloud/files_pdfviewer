@@ -236,10 +236,6 @@ See https://github.com/adobe-type-tools/cmap-resources
 
                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
 
-                <button id="secondaryToolbarClose" class="toolbarButton" title="Close" tabindex="37" data-l10n-id="Close">
-                  <span data-l10n-id="close_label">Close</span>
-                </button>
-
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
                   <span data-l10n-id="tools_label">Tools</span>
                 </button>
