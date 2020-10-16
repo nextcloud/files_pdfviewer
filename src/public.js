@@ -27,13 +27,13 @@ import isPdf from './utils/isPdf'
 import isSecureViewerAvailable from './utils/isSecureViewerAvailable'
 
 window.addEventListener('DOMContentLoaded', function() {
-	if (isPublicPage() && isPdf() && !isSecureViewerAvailable()) {
-		console.debug('Files_PDFViewer initialized for public page', {
-			isPublicPage: isPublicPage(),
-			canDownload: canDownload(),
-			isSecureViewerAvailable: isSecureViewerAvailable(),
-		})
+	console.debug('Files_PDFViewer initialized for public page', {
+		isPublicPage: isPublicPage(),
+		canDownload: canDownload(),
+		isSecureViewerAvailable: isSecureViewerAvailable(),
+	})
 
+	if (isPublicPage() && isPdf() && !isSecureViewerAvailable()) {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
