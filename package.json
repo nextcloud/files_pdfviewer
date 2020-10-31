@@ -56,7 +56,7 @@
 		"eslint-plugin-promise": "^4.2.1",
 		"eslint-plugin-standard": "^4.0.2",
 		"eslint-plugin-vue": "^6.2.2",
-		"file-loader": "^6.1.1",
+		"file-loader": "^6.2.0",
 		"node-sass": "^4.14.1",
 		"request": "^2.88.2",
 		"request-progress": "^3.0.0",
