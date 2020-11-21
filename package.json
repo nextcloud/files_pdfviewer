@@ -61,7 +61,7 @@
 		"request": "^2.88.2",
 		"request-progress": "^3.0.0",
 		"sass-loader": "^8.0.2",
-		"stylelint": "^13.7.2",
+		"stylelint": "^13.8.0",
 		"stylelint-config-recommended-scss": "^4.2.0",
 		"stylelint-scss": "^3.18.0",
 		"stylelint-webpack-plugin": "^2.1.1",
