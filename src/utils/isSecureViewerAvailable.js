@@ -22,4 +22,4 @@
  */
 import canDownload from './canDownload'
 
-export default () => canDownload() && typeof OCA.RichDocuments !== 'undefined'
+export default () => !canDownload() && typeof OCA.RichDocuments !== 'undefined'
