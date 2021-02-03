@@ -1,7 +1,7 @@
 {
 	"name": "files_pdfviewer",
 	"description": "PDF viewer plugin for Nextcloud",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"author": "John Molakvoæ <skjnldsv@protonmail.com>",
 	"contributors": [],
 	"bugs": {
