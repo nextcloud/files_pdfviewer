@@ -38,26 +38,18 @@ export default {
 		},
 
 		encodedDavPath() {
-			const hasScheme = this.davPath.indexOf('://') !== -1
+			const hasScheme = ~this.davPath.indexOf('://')
+			const url = new URL(hasScheme ? this.davPath : 'https://.' + this.davPath)
+			const pathname = url.pathname
 
-			const pathSections = this.davPath.split('/')
+			url.pathname = pathname
 
-			// Ignore scheme and domain in the loop (note that the scheme
-			// delimiter, "//", creates an empty section when split by "/").
-			const initialSection = hasScheme ? 3 : 0
+			url.searchParams.set('path', this.filename.replace(this.basename, ''))
+			url.searchParams.set('files', this.basename)
 
-			let encodedDavPath = ''
-			for (let i = initialSection; i < pathSections.length; i++) {
-				if (pathSections[i] !== '') {
-					encodedDavPath += '/' + encodeURIComponent(pathSections[i])
-				}
-			}
+			const encodedDavPath = url.toString()
 
-			if (hasScheme) {
-				encodedDavPath = pathSections[0] + '//' + pathSections[2] + encodedDavPath
-			}
-
-			return encodedDavPath
+			return hasScheme ? encodedDavPath : encodedDavPath.split('https://.')[1]
 		},
 	},
 
