@@ -5,7 +5,7 @@ const progress = require('request-progress')
 const cliProgress = require('cli-progress')
 
 // Fetching pdf.js build release
-const PDFJSversion = '2.5.207'
+const PDFJSversion = '2.6.347'
 console.info('Fetching pdfjs', PDFJSversion)
 
 // Init progress
