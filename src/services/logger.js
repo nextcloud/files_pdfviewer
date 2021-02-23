@@ -1,6 +1,5 @@
-
 /**
- * @copyright Copyright (c) 2020 John Molakvoæ <skjnldsv@protonmail.com>
+ * @copyright Copyright (c) 2021 John Molakvoæ <skjnldsv@protonmail.com>
  *
  * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
@@ -20,6 +19,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+import { getLoggerBuilder } from '@nextcloud/logger'
 
-const isPublicElmt = document.getElementById('isPublic')
-export default () => !!(isPublicElmt && isPublicElmt.value === '1')
+// Set up logger
+const logger = getLoggerBuilder()
+	.setApp('Files_PDFViewer')
+	.detectUser()
+	.build()
+
+export default logger
