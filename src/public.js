@@ -21,13 +21,14 @@
  */
 import { generateUrl } from '@nextcloud/router'
 
+import logger from './services/logger'
 import canDownload from './utils/canDownload'
 import isPublicPage from './utils/isPublicPage'
 import isPdf from './utils/isPdf'
 import isSecureViewerAvailable from './utils/isSecureViewerAvailable'
 
 window.addEventListener('DOMContentLoaded', function() {
-	console.debug('Files_PDFViewer initialized for public page', {
+	logger.debug('Initializing for public page', {
 		isPublicPage: isPublicPage(),
 		canDownload: canDownload(),
 		isSecureViewerAvailable: isSecureViewerAvailable(),
@@ -56,7 +57,9 @@ window.addEventListener('DOMContentLoaded', function() {
 			contentElmt.appendChild(viewerNode)
 			footerElmt.style.display = 'none'
 		} else {
-			console.error('Unable to inject the PDF Viewer')
+			logger.error('Unable to inject the PDF Viewer')
 		}
+	} else {
+		logger.error('But this does not appear to be a public page')
 	}
 })

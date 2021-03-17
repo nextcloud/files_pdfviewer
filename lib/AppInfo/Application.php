@@ -28,14 +28,17 @@ declare(strict_types=1);
 namespace OCA\Files_PDFViewer\AppInfo;
 
 use OCA\Files_PDFViewer\Listeners\CSPListener;
+use OCA\Files_PDFViewer\Listeners\LoadPublicViewerListener;
 use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
+
 use OCA\Viewer\Event\LoadViewer;
+
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
-use OCP\Util;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'files_pdfviewer';
@@ -46,10 +49,10 @@ class Application extends App implements IBootstrap {
 
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(LoadViewer::class, LoadViewerListener::class);
+		$context->registerEventListener(BeforeTemplateRenderedEvent::class, LoadPublicViewerListener::class);
 		$context->registerEventListener(AddContentSecurityPolicyEvent::class, CSPListener::class);
 	}
 
 	public function boot(IBootContext $context): void {
-		Util::addScript(self::APP_ID, 'files_pdfviewer-public');
 	}
 }

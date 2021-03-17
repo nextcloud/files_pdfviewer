@@ -25,6 +25,7 @@
 		"stylelint:fix": "stylelint **/*.css **/*.scss **/*.vue --fix"
 	},
 	"dependencies": {
+		"@nextcloud/logger": "^1.1.2",
 		"@nextcloud/router": "^1.2.0",
 		"pdfjs-dist": "^2.4.456"
 	},

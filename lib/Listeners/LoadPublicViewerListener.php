@@ -1,3 +1,6 @@
+<?php
+
+declare(strict_types=1);
 
 /**
  * @copyright Copyright (c) 2020 John Molakvoæ <skjnldsv@protonmail.com>
@@ -13,7 +16,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -21,5 +24,25 @@
  *
  */
 
-const isPublicElmt = document.getElementById('isPublic')
-export default () => !!(isPublicElmt && isPublicElmt.value === '1')
+namespace OCA\Files_PDFViewer\Listeners;
+
+use OCA\Files_PDFViewer\AppInfo\Application;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Util;
+
+class LoadPublicViewerListener implements IEventListener {
+	public function handle(Event $event): void {
+		if (!$event instanceof BeforeTemplateRenderedEvent) {
+			return;
+		}
+
+		// Make sure we are on a public page rendering
+		if ($event->getResponse()->getRenderAs() !== TemplateResponse::RENDER_AS_PUBLIC) {
+			return;
+		}
+		Util::addScript(Application::APP_ID, 'files_pdfviewer-public');
+	}
+}
