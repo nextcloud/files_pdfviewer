@@ -33,40 +33,8 @@ export default {
 	computed: {
 		iframeSrc() {
 			return generateUrl('/apps/files_pdfviewer/?file={file}', {
-				file: this.encodedDavPath,
+				file: this.davPath,
 			})
-		},
-
-		encodedDavPath() {
-			const hasScheme = this.davPath.indexOf('://') !== -1
-
-			if (this.davPath.indexOf(generateUrl('/s/')) === 0) {
-				const host = window.location.protocol + '//' + window.location.host
-				const url = new URL(hasScheme ? this.davPath : host + this.davPath)
-				const path = this.filename.replace(this.basename, '')
-				url.searchParams.set('path', path)
-				url.searchParams.set('files', this.basename)
-				return hasScheme ? url.toString() : url.toString().substr(host.length)
-			}
-
-			const pathSections = this.davPath.split('/')
-
-			// Ignore scheme and domain in the loop (note that the scheme
-			// delimiter, "//", creates an empty section when split by "/").
-			const initialSection = hasScheme ? 3 : 0
-
-			let encodedDavPath = ''
-			for (let i = initialSection; i < pathSections.length; i++) {
-				if (pathSections[i] !== '') {
-					encodedDavPath += '/' + encodeURIComponent(pathSections[i])
-				}
-			}
-
-			if (hasScheme) {
-				encodedDavPath = pathSections[0] + '//' + pathSections[2] + encodedDavPath
-			}
-
-			return encodedDavPath
 		},
 	},
 
