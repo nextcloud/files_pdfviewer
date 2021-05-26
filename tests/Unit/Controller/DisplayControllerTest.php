@@ -26,7 +26,9 @@ namespace OCA\Files_PDFViewer\Tests\Unit\Controller;
 use OCA\Files_PDFViewer\AppInfo\Application;
 use OCA\Files_PDFViewer\Controller\DisplayController;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\StandaloneTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IInitialStateService;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use Test\TestCase;
@@ -44,20 +46,18 @@ class DisplayControllerTest extends TestCase {
 	protected function setUp(): void {
 		$this->request = $this->createMock(IRequest::class);
 		$this->urlGenerator = $this->createMock(IURLGenerator::class);
+		$this->initialStateService = $this->createMock(IInitialStateService::class);
 		$this->controller = new DisplayController(
 			$this->request,
-			$this->urlGenerator
+			$this->urlGenerator,
+			$this->initialStateService
 		);
 
 		parent::setUp();
 	}
 
 	public function testShowPdfViewer(): void {
-		$params = [
-			'urlGenerator' => $this->urlGenerator,
-			'minmode' => false
-		];
-		$expectedResponse = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
+		$expectedResponse = new StandaloneTemplateResponse(Application::APP_ID, 'viewer', [], TemplateResponse::RENDER_AS_BASE);
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
