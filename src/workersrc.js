@@ -45,6 +45,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
 	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
+	PDFViewerApplicationOptions.set('enablePermissions', true)
 
 	// The download has to be forced to use the URL of the file; by default
 	// "PDFViewerApplication.download" uses a blob, but this causes a CSP error
