@@ -46,6 +46,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
 	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
+	PDFViewerApplicationOptions.set('enablePermissions', true)
 
 	console.debug('Initialized files_pdfviewer', PDFViewerApplicationOptions.getAll())
 
