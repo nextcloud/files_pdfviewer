@@ -29,13 +29,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-
-      - name: Checkout submodules
-        shell: bash
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+          submodule: true
 
       - name: Checkout app
         uses: actions/checkout@v2
@@ -84,7 +78,7 @@ jobs:
 
     services:
       mysql:
-        image: mariadb
+        image: mariadb:10.5
         ports:
           - 4444:3306/tcp
         env:
@@ -97,13 +91,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-
-      - name: Checkout submodules
-        shell: bash
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+          submodule: true
 
       - name: Checkout app
         uses: actions/checkout@v2
@@ -168,13 +156,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-
-      - name: Checkout submodules
-        shell: bash
-        run: |
-          auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-          git submodule sync --recursive
-          git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+          submodule: true
 
       - name: Checkout app
         uses: actions/checkout@v2
