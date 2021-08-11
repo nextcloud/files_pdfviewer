@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
-		const footerElmt = document.querySelector('#app-content > footer')
+		const footerElmt = document.querySelector('body > footer')
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
@@ -46,7 +46,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// Create viewer frame
 		const viewerNode = document.createElement('iframe')
-		viewerNode.src = viewerUrl
 		viewerNode.style.height = '100%'
 		viewerNode.style.width = '100%'
 		viewerNode.style.position = 'absolute'
@@ -55,10 +54,45 @@ window.addEventListener('DOMContentLoaded', function() {
 		if (contentElmt) {
 			contentElmt.innerHTML = ''
 			contentElmt.appendChild(viewerNode)
+			viewerNode.src = viewerUrl
 			footerElmt.style.display = 'none'
 		} else {
 			logger.error('Unable to inject the PDF Viewer')
 		}
+
+		// When pdf viewer is loaded
+		addEventListener('load', function() {
+			// If we forbid download, prevent interaction
+			if (!canDownload()) {
+				const pdfViewer = viewerNode.contentDocument.querySelector('.pdfViewer')
+				const PDFViewerApplication = viewerNode.contentWindow.PDFViewerApplication
+
+				if (pdfViewer) {
+					pdfViewer.classList.add('disabledTextSelection')
+				}
+
+				if (PDFViewerApplication) {
+					// Disable printing service when downloads are hidden, as even if the
+					// buttons in the UI are hidden the printing could still be triggered
+					// with Ctrl|Meta+P.
+					// Abuse the "supportsPrinting" parameter, which signals that the
+					// browser does not fully support printing, to make PDFViewer disable
+					// the printing service.
+					// "supportsPrinting" is a getter function, so it needs to be deleted
+					// before replacing it with a simple value.
+					delete PDFViewerApplication.supportsPrinting
+					PDFViewerApplication.supportsPrinting = false
+
+					// When printing is not supported a warning is shown by the default
+					// "beforePrint" function when trying to print. That function needs to
+					// be replaced with an empty one to prevent that warning to be shown.
+					PDFViewerApplication.beforePrint = function() {
+					}
+				}
+
+				logger.info('Download, printing and user interaction disabled')
+			}
+		})
 	} else {
 		logger.error('But this does not appear to be a public page')
 	}
