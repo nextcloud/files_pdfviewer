@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
-		const footerElmt = document.querySelector('body > footer')
+		const footerElmt = document.querySelector('#app-content > footer')
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
