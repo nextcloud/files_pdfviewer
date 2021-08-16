@@ -72,6 +72,12 @@ window.addEventListener('DOMContentLoaded', function() {
 				}
 
 				if (PDFViewerApplication) {
+					// Disable download function when downloads are hidden, as even if the
+					// buttons in the UI are hidden the download could still be triggered
+					// with Ctrl|Meta+S.
+					PDFViewerApplication.download = function() {
+					}
+
 					// Disable printing service when downloads are hidden, as even if the
 					// buttons in the UI are hidden the printing could still be triggered
 					// with Ctrl|Meta+P.
