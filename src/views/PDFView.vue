@@ -26,13 +26,15 @@
 
 <script>
 import { generateUrl } from '@nextcloud/router'
+import canDownload from '../utils/canDownload'
 
 export default {
 	name: 'PDFView',
 
 	computed: {
 		iframeSrc() {
-			return generateUrl('/apps/files_pdfviewer/?file={file}', {
+			return generateUrl('/apps/files_pdfviewer/?file={file}&canDownload={canDownload}', {
+				canDownload: canDownload() ? 1 : 0,
 				file: this.davPath,
 			})
 		},
