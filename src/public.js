@@ -34,6 +34,13 @@ window.addEventListener('DOMContentLoaded', function() {
 		isSecureViewerAvailable: isSecureViewerAvailable(),
 	})
 
+	// If we display a folder, we don't have anything more to do here
+	if (isPublicPage() && !isPdf()) {
+		logger.debug('But this is not a single pdf share')
+		return
+	}
+
+	// If we display a single PDF and we don't use the richdocument secureViewer
 	if (isPublicPage() && isPdf() && !isSecureViewerAvailable()) {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
@@ -42,7 +49,11 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
-		const viewerUrl = generateUrl('/apps/files_pdfviewer/?file={downloadUrl}#page={page}', { downloadUrl, page })
+		const viewerUrl = generateUrl('/apps/files_pdfviewer/?file={downloadUrl}&canDownload={canDownload}#page={page}', {
+			canDownload: canDownload() ? 1 : 0,
+			downloadUrl,
+			page,
+		})
 
 		// Create viewer frame
 		const viewerNode = document.createElement('iframe')
@@ -59,46 +70,6 @@ window.addEventListener('DOMContentLoaded', function() {
 		} else {
 			logger.error('Unable to inject the PDF Viewer')
 		}
-
-		// When pdf viewer is loaded
-		addEventListener('load', function() {
-			// If we forbid download, prevent interaction
-			if (!canDownload()) {
-				const pdfViewer = viewerNode.contentDocument.querySelector('.pdfViewer')
-				const PDFViewerApplication = viewerNode.contentWindow.PDFViewerApplication
-
-				if (pdfViewer) {
-					pdfViewer.classList.add('disabledTextSelection')
-				}
-
-				if (PDFViewerApplication) {
-					// Disable download function when downloads are hidden, as even if the
-					// buttons in the UI are hidden the download could still be triggered
-					// with Ctrl|Meta+S.
-					PDFViewerApplication.download = function() {
-					}
-
-					// Disable printing service when downloads are hidden, as even if the
-					// buttons in the UI are hidden the printing could still be triggered
-					// with Ctrl|Meta+P.
-					// Abuse the "supportsPrinting" parameter, which signals that the
-					// browser does not fully support printing, to make PDFViewer disable
-					// the printing service.
-					// "supportsPrinting" is a getter function, so it needs to be deleted
-					// before replacing it with a simple value.
-					delete PDFViewerApplication.supportsPrinting
-					PDFViewerApplication.supportsPrinting = false
-
-					// When printing is not supported a warning is shown by the default
-					// "beforePrint" function when trying to print. That function needs to
-					// be replaced with an empty one to prevent that warning to be shown.
-					PDFViewerApplication.beforePrint = function() {
-					}
-				}
-
-				logger.info('Download, printing and user interaction disabled')
-			}
-		})
 	} else {
 		logger.error('But this does not appear to be a public page')
 	}
