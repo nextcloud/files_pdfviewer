@@ -3,16 +3,17 @@ const unzipper = require('unzipper')
 const request = require('request')
 const progress = require('request-progress')
 const cliProgress = require('cli-progress')
+const npmPackage = require('./package.json')
 
 // Fetching pdf.js build release
-const PDFJSversion = '2.7.570'
+const PDFJSversion = npmPackage.dependencies['pdfjs-dist'].substr(1)
 console.info('Fetching pdfjs', PDFJSversion)
 
 // Init progress
 const pdfjsProgress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic)
 pdfjsProgress.start(100, 0)
 
-progress(request(`https://github.com/mozilla/pdf.js/releases/download/v${PDFJSversion}/pdfjs-${PDFJSversion}-es5-dist.zip`), {
+progress(request(`https://github.com/mozilla/pdf.js/releases/download/v${PDFJSversion}/pdfjs-${PDFJSversion}-dist.zip`), {
 	throttle: 50,
 	delay: 0,
 })
