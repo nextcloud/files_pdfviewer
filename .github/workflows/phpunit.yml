@@ -29,7 +29,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-          submodule: true
+          submodules: true
 
       - name: Checkout app
         uses: actions/checkout@v2
@@ -91,7 +91,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-          submodule: true
+          submodules: true
 
       - name: Checkout app
         uses: actions/checkout@v2
@@ -156,7 +156,7 @@ jobs:
         with:
           repository: nextcloud/server
           ref: ${{ github.base_ref }}
-          submodule: true
+          submodules: true
 
       - name: Checkout app
         uses: actions/checkout@v2
