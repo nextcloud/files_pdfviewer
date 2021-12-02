@@ -22,15 +22,13 @@
  */
 import PDFView from './views/PDFView'
 
-window.addEventListener('DOMContentLoaded', function() {
-	OCA.Viewer.registerHandler({
-		id: 'pdf',
+OCA.Viewer.registerHandler({
+	id: 'pdf',
 
-		mimes: [
-			'application/pdf',
-			'application/illustrator',
-		],
+	mimes: [
+		'application/pdf',
+		'application/illustrator',
+	],
 
-		component: PDFView,
-	})
+	component: PDFView,
 })

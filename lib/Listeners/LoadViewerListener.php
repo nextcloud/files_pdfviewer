@@ -37,6 +37,6 @@ class LoadViewerListener implements IEventListener {
 		if (!$event instanceof LoadViewer) {
 			return;
 		}
-		Util::addScript(Application::APP_ID, 'files_pdfviewer-main');
+		Util::addScript(Application::APP_ID, 'files_pdfviewer-main', 'viewer');
 	}
 }
