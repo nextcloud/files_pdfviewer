@@ -21,8 +21,8 @@
 		"pdfjs:get": "node pdfjs-get.js",
 		"lint": "eslint --ext .js,.vue src",
 		"lint:fix": "eslint --ext .js,.vue src --fix",
-		"stylelint": "stylelint **/*.css **/*.scss **/*.vue",
-		"stylelint:fix": "stylelint **/*.css **/*.scss **/*.vue --fix"
+		"stylelint": "stylelint src css",
+		"stylelint:fix": "stylelint src css --fix"
 	},
 	"dependencies": {
 		"@nextcloud/logger": "^2.1.0",
