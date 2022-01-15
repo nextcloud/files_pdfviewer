@@ -42,7 +42,7 @@
 		"@nextcloud/eslint-config": "^6.1.2",
 		"@nextcloud/stylelint-config": "^2.1.2",
 		"@nextcloud/webpack-vue-config": "^4.2.0",
-		"cli-progress": "^3.9.1",
+		"cli-progress": "^3.10.0",
 		"request": "^2.88.2",
 		"request-progress": "^3.0.0",
 		"unzipper": "^0.10.11"
