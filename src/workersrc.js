@@ -42,13 +42,16 @@ const canDownload = urlParams.get('canDownload')
 // "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
 // before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
+	const head = document.getElementsByTagName('head')[0]
+
 	// Preferences override options, so they must be disabled for
 	// "externalLinkTarget" to take effect.
 	PDFViewerApplicationOptions.set('disablePreferences', true)
-	PDFViewerApplicationOptions.set('externalLinkTarget', pdfjsLib.LinkTarget.BLANK)
+	// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
+	PDFViewerApplicationOptions.set('externalLinkTarget', 2)
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
-	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
-	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
+	PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
+	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
 
 	if (canDownload === '0') {
