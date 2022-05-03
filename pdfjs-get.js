@@ -6,7 +6,7 @@ const cliProgress = require('cli-progress')
 const npmPackage = require('./package.json')
 
 // Fetching pdf.js build release
-const PDFJSversion = npmPackage.dependencies['pdfjs-dist'].substr(1)
+const PDFJSversion = npmPackage.dependencies['pdfjs-dist'].slice(1)
 console.info('Fetching pdfjs', PDFJSversion)
 
 // Init progress
