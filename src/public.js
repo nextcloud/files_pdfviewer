@@ -46,6 +46,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
 		const footerElmt = document.querySelector('body > footer')
+		const mainContent = document.querySelector('#content')
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
@@ -67,6 +68,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			contentElmt.appendChild(viewerNode)
 			viewerNode.src = viewerUrl
 			footerElmt.style.display = 'none'
+			mainContent.style.minHeight = '100%' // Make the viewer take the whole height as the footer is now hidden.
 		} else {
 			logger.error('Unable to inject the PDF Viewer')
 		}
