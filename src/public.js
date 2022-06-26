@@ -45,7 +45,10 @@ window.addEventListener('DOMContentLoaded', function() {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
-		const footerElmt = document.querySelector('#app-content > footer')
+		// By default the footer is a direct child of the body, but if the Talk
+		// sidebar is loaded it is moved into the app content. In all cases the
+		// footer is hidden to give the PDF viewer the full height.
+		const footerElmt = document.querySelector('body > footer') || document.querySelector('#app-content > footer')
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
