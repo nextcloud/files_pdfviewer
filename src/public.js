@@ -45,7 +45,11 @@ window.addEventListener('DOMContentLoaded', function() {
 		const page = location.hash.split('page=')[1] || 0
 		const contentElmt = document.getElementById('files-public-content')
 		const sharingTokenElmt = document.getElementById('sharingToken')
-		const footerElmt = document.querySelector('body > footer')
+		// By default the footer is a direct child of the body, but if the Talk
+		// sidebar is loaded it is moved into the app content. In all cases the
+		// footer is hidden to give the PDF viewer the full height.
+		const footerElmt = document.querySelector('body > footer') || document.querySelector('#app-content > footer')
+		const body = document.querySelector('body')
 		const mainContent = document.querySelector('#content')
 
 		const sharingToken = sharingTokenElmt.value
@@ -68,7 +72,14 @@ window.addEventListener('DOMContentLoaded', function() {
 			contentElmt.appendChild(viewerNode)
 			viewerNode.src = viewerUrl
 			footerElmt.style.display = 'none'
-			mainContent.style.minHeight = '100%' // Make the viewer take the whole height as the footer is now hidden.
+			// The main content height set in server assumes that there will be
+			// a footer. As the footer is hidden the main content needs to grow
+			// to take the available height. This needs to be done with flexbox
+			// so no explicit height needs to be given and it works both for the
+			// standard layout and the layout when the Talk sidebar is shown.
+			body.style.display = 'flex'
+			body.style.flexDirection = 'column'
+			mainContent.style.flexGrow = 1
 		} else {
 			logger.error('Unable to inject the PDF Viewer')
 		}
