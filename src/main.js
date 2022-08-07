@@ -24,6 +24,7 @@ import PDFView from './views/PDFView'
 
 OCA.Viewer.registerHandler({
 	id: 'pdf',
+	group: 'pdf',
 
 	mimes: [
 		'application/pdf',
