@@ -35,7 +35,7 @@ export default {
 		iframeSrc() {
 			return generateUrl('/apps/files_pdfviewer/?file={file}&canDownload={canDownload}', {
 				canDownload: canDownload() ? 1 : 0,
-				file: this.davPath,
+				file: this.source ?? this.davPath,
 			})
 		},
 	},
