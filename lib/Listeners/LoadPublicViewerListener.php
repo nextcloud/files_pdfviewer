@@ -27,8 +27,7 @@ declare(strict_types=1);
 namespace OCA\Files_PDFViewer\Listeners;
 
 use OCA\Files_PDFViewer\AppInfo\Application;
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
-use OCP\AppFramework\Http\TemplateResponse;
+use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
@@ -39,10 +38,12 @@ class LoadPublicViewerListener implements IEventListener {
 			return;
 		}
 
-		// Make sure we are on a public page rendering
-		if ($event->getResponse()->getRenderAs() !== TemplateResponse::RENDER_AS_PUBLIC) {
+		// If the event has a scope it is not the default share page but, for
+		// example, the authentication page
+		if ($event->getScope() !== null) {
 			return;
 		}
+
 		Util::addScript(Application::APP_ID, 'files_pdfviewer-public');
 	}
 }
