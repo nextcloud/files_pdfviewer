@@ -4,6 +4,9 @@ files_pdfviewer
 This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) library into Nextcloud's Viewer.
 You can view PDF files as well as Adobe Illustrator files (.ai)
 
+![PDF Logo](https://user-images.githubusercontent.com/59488153/189176433-2f6d97a1-b151-4099-84f4-d1446a007b8a.png)
+
+
 ## 🏗 Development setup
 
 1. ☁ Clone this app into the `apps` folder of your Nextcloud: `git clone https://github.com/nextcloud/files_pdfviewer.git`
