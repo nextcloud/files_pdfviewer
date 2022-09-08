@@ -71,7 +71,12 @@ window.addEventListener('DOMContentLoaded', function() {
 			contentElmt.appendChild(viewerNode)
 			viewerNode.src = viewerUrl
 			footerElmt.style.display = 'none'
-			mainContent.style.minHeight = '100%' // Make the viewer take the whole height as the footer is now hidden.
+			mainContent.style.minHeight = 'calc(100% - var(--header-height))' // Make the viewer take the whole height as the footer is now hidden.
+			// overwrite style in order to fix the viewer on public pages
+			mainContent.style.marginLeft = '0'
+			mainContent.style.marginRight = '0'
+			mainContent.style.width = '100%'
+			mainContent.style.borderRadius = 'unset'
 		} else {
 			logger.error('Unable to inject the PDF Viewer')
 		}
