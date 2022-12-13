@@ -53,6 +53,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
+	PDFViewerApplicationOptions.set('imageResourcesPath', './js/pdfjs/web/images/')
 
 	if (canDownload === '0') {
 		const pdfViewer = window.document.querySelector('.pdfViewer')
