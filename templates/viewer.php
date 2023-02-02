@@ -274,7 +274,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <span id="numPages" class="toolbarLabel"></span>
               </div>
               <div id="toolbarViewerRight">
-                <button id="openFile" class="toolbarButton hiddenLargeView" title="Open File" tabindex="31" data-l10n-id="open_file">
+                <button id="openFile" class="toolbarButton hiddenLargeView" title="Open File" tabindex="31" data-l10n-id="open_file" hidden="true">
                   <span data-l10n-id="open_file_label">Open</span>
                 </button>
 
@@ -282,13 +282,13 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <span data-l10n-id="print_label">Print</span>
                 </button>
 
-                <button id="download" class="toolbarButton hiddenMediumView" title="Save" tabindex="33" data-l10n-id="save">
+                <button id="download" class="toolbarButton hiddenMediumView" title="Save" tabindex="33" data-l10n-id="save" hidden="true">
                   <span data-l10n-id="save_label">Save</span>
                 </button>
 
                 <div class="verticalToolbarSeparator hiddenMediumView"></div>
 
-                <div id="editorModeButtons" class="splitToolbarButton toggled" role="radiogroup">
+                <div id="editorModeButtons" class="splitToolbarButton toggled" role="radiogroup" hidden="true">
                   <button id="editorFreeText" class="toolbarButton" disabled="disabled" title="Text" role="radio" aria-checked="false" tabindex="34" data-l10n-id="editor_free_text2">
                     <span data-l10n-id="editor_free_text2_label">Text</span>
                   </button>
@@ -297,7 +297,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                 </div>
 
-                <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
+                <div id="editorModeSeparator" class="verticalToolbarSeparator" hidden="true"></div>
 
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="48" data-l10n-id="tools" aria-expanded="false" aria-controls="secondaryToolbar">
                   <span data-l10n-id="tools_label">Tools</span>
