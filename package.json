@@ -15,9 +15,10 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "build": "npm run pdfjs:get && NODE_ENV=production webpack --progress --config webpack.js",
-    "dev": "npm run pdfjs:get && NODE_ENV=development webpack --progress --config webpack.js",
-    "watch": "npm run pdfjs:get && NODE_ENV=development webpack --progress --watch --config webpack.js",
+    "prebuild": "rm -rf js && npm run pdfjs:get",
+    "build": "webpack --node-env production --progress",
+    "dev": "webpack --node-env development --progress",
+    "watch": "webpack --node-env development --progress --watch",
     "pdfjs:get": "node pdfjs-get.js",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --ext .js,.vue src --fix",
