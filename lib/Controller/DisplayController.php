@@ -44,7 +44,7 @@ class DisplayController extends Controller {
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function __construct(IRequest $request,
-								IURLGenerator $urlGenerator) {
+		IURLGenerator $urlGenerator) {
 		parent::__construct(Application::APP_ID, $request);
 		$this->urlGenerator = $urlGenerator;
 	}
