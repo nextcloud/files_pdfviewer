@@ -21,6 +21,6 @@
  *
  */
 
-import canDownload from './canDownload'
+import canDownload from './canDownload.js'
 
 export default () => !canDownload() && typeof OCA.RichDocuments !== 'undefined'
