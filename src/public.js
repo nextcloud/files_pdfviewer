@@ -3,7 +3,7 @@
  *
  * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
- * @license GNU AGPL version 3 or any later version
+ * @license AGPL-3.0-or-later
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,11 @@
  */
 import { generateUrl } from '@nextcloud/router'
 
-import logger from './services/logger'
-import canDownload from './utils/canDownload'
-import isPublicPage from './utils/isPublicPage'
-import isPdf from './utils/isPdf'
-import isSecureViewerAvailable from './utils/isSecureViewerAvailable'
+import logger from './services/logger.js'
+import canDownload from './utils/canDownload.js'
+import isPublicPage from './utils/isPublicPage.js'
+import isPdf from './utils/isPdf.js'
+import isSecureViewerAvailable from './utils/isSecureViewerAvailable.js'
 
 window.addEventListener('DOMContentLoaded', function() {
 	logger.debug('Initializing for public page', {
