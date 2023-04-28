@@ -21,11 +21,11 @@
  */
 import { generateUrl } from '@nextcloud/router'
 
-import logger from './services/logger'
-import canDownload from './utils/canDownload'
-import isPublicPage from './utils/isPublicPage'
-import isPdf from './utils/isPdf'
-import isSecureViewerAvailable from './utils/isSecureViewerAvailable'
+import logger from './services/logger.js'
+import canDownload from './utils/canDownload.js'
+import isPublicPage from './utils/isPublicPage.js'
+import isPdf from './utils/isPdf.js'
+import isSecureViewerAvailable from './utils/isSecureViewerAvailable.js'
 
 window.addEventListener('DOMContentLoaded', function() {
 	logger.debug('Initializing for public page', {
