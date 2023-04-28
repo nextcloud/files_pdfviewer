@@ -1,8 +1,8 @@
 <?php
-  /** @var array $_ */
-  /** @var OCP\IURLGenerator $urlGenerator */
-  $urlGenerator = $_['urlGenerator'];
-  $version = \OC::$server->getAppManager()->getAppVersion('files_pdfviewer');
+/** @var array $_ */
+/** @var OCP\IURLGenerator $urlGenerator */
+$urlGenerator = $_['urlGenerator'];
+$version = \OC::$server->getAppManager()->getAppVersion('files_pdfviewer');
 ?>
 
 <!DOCTYPE html>
