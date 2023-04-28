@@ -34,13 +34,6 @@ const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const canDownload = urlParams.get('canDownload')
 
-// When "PDFViewerApplication.webViewerInitialized" is executed (once
-// "PDFViewerApplication.initialize" is done) it opens the PDF file via URL,
-// which requires the PDFViewerApplication to be properly configured, so the
-// custom initialization has to be executed before that. This can be done by
-// listening to the "webviewerloaded" event, which is emitted after
-// "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
-// before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
 	const head = document.getElementsByTagName('head')[0]
 
