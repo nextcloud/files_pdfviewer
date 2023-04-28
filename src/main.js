@@ -20,7 +20,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import PDFView from './views/PDFView'
+import PDFView from './views/PDFView.vue'
 
 OCA.Viewer.registerHandler({
 	id: 'pdf',

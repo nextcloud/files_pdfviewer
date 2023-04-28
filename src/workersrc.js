@@ -22,8 +22,8 @@
  *
  */
 
-import logger from './services/logger'
-import redirectIfNotIframe from './utils/redirectIfNotIframe'
+import logger from './services/logger.js'
+import redirectIfNotIframe from './utils/redirectIfNotIframe.js'
 
 // Checks if the page is displayed in an iframe. If not redirect to /.
 redirectIfNotIframe()

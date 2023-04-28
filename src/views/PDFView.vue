@@ -26,7 +26,7 @@
 
 <script>
 import { generateUrl } from '@nextcloud/router'
-import canDownload from '../utils/canDownload'
+import canDownload from '../utils/canDownload.js'
 
 export default {
 	name: 'PDFView',
