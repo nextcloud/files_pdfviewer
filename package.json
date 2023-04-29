@@ -28,6 +28,7 @@
   "dependencies": {
     "@nextcloud/logger": "^2.5.0",
     "@nextcloud/router": "^2.0.1",
+    "axios": "^1.4.0",
     "pdfjs-dist": "^3.3.122"
   },
   "browserslist": [
