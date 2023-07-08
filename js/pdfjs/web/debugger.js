@@ -1,4 +1,189 @@
-], { type: fontObj.mimetype })
+.append(ui);
+      container.style.right = panelWidth + "px";
+
+      // Initialize all the debugging tools.
+      for (const tool of this.tools) {
+        const panel = document.createElement("div");
+        const panelButton = document.createElement("button");
+        panelButton.textContent = tool.name;
+        panelButton.addEventListener("click", event => {
+          event.preventDefault();
+          this.selectPanel(tool);
+        });
+        controls.append(panelButton);
+        panels.append(panel);
+        tool.panel = panel;
+        tool.manager = this;
+        if (tool.enabled) {
+          tool.init(pdfjsLib);
+        } else {
+          panel.textContent =
+            `${tool.name} is disabled. To enable add "${tool.id}" to ` +
+            "the pdfBug parameter and refresh (separate multiple by commas).";
+        }
+        buttons.push(panelButton);
+      }
+      this.selectPanel(0);
+    },
+    loadCSS() {
+      const { url } = import.meta;
+
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = url.replace(/.js$/, ".css");
+
+      document.head.append(link);
+    },
+    cleanup() {
+      for (const tool of this.tools) {
+        if (tool.enabled) {
+          tool.cleanup();
+        }
+      }
+    },
+    selectPanel(index) {
+      if (typeof index !== "number") {
+        index = this.tools.indexOf(index);
+      }
+      if (index === activePanel) {
+        return;
+      }
+      activePanel = index;
+      for (const [j, tool] of this.tools.entries()) {
+        const isActive = j === index;
+        buttons[j].classList.toggle("active", isActive);
+        tool.active = isActive;
+        tool.panel.hidden = !isActive;
+      }
+    },
+  };
+})();
+
+globalThis.FontInspector = FontInspector;
+globalThis.StepperManager = StepperManager;
+globalThis.Stats = Stats;
+
+export { PDFBug };
+/* Copyright 2012 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+let opMap;
+
+const FontInspector = (function FontInspectorClosure() {
+  let fonts;
+  let active = false;
+  const fontAttribute = "data-font-name";
+  function removeSelection() {
+    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
+    for (const div of divs) {
+      div.className = "";
+    }
+  }
+  function resetSelection() {
+    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
+    for (const div of divs) {
+      div.className = "debuggerHideText";
+    }
+  }
+  function selectFont(fontName, show) {
+    const divs = document.querySelectorAll(
+      `span[${fontAttribute}=${fontName}]`
+    );
+    for (const div of divs) {
+      div.className = show ? "debuggerShowText" : "debuggerHideText";
+    }
+  }
+  function textLayerClick(e) {
+    if (
+      !e.target.dataset.fontName ||
+      e.target.tagName.toUpperCase() !== "SPAN"
+    ) {
+      return;
+    }
+    const fontName = e.target.dataset.fontName;
+    const selects = document.getElementsByTagName("input");
+    for (const select of selects) {
+      if (select.dataset.fontName !== fontName) {
+        continue;
+      }
+      select.checked = !select.checked;
+      selectFont(fontName, select.checked);
+      select.scrollIntoView();
+    }
+  }
+  return {
+    // Properties/functions needed by PDFBug.
+    id: "FontInspector",
+    name: "Font Inspector",
+    panel: null,
+    manager: null,
+    init(pdfjsLib) {
+      const panel = this.panel;
+      const tmp = document.createElement("button");
+      tmp.addEventListener("click", resetSelection);
+      tmp.textContent = "Refresh";
+      panel.append(tmp);
+
+      fonts = document.createElement("div");
+      panel.append(fonts);
+    },
+    cleanup() {
+      fonts.textContent = "";
+    },
+    enabled: false,
+    get active() {
+      return active;
+    },
+    set active(value) {
+      active = value;
+      if (active) {
+        document.body.addEventListener("click", textLayerClick, true);
+        resetSelection();
+      } else {
+        document.body.removeEventListener("click", textLayerClick, true);
+        removeSelection();
+      }
+    },
+    // FontInspector specific functions.
+    fontAdded(fontObj, url) {
+      function properties(obj, list) {
+        const moreInfo = document.createElement("table");
+        for (const entry of list) {
+          const tr = document.createElement("tr");
+          const td1 = document.createElement("td");
+          td1.textContent = entry;
+          tr.append(td1);
+          const td2 = document.createElement("td");
+          td2.textContent = obj[entry].toString();
+          tr.append(td2);
+          moreInfo.append(tr);
+        }
+        return moreInfo;
+      }
+      const moreInfo = properties(fontObj, ["name", "type"]);
+      const fontName = fontObj.loadedName;
+      const font = document.createElement("div");
+      const name = document.createElement("span");
+      name.textContent = fontName;
+      const download = document.createElement("a");
+      if (url) {
+        url = /url\(['"]?([^)"']+)/.exec(url);
+        download.href = url[1];
+      } else if (fontObj.data) {
+        download.href = URL.createObjectURL(
+          new Blob([fontObj.data], { type: fontObj.mimetype })
         );
       }
       download.textContent = "Download";
@@ -425,188 +610,4 @@ const PDFBug = (function PDFBugClosure() {
       panels.setAttribute("class", "panels");
       ui.append(panels);
 
-      container/* Copyright 2012 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-let opMap;
-
-const FontInspector = (function FontInspectorClosure() {
-  let fonts;
-  let active = false;
-  const fontAttribute = "data-font-name";
-  function removeSelection() {
-    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
-    for (const div of divs) {
-      div.className = "";
-    }
-  }
-  function resetSelection() {
-    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
-    for (const div of divs) {
-      div.className = "debuggerHideText";
-    }
-  }
-  function selectFont(fontName, show) {
-    const divs = document.querySelectorAll(
-      `span[${fontAttribute}=${fontName}]`
-    );
-    for (const div of divs) {
-      div.className = show ? "debuggerShowText" : "debuggerHideText";
-    }
-  }
-  function textLayerClick(e) {
-    if (
-      !e.target.dataset.fontName ||
-      e.target.tagName.toUpperCase() !== "SPAN"
-    ) {
-      return;
-    }
-    const fontName = e.target.dataset.fontName;
-    const selects = document.getElementsByTagName("input");
-    for (const select of selects) {
-      if (select.dataset.fontName !== fontName) {
-        continue;
-      }
-      select.checked = !select.checked;
-      selectFont(fontName, select.checked);
-      select.scrollIntoView();
-    }
-  }
-  return {
-    // Properties/functions needed by PDFBug.
-    id: "FontInspector",
-    name: "Font Inspector",
-    panel: null,
-    manager: null,
-    init(pdfjsLib) {
-      const panel = this.panel;
-      const tmp = document.createElement("button");
-      tmp.addEventListener("click", resetSelection);
-      tmp.textContent = "Refresh";
-      panel.append(tmp);
-
-      fonts = document.createElement("div");
-      panel.append(fonts);
-    },
-    cleanup() {
-      fonts.textContent = "";
-    },
-    enabled: false,
-    get active() {
-      return active;
-    },
-    set active(value) {
-      active = value;
-      if (active) {
-        document.body.addEventListener("click", textLayerClick, true);
-        resetSelection();
-      } else {
-        document.body.removeEventListener("click", textLayerClick, true);
-        removeSelection();
-      }
-    },
-    // FontInspector specific functions.
-    fontAdded(fontObj, url) {
-      function properties(obj, list) {
-        const moreInfo = document.createElement("table");
-        for (const entry of list) {
-          const tr = document.createElement("tr");
-          const td1 = document.createElement("td");
-          td1.textContent = entry;
-          tr.append(td1);
-          const td2 = document.createElement("td");
-          td2.textContent = obj[entry].toString();
-          tr.append(td2);
-          moreInfo.append(tr);
-        }
-        return moreInfo;
-      }
-      const moreInfo = properties(fontObj, ["name", "type"]);
-      const fontName = fontObj.loadedName;
-      const font = document.createElement("div");
-      const name = document.createElement("span");
-      name.textContent = fontName;
-      const download = document.createElement("a");
-      if (url) {
-        url = /url\(['"]?([^)"']+)/.exec(url);
-        download.href = url[1];
-      } else if (fontObj.data) {
-        download.href = URL.createObjectURL(
-          new Blob([fontObj.data.append(ui);
-      container.style.right = panelWidth + "px";
-
-      // Initialize all the debugging tools.
-      for (const tool of this.tools) {
-        const panel = document.createElement("div");
-        const panelButton = document.createElement("button");
-        panelButton.textContent = tool.name;
-        panelButton.addEventListener("click", event => {
-          event.preventDefault();
-          this.selectPanel(tool);
-        });
-        controls.append(panelButton);
-        panels.append(panel);
-        tool.panel = panel;
-        tool.manager = this;
-        if (tool.enabled) {
-          tool.init(pdfjsLib);
-        } else {
-          panel.textContent =
-            `${tool.name} is disabled. To enable add "${tool.id}" to ` +
-            "the pdfBug parameter and refresh (separate multiple by commas).";
-        }
-        buttons.push(panelButton);
-      }
-      this.selectPanel(0);
-    },
-    loadCSS() {
-      const { url } = import.meta;
-
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = url.replace(/.js$/, ".css");
-
-      document.head.append(link);
-    },
-    cleanup() {
-      for (const tool of this.tools) {
-        if (tool.enabled) {
-          tool.cleanup();
-        }
-      }
-    },
-    selectPanel(index) {
-      if (typeof index !== "number") {
-        index = this.tools.indexOf(index);
-      }
-      if (index === activePanel) {
-        return;
-      }
-      activePanel = index;
-      for (const [j, tool] of this.tools.entries()) {
-        const isActive = j === index;
-        buttons[j].classList.toggle("active", isActive);
-        tool.active = isActive;
-        tool.panel.hidden = !isActive;
-      }
-    },
-  };
-})();
-
-globalThis.FontInspector = FontInspector;
-globalThis.StepperManager = StepperManager;
-globalThis.Stats = Stats;
-
-export { PDFBug };
+      container
