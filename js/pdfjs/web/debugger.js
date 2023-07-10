@@ -42,29 +42,7 @@
       }
     },
     selectPanel(index) {
-      if (typeof index !== "number") {
-        index = this.tools.indexOf(index);
-      }
-      if (index === activePanel) {
-        return;
-      }
-      activePanel = index;
-      for (const [j, tool] of this.tools.entries()) {
-        const isActive = j === index;
-        buttons[j].classList.toggle("active", isActive);
-        tool.active = isActive;
-        tool.panel.hidden = !isActive;
-      }
-    },
-  };
-})();
-
-globalThis.FontInspector = FontInspector;
-globalThis.StepperManager = StepperManager;
-globalThis.Stats = Stats;
-
-export { PDFBug };
-/* Copyright 2012 Mozilla Foundation
+      if (typeof i/* Copyright 2012 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -610,4 +588,25 @@ const PDFBug = (function PDFBugClosure() {
       panels.setAttribute("class", "panels");
       ui.append(panels);
 
-      container
+      containerndex !== "number") {
+        index = this.tools.indexOf(index);
+      }
+      if (index === activePanel) {
+        return;
+      }
+      activePanel = index;
+      for (const [j, tool] of this.tools.entries()) {
+        const isActive = j === index;
+        buttons[j].classList.toggle("active", isActive);
+        tool.active = isActive;
+        tool.panel.hidden = !isActive;
+      }
+    },
+  };
+})();
+
+globalThis.FontInspector = FontInspector;
+globalThis.StepperManager = StepperManager;
+globalThis.Stats = Stats;
+
+export { PDFBug };
