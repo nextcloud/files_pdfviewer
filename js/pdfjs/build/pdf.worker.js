@@ -1,4 +1,51 @@
-workerVersion}".`);
+lity = new _util.PromiseCapability();
+  }
+  get finished() {
+    return this._capability.promise;
+  }
+  finish() {
+    this._capability.resolve();
+  }
+  terminate() {
+    this.terminated = true;
+  }
+  ensureNotTerminated() {
+    if (this.terminated) {
+      throw new Error("Worker task was terminated");
+    }
+  }
+}
+exports.WorkerTask = WorkerTask;
+class WorkerMessageHandler {
+  static setup(handler, port) {
+    let testMessageProcessed = false;
+    handler.on("test", function (data) {
+      if (testMessageProcessed) {
+        return;
+      }
+      testMessageProcessed = true;
+      handler.send("test", data instanceof Uint8Array);
+    });
+    handler.on("configure", function (data) {
+      (0, _util.setVerbosityLevel)(data.verbosity);
+    });
+    handler.on("GetDocRequest", function (data) {
+      return WorkerMessageHandler.createDocumentHandler(data, port);
+    });
+  }
+  static createDocumentHandler(docParams, port) {
+    let pdfManager;
+    let terminated = false;
+    let cancelXHRs = null;
+    const WorkerTasks = new Set();
+    const verbosity = (0, _util.getVerbosityLevel)();
+    const {
+      docId,
+      apiVersion
+    } = docParams;
+    const workerVersion = '3.8.162';
+    if (apiVersion !== workerVersion) {
+      throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${workerVersion}".`);
     }
     const enumerableProperties = [];
     for (const property in []) {
@@ -406,54 +453,7 @@ class WorkerTask {
   constructor(name) {
     this.name = name;
     this.terminated = false;
-    this._capability = new _util.PromiseCapability();
-  }
-  get finished() {
-    return this._capability.promise;
-  }
-  finish() {
-    this._capability.resolve();
-  }
-  terminate() {
-    this.terminated = true;
-  }
-  ensureNotTerminated() {
-    if (this.terminated) {
-      throw new Error("Worker task was terminated");
-    }
-  }
-}
-exports.WorkerTask = WorkerTask;
-class WorkerMessageHandler {
-  static setup(handler, port) {
-    let testMessageProcessed = false;
-    handler.on("test", function (data) {
-      if (testMessageProcessed) {
-        return;
-      }
-      testMessageProcessed = true;
-      handler.send("test", data instanceof Uint8Array);
-    });
-    handler.on("configure", function (data) {
-      (0, _util.setVerbosityLevel)(data.verbosity);
-    });
-    handler.on("GetDocRequest", function (data) {
-      return WorkerMessageHandler.createDocumentHandler(data, port);
-    });
-  }
-  static createDocumentHandler(docParams, port) {
-    let pdfManager;
-    let terminated = false;
-    let cancelXHRs = null;
-    const WorkerTasks = new Set();
-    const verbosity = (0, _util.getVerbosityLevel)();
-    const {
-      docId,
-      apiVersion
-    } = docParams;
-    const workerVersion = '3.8.162';
-    if (apiVersion !== workerVersion) {
-      throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${ if (isPureXfa) {
+    this._capabi if (isPureXfa) {
           xfaData = refs[0];
           if (!xfaData) {
             return stream.bytes;
