@@ -1,4 +1,63 @@
-lity = new _util.PromiseCapability();
+/**
+ * @licstart The following is the entire license notice for the
+ * JavaScript code in this page
+ *
+ * Copyright 2023 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @licend The above is the entire license notice for the
+ * JavaScript code in this page
+ */
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("pdfjs-dist/build/pdf.worker", [], factory);
+	else if(typeof exports === 'object')
+		exports["pdfjs-dist/build/pdf.worker"] = factory();
+	else
+		root["pdfjs-dist/build/pdf.worker"] = root.pdfjsWorker = factory();
+})(globalThis, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */
+/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.WorkerTask = exports.WorkerMessageHandler = void 0;
+var _util = __w_pdfjs_require__(2);
+var _core_utils = __w_pdfjs_require__(3);
+var _primitives = __w_pdfjs_require__(4);
+var _pdf_manager = __w_pdfjs_require__(6);
+var _annotation = __w_pdfjs_require__(10);
+var _cleanup_helper = __w_pdfjs_require__(72);
+var _writer = __w_pdfjs_require__(66);
+var _is_node = __w_pdfjs_require__(104);
+var _message_handler = __w_pdfjs_require__(105);
+var _worker_stream = __w_pdfjs_require__(106);
+class WorkerTask {
+  constructor(name) {
+    this.name = name;
+    this.terminated = false;
+    this._capability = new _util.PromiseCapability();
   }
   get finished() {
     return this._capability.promise;
@@ -394,66 +453,7 @@ class WorkerMessageHandler {
       return Promise.all(promises).then(function ([stream, acroForm, acroFormRef, startXRef, ...refs]) {
         let newRefs = [];
         let xfaData = null;
-       /**
- * @licstart The following is the entire license notice for the
- * JavaScript code in this page
- *
- * Copyright 2023 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @licend The above is the entire license notice for the
- * JavaScript code in this page
- */
-
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define("pdfjs-dist/build/pdf.worker", [], factory);
-	else if(typeof exports === 'object')
-		exports["pdfjs-dist/build/pdf.worker"] = factory();
-	else
-		root["pdfjs-dist/build/pdf.worker"] = root.pdfjsWorker = factory();
-})(globalThis, () => {
-return /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ([
-/* 0 */,
-/* 1 */
-/***/ ((__unused_webpack_module, exports, __w_pdfjs_require__) => {
-
-
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.WorkerTask = exports.WorkerMessageHandler = void 0;
-var _util = __w_pdfjs_require__(2);
-var _core_utils = __w_pdfjs_require__(3);
-var _primitives = __w_pdfjs_require__(4);
-var _pdf_manager = __w_pdfjs_require__(6);
-var _annotation = __w_pdfjs_require__(10);
-var _cleanup_helper = __w_pdfjs_require__(72);
-var _writer = __w_pdfjs_require__(66);
-var _is_node = __w_pdfjs_require__(104);
-var _message_handler = __w_pdfjs_require__(105);
-var _worker_stream = __w_pdfjs_require__(106);
-class WorkerTask {
-  constructor(name) {
-    this.name = name;
-    this.terminated = false;
-    this._capabi if (isPureXfa) {
+        if (isPureXfa) {
           xfaData = refs[0];
           if (!xfaData) {
             return stream.bytes;
