@@ -1,4 +1,3 @@
-
 /**
  * @copyright Copyright (c) 2020 Daniel Calviño Sánchez <danxuliu@gmail.com>
  *
