@@ -1,11 +1,10 @@
-
 /**
  * @copyright Copyright (c) 2020 Daniel Calviño Sánchez <danxuliu@gmail.com>
  *
  * @author Daniel Calviño Sánchez <danxuliu@gmail.com>
  * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
- * @license GNU AGPL version 3 or any later version
+ * @license AGPL-3.0-or-later
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +21,8 @@
  *
  */
 
-import logger from './services/logger'
-import redirectIfNotIframe from './utils/redirectIfNotIframe'
+import logger from './services/logger.js'
+import redirectIfNotIframe from './utils/redirectIfNotIframe.js'
 
 // Checks if the page is displayed in an iframe. If not redirect to /.
 redirectIfNotIframe()
@@ -34,13 +33,6 @@ const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const canDownload = urlParams.get('canDownload')
 
-// When "PDFViewerApplication.webViewerInitialized" is executed (once
-// "PDFViewerApplication.initialize" is done) it opens the PDF file via URL,
-// which requires the PDFViewerApplication to be properly configured, so the
-// custom initialization has to be executed before that. This can be done by
-// listening to the "webviewerloaded" event, which is emitted after
-// "PDFViewerApplication" and "PDFViewerApplicationOptions" are globally set and
-// before "PDFViewerApplication.initialize" is executed.
 function initializeCustomPDFViewerApplication() {
 	const head = document.getElementsByTagName('head')[0]
 
