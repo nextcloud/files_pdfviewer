@@ -260,7 +260,253 @@
     if (!this.pdfLoadingTask) {
       return;
     }
-    if (this.pdfDocument?.annotationStorage.size > 0 && this._annotationStorageModified/**
+    if (this.pdfDocument?.annotationStorage.size > 0 && this._annotationStorageModified) {
+      try {
+        await this.save();
+      } catch {}
+    }
+    const promises = [];
+    promises.push(this.pdfLoadingTask.destroy());
+    this.pdfLoadingTask = null;
+    if (this.pdfDocument) {
+      this.pdfDocument = null;
+      this.pdfThumbnailViewer?.setDocument(null);
+      this.pdfViewer.setDocument(null);
+      this.pdfLinkService.setDocument(null);
+      this.pdfDocumentProperties?.setDocument(null);
+    }
+    this.pdfLinkService.externalLinkEnabled = true;
+    this.store = null;
+    this.isInitialViewSet = false;
+    this.downloadComplete = false;
+    this.url = "";
+    this.baseUrl = "";
+    this._downloadUrl = "";
+    this.documentInfo = null;
+    this.metadata = null;
+    this._contentDispositionFilename = null;
+    this._contentLength = null;
+    this._saveInProgress = false;
+    this._hasAnnotationEditors = false;
+    promises.push(this.pdfScriptingManager.destroyPromise);
+    this.setTitle();
+    this.pdfSidebar?.reset();
+    this.pdfOutlineViewer?.reset();
+    this.pdfAttachmentViewer?.reset();
+    this.pdfLayerViewer?.reset();
+    this.pdfHistory?.reset();
+    this.findBar?.reset();
+    this.toolbar?.reset();
+    this.secondaryToolbar?.reset();
+    this._PDFBug?.cleanup();
+    await Promise.all(promises);
+  },
+  async open(args) {
+    let deprecatedArgs = false;
+    if (typeof args === "string") {
+      args = {
+        url: args
+      };
+      deprecatedArgs = true;
+    } else if (args?.byteLength) {
+      args = {
+        data: args
+      };
+      deprecatedArgs = true;
+    }
+    if (deprecatedArgs) {
+      console.error("The `PDFViewerApplication.open` signature was updated, please use an object instead.");
+    }
+    if (this.pdfLoadingTask) {
+      await this.close();
+    }
+    const workerParams = _app_options.AppOptions.getAll(_app_options.OptionKind.WORKER);
+    Object.assign(_pdfjsLib.GlobalWorkerOptions, workerParams);
+    if (args.url) {
+      this.setTitleUsingUrl(args.originalUrl || args.url, args.url);
+    }
+    const apiParams = _app_options.AppOptions.getAll(_app_options.OptionKind.API);
+    const params = {
+      canvasMaxAreaInBytes: this.externalServices.canvasMaxAreaInBytes,
+      ...apiParams,
+      ...args
+    };
+    const loadingTask = (0, _pdfjsLib.getDocument)(params);
+    this.pdfLoadingTask = loadingTask;
+    loadingTask.onPassword = (updateCallback, reason) => {
+      if (this.isViewerEmbedded) {
+        this._unblockDocumentLoadEvent();
+      }
+      this.pdfLinkService.externalLinkEnabled = false;
+      this.passwordPrompt.setUpdateCallback(updateCallback, reason);
+      this.passwordPrompt.open();
+    };
+    loadingTask.onProgress = ({
+      loaded,
+      total
+    }) => {
+      this.progress(loaded / total);
+    };
+    return loadingTask.promise.then(pdfDocument => {
+      this.load(pdfDocument);
+    }, reason => {
+      if (loadingTask !== this.pdfLoadingTask) {
+        return undefined;
+      }
+      let key = "loading_error";
+      if (reason instanceof _pdfjsLib.InvalidPDFException) {
+        key = "invalid_file_error";
+      } else if (reason instanceof _pdfjsLib.MissingPDFException) {
+        key = "missing_file_error";
+      } else if (reason instanceof _pdfjsLib.UnexpectedResponseException) {
+        key = "unexpected_response_error";
+      }
+      return this.l10n.get(key).then(msg => {
+        this._documentError(msg, {
+          message: reason?.message
+        });
+        throw reason;
+      });
+    });
+  },
+  _ensureDownloadComplete() {
+    if (this.pdfDocument && this.downloadComplete) {
+      return;
+    }
+    throw new Error("PDF document not downloaded.");
+  },
+  async download(options = {}) {
+    const url = this._downloadUrl,
+      filename = this._docFilename;
+    try {
+      this._ensureDownloadComplete();
+      const data = await this.pdfDocument.getData();
+      const blob = new Blob([data], {
+        type: "application/pdf"
+      });
+      await this.downloadManager.download(blob, url, filename, options);
+    } catch {
+      await this.downloadManager.downloadUrl(url, filename, options);
+    }
+  },
+  async save(options = {}) {
+    if (this._saveInProgress) {
+      return;
+    }
+    this._saveInProgress = true;
+    await this.pdfScriptingManager.dispatchWillSave();
+    const url = this._downloadUrl,
+      filename = this._docFilename;
+    try {
+      this._ensureDownloadComplete();
+      const data = await this.pdfDocument.saveDocument();
+      const blob = new Blob([data], {
+        type: "application/pdf"
+      });
+      await this.downloadManager.download(blob, url, filename, options);
+    } catch (reason) {
+      console.error(`Error when saving the document: ${reason.message}`);
+      await this.download(options);
+    } finally {
+      await this.pdfScriptingManager.dispatchDidSave();
+      this._saveInProgress = false;
+    }
+    if (this._hasAnnotationEditors) {
+      this.externalServices.reportTelemetry({
+        type: "editing",
+        data: {
+          type: "save"
+        }
+      });
+    }
+  },
+  downloadOrSave(options = {}) {
+    if (this.pdfDocument?.annotationStorage.size > 0) {
+      this.save(options);
+    } else {
+      this.download(options);
+    }
+  },
+  openInExternalApp() {
+    this.downloadOrSave({
+      openInExternalApp: true
+    });
+  },
+  _documentError(message, moreInfo = null) {
+    this._unblockDocumentLoadEvent();
+    this._otherError(message, moreInfo);
+    this.eventBus.dispatch("documenterror", {
+      source: this,
+      message,
+      reason: moreInfo?.message ?? null
+    });
+  },
+  _otherError(message, moreInfo = null) {
+    const moreInfoText = [`PDF.js v${_pdfjsLib.version || "?"} (build: ${_pdfjsLib.build || "?"})`];
+    if (moreInfo) {
+      moreInfoText.push(`Message: ${moreInfo.message}`);
+      if (moreInfo.stack) {
+        moreInfoText.push(`Stack: ${moreInfo.stack}`);
+      } else {
+        if (moreInfo.filename) {
+          moreInfoText.push(`File: ${moreInfo.filename}`);
+        }
+        if (moreInfo.lineNumber) {
+          moreInfoText.push(`Line: ${moreInfo.lineNumber}`);
+        }
+      }
+    }
+    console.error(`${message}\n\n${moreInfoText.join("\n")}`);
+  },
+  progress(level) {
+    if (!this.loadingBar || this.downloadComplete) {
+      return;
+    }
+    const percent = Math.round(level * 100);
+    if (percent <= this.loadingBar.percent) {
+      return;
+    }
+    this.loadingBar.percent = percent;
+    if (this.pdfDocument?.loadingParams.disableAutoFetch ?? _app_options.AppOptions.get("disableAutoFetch")) {
+      this.loadingBar.setDisableAutoFetch();
+    }
+  },
+  load(pdfDocument) {
+    this.pdfDocument = pdfDocument;
+    pdfDocument.getDownloadInfo().then(({
+      length
+    }) => {
+      this._contentLength = length;
+      this.downloadComplete = true;
+      this.loadingBar?.hide();
+      firstPagePromise.then(() => {
+        this.eventBus.dispatch("documentloaded", {
+          source: this
+        });
+      });
+    });
+    const pageLayoutPromise = pdfDocument.getPageLayout().catch(function () {});
+    const pageModePromise = pdfDocument.getPageMode().catch(function () {});
+    const openActionPromise = pdfDocument.getOpenAction().catch(function () {});
+    this.toolbar?.setPagesCount(pdfDocument.numPages, false);
+    this.secondaryToolbar?.setPagesCount(pdfDocument.numPages);
+    this.pdfLinkService.setDocument(pdfDocument);
+    this.pdfDocumentProperties?.setDocument(pdfDocument);
+    const pdfViewer = this.pdfViewer;
+    pdfViewer.setDocument(pdfDocument);
+    const {
+      firstPagePromise,
+      onePageRendered,
+      pagesPromise
+    } = pdfViewer;
+    this.pdfThumbnailViewer?.setDocument(pdfDocument);
+    const storedPromise = (this.store = new _view_history.ViewHistory(pdfDocument.fingerprints[0])).getMultiple({
+      page: null,
+      zoom: _ui_utils.DEFAULT_SCALE_VALUE,
+      scrollLeft: "0",
+      scrollTop: "0",
+      rotation: null,
+      sidebarView: _ui_/**
  * @licstart The following is the entire license notice for the
  * JavaScript code in this page
  *
@@ -714,253 +960,7 @@ const PDFViewerApplication = {
       if (annotationEditorMode !== _pdfjsLib.AnnotationEditorType.DISABLE) {
         this.annotationEditorParams = new _webAnnotation_editor_params.AnnotationEditorParams(appConfig.annotationEditorParams, eventBus);
       } else {
-     ) {
-      try {
-        await this.save();
-      } catch {}
-    }
-    const promises = [];
-    promises.push(this.pdfLoadingTask.destroy());
-    this.pdfLoadingTask = null;
-    if (this.pdfDocument) {
-      this.pdfDocument = null;
-      this.pdfThumbnailViewer?.setDocument(null);
-      this.pdfViewer.setDocument(null);
-      this.pdfLinkService.setDocument(null);
-      this.pdfDocumentProperties?.setDocument(null);
-    }
-    this.pdfLinkService.externalLinkEnabled = true;
-    this.store = null;
-    this.isInitialViewSet = false;
-    this.downloadComplete = false;
-    this.url = "";
-    this.baseUrl = "";
-    this._downloadUrl = "";
-    this.documentInfo = null;
-    this.metadata = null;
-    this._contentDispositionFilename = null;
-    this._contentLength = null;
-    this._saveInProgress = false;
-    this._hasAnnotationEditors = false;
-    promises.push(this.pdfScriptingManager.destroyPromise);
-    this.setTitle();
-    this.pdfSidebar?.reset();
-    this.pdfOutlineViewer?.reset();
-    this.pdfAttachmentViewer?.reset();
-    this.pdfLayerViewer?.reset();
-    this.pdfHistory?.reset();
-    this.findBar?.reset();
-    this.toolbar?.reset();
-    this.secondaryToolbar?.reset();
-    this._PDFBug?.cleanup();
-    await Promise.all(promises);
-  },
-  async open(args) {
-    let deprecatedArgs = false;
-    if (typeof args === "string") {
-      args = {
-        url: args
-      };
-      deprecatedArgs = true;
-    } else if (args?.byteLength) {
-      args = {
-        data: args
-      };
-      deprecatedArgs = true;
-    }
-    if (deprecatedArgs) {
-      console.error("The `PDFViewerApplication.open` signature was updated, please use an object instead.");
-    }
-    if (this.pdfLoadingTask) {
-      await this.close();
-    }
-    const workerParams = _app_options.AppOptions.getAll(_app_options.OptionKind.WORKER);
-    Object.assign(_pdfjsLib.GlobalWorkerOptions, workerParams);
-    if (args.url) {
-      this.setTitleUsingUrl(args.originalUrl || args.url, args.url);
-    }
-    const apiParams = _app_options.AppOptions.getAll(_app_options.OptionKind.API);
-    const params = {
-      canvasMaxAreaInBytes: this.externalServices.canvasMaxAreaInBytes,
-      ...apiParams,
-      ...args
-    };
-    const loadingTask = (0, _pdfjsLib.getDocument)(params);
-    this.pdfLoadingTask = loadingTask;
-    loadingTask.onPassword = (updateCallback, reason) => {
-      if (this.isViewerEmbedded) {
-        this._unblockDocumentLoadEvent();
-      }
-      this.pdfLinkService.externalLinkEnabled = false;
-      this.passwordPrompt.setUpdateCallback(updateCallback, reason);
-      this.passwordPrompt.open();
-    };
-    loadingTask.onProgress = ({
-      loaded,
-      total
-    }) => {
-      this.progress(loaded / total);
-    };
-    return loadingTask.promise.then(pdfDocument => {
-      this.load(pdfDocument);
-    }, reason => {
-      if (loadingTask !== this.pdfLoadingTask) {
-        return undefined;
-      }
-      let key = "loading_error";
-      if (reason instanceof _pdfjsLib.InvalidPDFException) {
-        key = "invalid_file_error";
-      } else if (reason instanceof _pdfjsLib.MissingPDFException) {
-        key = "missing_file_error";
-      } else if (reason instanceof _pdfjsLib.UnexpectedResponseException) {
-        key = "unexpected_response_error";
-      }
-      return this.l10n.get(key).then(msg => {
-        this._documentError(msg, {
-          message: reason?.message
-        });
-        throw reason;
-      });
-    });
-  },
-  _ensureDownloadComplete() {
-    if (this.pdfDocument && this.downloadComplete) {
-      return;
-    }
-    throw new Error("PDF document not downloaded.");
-  },
-  async download(options = {}) {
-    const url = this._downloadUrl,
-      filename = this._docFilename;
-    try {
-      this._ensureDownloadComplete();
-      const data = await this.pdfDocument.getData();
-      const blob = new Blob([data], {
-        type: "application/pdf"
-      });
-      await this.downloadManager.download(blob, url, filename, options);
-    } catch {
-      await this.downloadManager.downloadUrl(url, filename, options);
-    }
-  },
-  async save(options = {}) {
-    if (this._saveInProgress) {
-      return;
-    }
-    this._saveInProgress = true;
-    await this.pdfScriptingManager.dispatchWillSave();
-    const url = this._downloadUrl,
-      filename = this._docFilename;
-    try {
-      this._ensureDownloadComplete();
-      const data = await this.pdfDocument.saveDocument();
-      const blob = new Blob([data], {
-        type: "application/pdf"
-      });
-      await this.downloadManager.download(blob, url, filename, options);
-    } catch (reason) {
-      console.error(`Error when saving the document: ${reason.message}`);
-      await this.download(options);
-    } finally {
-      await this.pdfScriptingManager.dispatchDidSave();
-      this._saveInProgress = false;
-    }
-    if (this._hasAnnotationEditors) {
-      this.externalServices.reportTelemetry({
-        type: "editing",
-        data: {
-          type: "save"
-        }
-      });
-    }
-  },
-  downloadOrSave(options = {}) {
-    if (this.pdfDocument?.annotationStorage.size > 0) {
-      this.save(options);
-    } else {
-      this.download(options);
-    }
-  },
-  openInExternalApp() {
-    this.downloadOrSave({
-      openInExternalApp: true
-    });
-  },
-  _documentError(message, moreInfo = null) {
-    this._unblockDocumentLoadEvent();
-    this._otherError(message, moreInfo);
-    this.eventBus.dispatch("documenterror", {
-      source: this,
-      message,
-      reason: moreInfo?.message ?? null
-    });
-  },
-  _otherError(message, moreInfo = null) {
-    const moreInfoText = [`PDF.js v${_pdfjsLib.version || "?"} (build: ${_pdfjsLib.build || "?"})`];
-    if (moreInfo) {
-      moreInfoText.push(`Message: ${moreInfo.message}`);
-      if (moreInfo.stack) {
-        moreInfoText.push(`Stack: ${moreInfo.stack}`);
-      } else {
-        if (moreInfo.filename) {
-          moreInfoText.push(`File: ${moreInfo.filename}`);
-        }
-        if (moreInfo.lineNumber) {
-          moreInfoText.push(`Line: ${moreInfo.lineNumber}`);
-        }
-      }
-    }
-    console.error(`${message}\n\n${moreInfoText.join("\n")}`);
-  },
-  progress(level) {
-    if (!this.loadingBar || this.downloadComplete) {
-      return;
-    }
-    const percent = Math.round(level * 100);
-    if (percent <= this.loadingBar.percent) {
-      return;
-    }
-    this.loadingBar.percent = percent;
-    if (this.pdfDocument?.loadingParams.disableAutoFetch ?? _app_options.AppOptions.get("disableAutoFetch")) {
-      this.loadingBar.setDisableAutoFetch();
-    }
-  },
-  load(pdfDocument) {
-    this.pdfDocument = pdfDocument;
-    pdfDocument.getDownloadInfo().then(({
-      length
-    }) => {
-      this._contentLength = length;
-      this.downloadComplete = true;
-      this.loadingBar?.hide();
-      firstPagePromise.then(() => {
-        this.eventBus.dispatch("documentloaded", {
-          source: this
-        });
-      });
-    });
-    const pageLayoutPromise = pdfDocument.getPageLayout().catch(function () {});
-    const pageModePromise = pdfDocument.getPageMode().catch(function () {});
-    const openActionPromise = pdfDocument.getOpenAction().catch(function () {});
-    this.toolbar?.setPagesCount(pdfDocument.numPages, false);
-    this.secondaryToolbar?.setPagesCount(pdfDocument.numPages);
-    this.pdfLinkService.setDocument(pdfDocument);
-    this.pdfDocumentProperties?.setDocument(pdfDocument);
-    const pdfViewer = this.pdfViewer;
-    pdfViewer.setDocument(pdfDocument);
-    const {
-      firstPagePromise,
-      onePageRendered,
-      pagesPromise
-    } = pdfViewer;
-    this.pdfThumbnailViewer?.setDocument(pdfDocument);
-    const storedPromise = (this.store = new _view_history.ViewHistory(pdfDocument.fingerprints[0])).getMultiple({
-      page: null,
-      zoom: _ui_utils.DEFAULT_SCALE_VALUE,
-      scrollLeft: "0",
-      scrollTop: "0",
-      rotation: null,
-      sidebarView: _ui_utils.SidebarView.UNKNOWN,
+     utils.SidebarView.UNKNOWN,
       scrollMode: _ui_utils.ScrollMode.UNKNOWN,
       spreadMode: _ui_utils.SpreadMode.UNKNOWN
     }).catch(() => {

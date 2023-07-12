@@ -29,130 +29,7 @@ ole="radio" aria-checked="false" aria-controls="editorFreeTextParamsToolbar" tab
                     <option id="pageFitOption" title="" value="page-fit" data-l10n-id="page_scale_fit">Page Fit</option>
                     <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width">Page Width</option>
                     <option id="customScaleOption" title="" value="custom" disabled="disabled" hidden="true"></option>
-                    <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 50 }'>50%</option>
-                    <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>
-                    <option title="" value="1" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 100 }'>100%</option>
-                    <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
-                    <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
-                    <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
-                    <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
-                    <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
-                  </select>
-                </span>
-              </div>
-            </div>
-            <div id="loadingBar">
-              <div class="progress">
-                <div class="glimmer">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="viewerContainer" tabindex="0">
-          <div id="viewer" class="pdfViewer"></div>
-        </div>
-      </div> <!-- mainContainer -->
-
-      <div id="dialogContainer">
-        <dialog id="passwordDialog">
-          <div class="row">
-            <label for="password" id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</label>
-          </div>
-          <div class="row">
-            <input type="password" id="password" class="toolbarField">
-          </div>
-          <div class="buttonRow">
-            <button id="passwordCancel" class="dialogButton"><span data-l10n-id="password_cancel">Cancel</span></button>
-            <button id="passwordSubmit" class="dialogButton"><span data-l10n-id="password_ok">OK</span></button>
-          </div>
-        </dialog>
-        <dialog id="documentPropertiesDialog">
-          <div class="row">
-            <span id="fileNameLabel" data-l10n-id="document_properties_file_name">File name:</span>
-            <p id="fileNameField" aria-labelledby="fileNameLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="fileSizeLabel" data-l10n-id="document_properties_file_size">File size:</span>
-            <p id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="titleLabel" data-l10n-id="document_properties_title">Title:</span>
-            <p id="titleField" aria-labelledby="titleLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="authorLabel" data-l10n-id="document_properties_author">Author:</span>
-            <p id="authorField" aria-labelledby="authorLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="subjectLabel" data-l10n-id="document_properties_subject">Subject:</span>
-            <p id="subjectField" aria-labelledby="subjectLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="keywordsLabel" data-l10n-id="document_properties_keywords">Keywords:</span>
-            <p id="keywordsField" aria-labelledby="keywordsLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="creationDateLabel" data-l10n-id="document_properties_creation_date">Creation Date:</span>
-            <p id="creationDateField" aria-labelledby="creationDateLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="modificationDateLabel" data-l10n-id="document_properties_modification_date">Modification Date:</span>
-            <p id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="creatorLabel" data-l10n-id="document_properties_creator">Creator:</span>
-            <p id="creatorField" aria-labelledby="creatorLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="producerLabel" data-l10n-id="document_properties_producer">PDF Producer:</span>
-            <p id="producerField" aria-labelledby="producerLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="versionLabel" data-l10n-id="document_properties_version">PDF Version:</span>
-            <p id="versionField" aria-labelledby="versionLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="pageCountLabel" data-l10n-id="document_properties_page_count">Page Count:</span>
-            <p id="pageCountField" aria-labelledby="pageCountLabel">-</p>
-          </div>
-          <div class="row">
-            <span id="pageSizeLabel" data-l10n-id="document_properties_page_size">Page Size:</span>
-            <p id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
-          </div>
-          <div class="separator"></div>
-          <div class="row">
-            <span id="linearizedLabel" data-l10n-id="document_properties_linearized">Fast Web View:</span>
-            <p id="linearizedField" aria-labelledby="linearizedLabel">-</p>
-          </div>
-          <div class="buttonRow">
-            <button id="documentPropertiesClose" class="dialogButton"><span data-l10n-id="document_properties_close">Close</span></button>
-          </div>
-        </dialog>
-        <dialog id="printServiceDialog" style="min-width: 200px;">
-          <div class="row">
-            <span data-l10n-id="print_progress_message">Preparing document for printing…</span>
-          </div>
-          <div class="row">
-            <progress value="0" max="100"></progress>
-            <span data-l10n-id="print_progress_percent" data-l10n-args='{ "progress": 0 }' class="relative-progress">0%</span>
-          </div>
-          <div class="buttonRow">
-            <button id="printCancel" class="dialogButton"><span data-l10n-id="print_progress_close">Cancel</span></button>
-          </div>
-        </dialog>
-      </div>  <!-- dialogContainer -->
-
-    </div> <!-- outerContainer -->
-    <div id="printContainer"></div>
-
-    <input type="file" id="fileInput" class="hidden">
-  </body>
-</html>
-<!DOCTYPE html>
+                    <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale<!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
 
@@ -430,4 +307,126 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <div class="verticalToolbarSeparator hiddenMediumView"></div>
 
                 <div id="editorModeButtons" class="splitToolbarButton toggled" role="radiogroup">
-                  <button id="editorFreeText" class="toolbarButton" disabled="disabled" title="Text" r
+                  <button id="editorFreeText" class="toolbarButton" disabled="disabled" title="Text" r": 50 }'>50%</option>
+                    <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>
+                    <option title="" value="1" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 100 }'>100%</option>
+                    <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
+                    <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
+                    <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
+                    <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+                    <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+                  </select>
+                </span>
+              </div>
+            </div>
+            <div id="loadingBar">
+              <div class="progress">
+                <div class="glimmer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+      </div> <!-- mainContainer -->
+
+      <div id="dialogContainer">
+        <dialog id="passwordDialog">
+          <div class="row">
+            <label for="password" id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</label>
+          </div>
+          <div class="row">
+            <input type="password" id="password" class="toolbarField">
+          </div>
+          <div class="buttonRow">
+            <button id="passwordCancel" class="dialogButton"><span data-l10n-id="password_cancel">Cancel</span></button>
+            <button id="passwordSubmit" class="dialogButton"><span data-l10n-id="password_ok">OK</span></button>
+          </div>
+        </dialog>
+        <dialog id="documentPropertiesDialog">
+          <div class="row">
+            <span id="fileNameLabel" data-l10n-id="document_properties_file_name">File name:</span>
+            <p id="fileNameField" aria-labelledby="fileNameLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="fileSizeLabel" data-l10n-id="document_properties_file_size">File size:</span>
+            <p id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="titleLabel" data-l10n-id="document_properties_title">Title:</span>
+            <p id="titleField" aria-labelledby="titleLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="authorLabel" data-l10n-id="document_properties_author">Author:</span>
+            <p id="authorField" aria-labelledby="authorLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="subjectLabel" data-l10n-id="document_properties_subject">Subject:</span>
+            <p id="subjectField" aria-labelledby="subjectLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="keywordsLabel" data-l10n-id="document_properties_keywords">Keywords:</span>
+            <p id="keywordsField" aria-labelledby="keywordsLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="creationDateLabel" data-l10n-id="document_properties_creation_date">Creation Date:</span>
+            <p id="creationDateField" aria-labelledby="creationDateLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="modificationDateLabel" data-l10n-id="document_properties_modification_date">Modification Date:</span>
+            <p id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="creatorLabel" data-l10n-id="document_properties_creator">Creator:</span>
+            <p id="creatorField" aria-labelledby="creatorLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="producerLabel" data-l10n-id="document_properties_producer">PDF Producer:</span>
+            <p id="producerField" aria-labelledby="producerLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="versionLabel" data-l10n-id="document_properties_version">PDF Version:</span>
+            <p id="versionField" aria-labelledby="versionLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="pageCountLabel" data-l10n-id="document_properties_page_count">Page Count:</span>
+            <p id="pageCountField" aria-labelledby="pageCountLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="pageSizeLabel" data-l10n-id="document_properties_page_size">Page Size:</span>
+            <p id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="linearizedLabel" data-l10n-id="document_properties_linearized">Fast Web View:</span>
+            <p id="linearizedField" aria-labelledby="linearizedLabel">-</p>
+          </div>
+          <div class="buttonRow">
+            <button id="documentPropertiesClose" class="dialogButton"><span data-l10n-id="document_properties_close">Close</span></button>
+          </div>
+        </dialog>
+        <dialog id="printServiceDialog" style="min-width: 200px;">
+          <div class="row">
+            <span data-l10n-id="print_progress_message">Preparing document for printing…</span>
+          </div>
+          <div class="row">
+            <progress value="0" max="100"></progress>
+            <span data-l10n-id="print_progress_percent" data-l10n-args='{ "progress": 0 }' class="relative-progress">0%</span>
+          </div>
+          <div class="buttonRow">
+            <button id="printCancel" class="dialogButton"><span data-l10n-id="print_progress_close">Cancel</span></button>
+          </div>
+        </dialog>
+      </div>  <!-- dialogContainer -->
+
+    </div> <!-- outerContainer -->
+    <div id="printContainer"></div>
+
+    <input type="file" id="fileInput" class="hidden">
+  </body>
+</html>

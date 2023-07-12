@@ -1,4 +1,111 @@
-andler,
+lity = new _util.PromiseCapability();
+  }
+  get finished() {
+    return this._capability.promise;
+  }
+  finish() {
+    this._capability.resolve();
+  }
+  terminate() {
+    this.terminated = true;
+  }
+  ensureNotTerminated() {
+    if (this.terminated) {
+      throw new Error("Worker task was terminated");
+    }
+  }
+}
+exports.WorkerTask = WorkerTask;
+class WorkerMessageHandler {
+  static setup(handler, port) {
+    let testMessageProcessed = false;
+    handler.on("test", function (data) {
+      if (testMessageProcessed) {
+        return;
+      }
+      testMessageProcessed = true;
+      handler.send("test", data instanceof Uint8Array);
+    });
+    handler.on("configure", function (data) {
+      (0, _util.setVerbosityLevel)(data.verbosity);
+    });
+    handler.on("GetDocRequest", function (data) {
+      return WorkerMessageHandler.createDocumentHandler(data, port);
+    });
+  }
+  static createDocumentHandler(docParams, port) {
+    let pdfManager;
+    let terminated = false;
+    let cancelXHRs = null;
+    const WorkerTasks = new Set();
+    const verbosity = (0, _util.getVerbosityLevel)();
+    const {
+      docId,
+      apiVersion
+    } = docParams;
+    const workerVersion = '3.8.162';
+    if (apiVersion !== workerVersion) {
+      throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${workerVersion}".`);
+    }
+    const enumerableProperties = [];
+    for (const property in []) {
+      enumerableProperties.push(property);
+    }
+    if (enumerableProperties.length) {
+      throw new Error("The `Array.prototype` contains unexpected enumerable properties: " + enumerableProperties.join(", ") + "; thus breaking e.g. `for...in` iteration of `Array`s.");
+    }
+    const workerHandlerName = docId + "_worker";
+    let handler = new _message_handler.MessageHandler(workerHandlerName, docId, port);
+    function ensureNotTerminated() {
+      if (terminated) {
+        throw new Error("Worker was terminated");
+      }
+    }
+    function startWorkerTask(task) {
+      WorkerTasks.add(task);
+    }
+    function finishWorkerTask(task) {
+      task.finish();
+      WorkerTasks.delete(task);
+    }
+    async function loadDocument(recoveryMode) {
+      await pdfManager.ensureDoc("checkHeader");
+      await pdfManager.ensureDoc("parseStartXRef");
+      await pdfManager.ensureDoc("parse", [recoveryMode]);
+      await pdfManager.ensureDoc("checkFirstPage", [recoveryMode]);
+      await pdfManager.ensureDoc("checkLastPage", [recoveryMode]);
+      const isPureXfa = await pdfManager.ensureDoc("isPureXfa");
+      if (isPureXfa) {
+        const task = new WorkerTask("loadXfaFonts");
+        startWorkerTask(task);
+        await Promise.all([pdfManager.loadXfaFonts(handler, task).catch(reason => {}).then(() => finishWorkerTask(task)), pdfManager.loadXfaImages()]);
+      }
+      const [numPages, fingerprints] = await Promise.all([pdfManager.ensureDoc("numPages"), pdfManager.ensureDoc("fingerprints")]);
+      const htmlForXfa = isPureXfa ? await pdfManager.ensureDoc("htmlForXfa") : null;
+      return {
+        numPages,
+        fingerprints,
+        htmlForXfa
+      };
+    }
+    function getPdfManager({
+      data,
+      password,
+      disableAutoFetch,
+      rangeChunkSize,
+      length,
+      docBaseUrl,
+      enableXfa,
+      evaluatorOptions
+    }) {
+      const pdfManagerArgs = {
+        source: null,
+        disableAutoFetch,
+        docBaseUrl,
+        docId,
+        enableXfa,
+        evaluatorOptions,
+        handler,
         length,
         password,
         rangeChunkSize
@@ -346,114 +453,7 @@ class WorkerTask {
   constructor(name) {
     this.name = name;
     this.terminated = false;
-    this._capability = new _util.PromiseCapability();
-  }
-  get finished() {
-    return this._capability.promise;
-  }
-  finish() {
-    this._capability.resolve();
-  }
-  terminate() {
-    this.terminated = true;
-  }
-  ensureNotTerminated() {
-    if (this.terminated) {
-      throw new Error("Worker task was terminated");
-    }
-  }
-}
-exports.WorkerTask = WorkerTask;
-class WorkerMessageHandler {
-  static setup(handler, port) {
-    let testMessageProcessed = false;
-    handler.on("test", function (data) {
-      if (testMessageProcessed) {
-        return;
-      }
-      testMessageProcessed = true;
-      handler.send("test", data instanceof Uint8Array);
-    });
-    handler.on("configure", function (data) {
-      (0, _util.setVerbosityLevel)(data.verbosity);
-    });
-    handler.on("GetDocRequest", function (data) {
-      return WorkerMessageHandler.createDocumentHandler(data, port);
-    });
-  }
-  static createDocumentHandler(docParams, port) {
-    let pdfManager;
-    let terminated = false;
-    let cancelXHRs = null;
-    const WorkerTasks = new Set();
-    const verbosity = (0, _util.getVerbosityLevel)();
-    const {
-      docId,
-      apiVersion
-    } = docParams;
-    const workerVersion = '3.8.162';
-    if (apiVersion !== workerVersion) {
-      throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${workerVersion}".`);
-    }
-    const enumerableProperties = [];
-    for (const property in []) {
-      enumerableProperties.push(property);
-    }
-    if (enumerableProperties.length) {
-      throw new Error("The `Array.prototype` contains unexpected enumerable properties: " + enumerableProperties.join(", ") + "; thus breaking e.g. `for...in` iteration of `Array`s.");
-    }
-    const workerHandlerName = docId + "_worker";
-    let handler = new _message_handler.MessageHandler(workerHandlerName, docId, port);
-    function ensureNotTerminated() {
-      if (terminated) {
-        throw new Error("Worker was terminated");
-      }
-    }
-    function startWorkerTask(task) {
-      WorkerTasks.add(task);
-    }
-    function finishWorkerTask(task) {
-      task.finish();
-      WorkerTasks.delete(task);
-    }
-    async function loadDocument(recoveryMode) {
-      await pdfManager.ensureDoc("checkHeader");
-      await pdfManager.ensureDoc("parseStartXRef");
-      await pdfManager.ensureDoc("parse", [recoveryMode]);
-      await pdfManager.ensureDoc("checkFirstPage", [recoveryMode]);
-      await pdfManager.ensureDoc("checkLastPage", [recoveryMode]);
-      const isPureXfa = await pdfManager.ensureDoc("isPureXfa");
-      if (isPureXfa) {
-        const task = new WorkerTask("loadXfaFonts");
-        startWorkerTask(task);
-        await Promise.all([pdfManager.loadXfaFonts(handler, task).catch(reason => {}).then(() => finishWorkerTask(task)), pdfManager.loadXfaImages()]);
-      }
-      const [numPages, fingerprints] = await Promise.all([pdfManager.ensureDoc("numPages"), pdfManager.ensureDoc("fingerprints")]);
-      const htmlForXfa = isPureXfa ? await pdfManager.ensureDoc("htmlForXfa") : null;
-      return {
-        numPages,
-        fingerprints,
-        htmlForXfa
-      };
-    }
-    function getPdfManager({
-      data,
-      password,
-      disableAutoFetch,
-      rangeChunkSize,
-      length,
-      docBaseUrl,
-      enableXfa,
-      evaluatorOptions
-    }) {
-      const pdfManagerArgs = {
-        source: null,
-        disableAutoFetch,
-        docBaseUrl,
-        docId,
-        enableXfa,
-        evaluatorOptions,
-        h if (isPureXfa) {
+    this._capabi if (isPureXfa) {
           xfaData = refs[0];
           if (!xfaData) {
             return stream.bytes;
