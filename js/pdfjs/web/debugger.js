@@ -1,26 +1,4 @@
-loadCSS();
-      this.enable(ids);
-      /*
-       * Basic Layout:
-       * PDFBug
-       *  Controls
-       *  Panels
-       *    Panel
-       *    Panel
-       *    ...
-       */
-      const ui = document.createElement("div");
-      ui.id = "PDFBug";
-
-      const controls = document.createElement("div");
-      controls.setAttribute("class", "controls");
-      ui.append(controls);
-
-      const panels = document.createElement("div");
-      panels.setAttribute("class", "panels");
-      ui.append(panels);
-
-      container/* Copyright 2012 Mozilla Foundation
+/* Copyright 2012 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -544,7 +522,29 @@ const PDFBug = (function PDFBugClosure() {
       }
     },
     init(pdfjsLib, container, ids) {
-      this..append(ui);
+      this.loadCSS();
+      this.enable(ids);
+      /*
+       * Basic Layout:
+       * PDFBug
+       *  Controls
+       *  Panels
+       *    Panel
+       *    Panel
+       *    ...
+       */
+      const ui = document.createElement("div");
+      ui.id = "PDFBug";
+
+      const controls = document.createElement("div");
+      controls.setAttribute("class", "controls");
+      ui.append(controls);
+
+      const panels = document.createElement("div");
+      panels.setAttribute("class", "panels");
+      ui.append(panels);
+
+      container.append(ui);
       container.style.right = panelWidth + "px";
 
       // Initialize all the debugging tools.
