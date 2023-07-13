@@ -45,6 +45,6 @@
     "@nextcloud/webpack-vue-config": "^5.5.1",
     "axios": "^1.4.0",
     "cli-progress": "^3.12.0",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.14"
   }
 }
