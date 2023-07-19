@@ -26,7 +26,10 @@
 </template>
 
 <script>
+import { showError } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
+import logger from '../services/logger.js'
+import uploadPdfFile from '../services/uploadPdfFile.js'
 import canDownload from '../utils/canDownload.js'
 import isPdf from '../utils/isPdf.js'
 import isPublicPage from '../utils/isPublicPage.js'
@@ -48,6 +51,15 @@ export default {
 				file: this.source ?? this.davPath,
 			})
 		},
+
+		file() {
+			// fileList and fileid are provided by the Mime mixin of the Viewer.
+			return this.fileList.find((file) => file.fileid === this.fileid)
+		},
+
+		isEditable() {
+			return this.file?.permissions?.indexOf('W') >= 0
+		},
 	},
 
 	async mounted() {
@@ -65,6 +77,14 @@ export default {
 		this.$nextTick(function() {
 			this.$el.focus()
 		})
+
+		if (this.isEditable) {
+			this.$refs.iframe.addEventListener('load', () => {
+				this.getDownloadElement().removeAttribute('hidden')
+
+				this.getEditorModeButtonsElement().removeAttribute('hidden')
+			})
+		}
 	},
 
 	beforeDestroy() {
@@ -72,6 +92,20 @@ export default {
 	},
 
 	methods: {
+		getIframeDocument() {
+			// $refs are not reactive, so a method is used instead of a computed
+			// property for clarity.
+			return this.$refs.iframe.contentDocument
+		},
+
+		getDownloadElement() {
+			return this.getIframeDocument().getElementById('download')
+		},
+
+		getEditorModeButtonsElement() {
+			return this.getIframeDocument().getElementById('editorModeButtons')
+		},
+
 		handleWebviewerloaded() {
 			// PDFViewerApplication can not be set when the "webviewerloaded"
 			// event is dispatched, as at this point the application was not
@@ -84,6 +118,27 @@ export default {
 			// unconditionally).
 			this.$refs.iframe.contentWindow.PDFViewerApplication.initializedPromise.then(() => {
 				this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
+
+				this.PDFViewerApplication.save = this.handleSave
+			})
+		},
+
+		handleSave() {
+			const downloadElement = this.getDownloadElement()
+			downloadElement.setAttribute('disabled', 'disabled')
+
+			logger.info('PDF Document with annotation is being saved')
+
+			this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
+				return uploadPdfFile(this.file.filename, data)
+			}).then(() => {
+				logger.info('File uploaded successfully')
+			}).catch(error => {
+				logger.error('Error uploading file:', error)
+
+				showError(t('files_pdfviewer', 'File upload failed.'))
+			}).finally(() => {
+				downloadElement.removeAttribute('disabled')
 			})
 		},
 	},
