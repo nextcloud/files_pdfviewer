@@ -28,7 +28,7 @@
   "dependencies": {
     "@nextcloud/logger": "^2.5.0",
     "@nextcloud/router": "^2.1.2",
-    "pdfjs-dist": "^3.8.162"
+    "pdfjs-dist": "^3.9.179"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
