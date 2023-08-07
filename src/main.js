@@ -31,4 +31,6 @@ OCA.Viewer.registerHandler({
 	],
 
 	component: PDFView,
+
+	canCompare: true,
 })
