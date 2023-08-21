@@ -1,5 +1,5 @@
 const path = require('path')
-const unzipper = require('unzipper')
+const AdmZip = require('adm-zip')
 const axios = require('axios')
 const cliProgress = require('cli-progress')
 const npmPackage = require('./package.json')
@@ -22,9 +22,10 @@ axios.get(`https://github.com/mozilla/pdf.js/releases/download/v${PDFJSversion}/
 			console.info('Done! \n')
 		}
 	},
-	responseType: 'stream',
+	responseType: 'arraybuffer',
 }).then(response => {
-	response.data.pipe(unzipper.Extract({ path: path.resolve(__dirname, 'js', 'pdfjs') }))
+	const zip = new AdmZip(response.data)
+	zip.extractAllTo(path.resolve(__dirname, 'js', 'pdfjs'))
 }).catch(err => {
 	console.error(err)
 	throw new Error('Unable to download pdfjs dist')
