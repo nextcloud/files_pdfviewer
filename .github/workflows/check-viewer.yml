@@ -1,0 +1,28 @@
+name: Check viewer
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened, synchronize]
+    paths:
+      - 'js/pdfjs/web/viewer.html'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-viewer-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check-viewer:
+    name: Check viewer
+
+    if: github.event.pull_request.draft == false
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check viewer
+        run: |
+          echo "Check viewer.php - viewer.html got updated so viewer.php needs an update" 
+          exit 1
