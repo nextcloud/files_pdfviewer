@@ -21,12 +21,15 @@
   -
   -->
 <template>
-	<iframe :src="iframeSrc" />
+	<iframe ref="iframe"
+		:src="iframeSrc" />
 </template>
 
 <script>
 import { generateUrl } from '@nextcloud/router'
 import canDownload from '../utils/canDownload.js'
+import isPdf from '../utils/isPdf.js'
+import isPublicPage from '../utils/isPublicPage.js'
 
 export default {
 	name: 'PDFView',
@@ -41,6 +44,14 @@ export default {
 	},
 
 	async mounted() {
+		if (isPublicPage() && isPdf()) {
+			// Force style for public shares of a single PDF file, as there are
+			// no CSS selectors that could be used only for that case.
+			this.$refs.iframe.style.height = '100%'
+			this.$refs.iframe.style.position = 'absolute'
+			this.$refs.iframe.style.marginTop = 'unset'
+		}
+
 		this.doneLoading()
 		this.$nextTick(function() {
 			this.$el.focus()

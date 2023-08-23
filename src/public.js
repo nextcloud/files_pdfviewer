@@ -59,17 +59,26 @@ window.addEventListener('DOMContentLoaded', function() {
 			page,
 		})
 
-		// Create viewer frame
-		const viewerNode = document.createElement('iframe')
-		viewerNode.style.height = '100%'
-		viewerNode.style.width = '100%'
-		viewerNode.style.position = 'absolute'
-
 		// Inject viewer
 		if (contentElmt) {
 			contentElmt.innerHTML = ''
-			contentElmt.appendChild(viewerNode)
-			viewerNode.src = viewerUrl
+
+			if (OCA.Viewer) {
+				OCA.Viewer.setRootElement('#files-public-content')
+				OCA.Viewer.open({ path: '/' })
+			} else {
+				logger.error('Viewer not available, PDF viewer directly injected')
+
+				// Create viewer frame
+				const viewerNode = document.createElement('iframe')
+				viewerNode.style.height = '100%'
+				viewerNode.style.width = '100%'
+				viewerNode.style.position = 'absolute'
+
+				contentElmt.appendChild(viewerNode)
+				viewerNode.src = viewerUrl
+			}
+
 			footerElmt.style.display = 'none'
 			mainContent.style.minHeight = 'calc(100% - var(--header-height))' // Make the viewer take the whole height as the footer is now hidden.
 			// overwrite style in order to fix the viewer on public pages
