@@ -18,3 +18,8 @@
 .pdfViewer.disabledTextSelection .textLayer * {
 	cursor: default;
 }
+
+/* Do not highlight disabled toolbar buttons. */
+.toolbarButton:hover:disabled {
+	background-color: unset;
+}
