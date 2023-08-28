@@ -120,6 +120,26 @@ export default {
 				this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
 
 				this.PDFViewerApplication.save = this.handleSave
+
+				// Not all fields of PDFViewerApplication are reactive.
+				// Specifically, it can not be known if annotations were created
+				// by watching "pdfDocument.annotationStorage.size" (maybe
+				// because "size" is a getter based on a private field, so it
+				// does not work even if the rest of the chain is skipped and
+				// "size" is directly watched). However, "annotationStorage" has
+				// callbacks used by PDFViewerApplication to know when an
+				// annotation was set, so that callback can be wrapped to also
+				// enable the save button.
+				this.PDFViewerApplication.eventBus.on('documentinit', () => {
+					const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
+
+					const onSetModifiedOriginal = annotationStorage.onSetModified
+					annotationStorage.onSetModified = () => {
+						onSetModifiedOriginal.apply(null, arguments)
+
+						this.getDownloadElement().removeAttribute('disabled')
+					}
+				})
 			})
 		},
 
@@ -138,9 +158,13 @@ export default {
 				logger.error('Error uploading file:', error)
 
 				showError(t('files_pdfviewer', 'File upload failed.'))
+
+				// Enable button again only if the upload failed; if it was
+				// successful it will be enabled again when a new annotation is
+				// added.
+				downloadElement.removeAttribute('disabled')
 			}).finally(() => {
 				downloadElement.classList.remove('icon-loading-small')
-				downloadElement.removeAttribute('disabled')
 			})
 		},
 	},

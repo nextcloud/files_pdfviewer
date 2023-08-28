@@ -282,7 +282,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <span data-l10n-id="print_label">Print</span>
                 </button>
 
-                <button id="download" class="toolbarButton hiddenMediumView" title="Save" tabindex="33" data-l10n-id="save" hidden="true">
+                <button id="download" class="toolbarButton hiddenMediumView" disabled="disabled" title="Save" tabindex="33" data-l10n-id="save" hidden="true">
                   <span data-l10n-id="save_label">Save</span>
                 </button>
 
