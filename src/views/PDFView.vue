@@ -126,6 +126,7 @@ export default {
 		handleSave() {
 			const downloadElement = this.getDownloadElement()
 			downloadElement.setAttribute('disabled', 'disabled')
+			downloadElement.classList.add('icon-loading-small')
 
 			logger.info('PDF Document with annotation is being saved')
 
@@ -138,6 +139,7 @@ export default {
 
 				showError(t('files_pdfviewer', 'File upload failed.'))
 			}).finally(() => {
+				downloadElement.classList.remove('icon-loading-small')
 				downloadElement.removeAttribute('disabled')
 			})
 		},
