@@ -34,6 +34,13 @@ import isPublicPage from '../utils/isPublicPage.js'
 export default {
 	name: 'PDFView',
 
+	data() {
+		return {
+			// Not all fields are reactive!
+			PDFViewerApplication: null,
+		}
+	},
+
 	computed: {
 		iframeSrc() {
 			return generateUrl('/apps/files_pdfviewer/?file={file}&canDownload={canDownload}', {
@@ -44,6 +51,8 @@ export default {
 	},
 
 	async mounted() {
+		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
+
 		if (isPublicPage() && isPdf()) {
 			// Force style for public shares of a single PDF file, as there are
 			// no CSS selectors that could be used only for that case.
@@ -56,6 +65,27 @@ export default {
 		this.$nextTick(function() {
 			this.$el.focus()
 		})
+	},
+
+	beforeDestroy() {
+		document.removeEventListener('webviewerloaded', this.handleWebviewerloaded)
+	},
+
+	methods: {
+		handleWebviewerloaded() {
+			// PDFViewerApplication can not be set when the "webviewerloaded"
+			// event is dispatched, as at this point the application was not
+			// initialized yet; some of its getters expect the
+			// PDFViewerApplication to have been initialized when called, and
+			// assigning the property causes Vue to apply reactivity on its
+			// attributes, so this would cause an exception to be thrown (for
+			// example, for PDFViewerApplication.page, as its getter expects
+			// PDFViewerApplication.pdfViewer to be set already and thus uses it
+			// unconditionally).
+			this.$refs.iframe.contentWindow.PDFViewerApplication.initializedPromise.then(() => {
+				this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
+			})
+		},
 	},
 }
 </script>
