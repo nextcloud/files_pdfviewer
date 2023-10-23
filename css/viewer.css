@@ -19,6 +19,13 @@
 	cursor: default;
 }
 
+/* Replace default "Download" icon in "Download / Save" button with a "Save"
+ * icon. */
+.toolbarButton#download::before {
+	-webkit-mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+	mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+}
+
 /* Do not highlight disabled toolbar buttons. */
 .toolbarButton:hover:disabled {
 	background-color: unset;
