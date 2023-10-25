@@ -18,3 +18,56 @@
 .pdfViewer.disabledTextSelection .textLayer * {
 	cursor: default;
 }
+
+/* Replace default "Download" icon in "Download / Save" button with a "Save"
+ * icon. */
+.toolbarButton#download::before {
+	-webkit-mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+	mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+}
+
+/* Do not highlight disabled toolbar buttons. */
+.toolbarButton:hover:disabled {
+	background-color: unset;
+}
+
+/* Hide the normal toolbar icon, which is a mask applied on a dark background,
+ * when showing the loading icon. */
+.toolbarButton.icon-loading-small:before {
+	background-color: unset;
+}
+
+/* icon-loading-small was copied from server CSS, as it is not available inside
+ * the iframe. */
+:root {
+	--color-loading-light: #ccc;
+	--color-loading-dark: #444;
+}
+
+.icon-loading-small:after {
+	z-index: 2;
+	content: '';
+	height: 12px;
+	width: 12px;
+	margin: -8px 0 0 -8px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	border-radius: 100%;
+	-webkit-animation: rotate .8s infinite linear;
+	animation: rotate .8s infinite linear;
+	-webkit-transform-origin: center;
+	-ms-transform-origin: center;
+	transform-origin: center;
+	border: 2px solid var(--color-loading-light);
+	border-top-color: var(--color-loading-dark);
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
