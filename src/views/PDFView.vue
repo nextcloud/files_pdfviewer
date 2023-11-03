@@ -107,6 +107,18 @@ export default {
 		},
 
 		handleWebviewerloaded() {
+			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+
+			if (!this.isEditable) {
+				// Preferences override options, so they must be disabled for
+				// "annotationMode" to take effect.
+				PDFViewerApplicationOptions.set('disablePreferences', true)
+
+				// AnnotationMode.ENABLE value is 1 in PDF.js, which shows
+				// forms, but does not allow to interact with them
+				PDFViewerApplicationOptions.set('annotationMode', 1)
+			}
+
 			// PDFViewerApplication can not be set when the "webviewerloaded"
 			// event is dispatched, as at this point the application was not
 			// initialized yet; some of its getters expect the
