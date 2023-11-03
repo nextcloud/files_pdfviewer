@@ -176,6 +176,7 @@ iframe {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
 	margin-top: var(--header-height);
+	position: absolute;
 }
 
 </style>
