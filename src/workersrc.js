@@ -47,6 +47,9 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
 	PDFViewerApplicationOptions.set('imageResourcesPath', './js/pdfjs/web/images/')
+	// AnnotationMode.ENABLE value is 1 in PDF.js, which shows forms, but does
+	// not allow to interact with them
+	PDFViewerApplicationOptions.set('annotationMode', 1)
 
 	if (canDownload === '0') {
 		const pdfViewer = window.document.querySelector('.pdfViewer')
