@@ -1,0 +1,9 @@
+[main]
+host     = https://www.transifex.com
+lang_map = th_TH: th, ja_JP: ja, bg_BG: bg, cs_CZ: cs, fi_FI: fi, hu_HU: hu, nb_NO: nb, sk_SK: sk
+
+[o:nextcloud:p:nextcloud:r:files_pdfviewer]
+file_filter = translationfiles/<lang>/files_pdfviewer.po
+source_file = translationfiles/templates/files_pdfviewer.pot
+source_lang = en
+type        = PO
