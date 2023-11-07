@@ -1,0 +1,6 @@
+{ "translations": {
+    "PDF viewer" : "مشاهده‌گر PDF",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "سندهای PDF را مستقیما در نکست‌کلود خود مشاهده کنید. \nبه عنوان یک امتیاز اضافی، این برنامه همچنین می‌تواند پرونده‌های Adobe Illustrator (.ai) را نمایش دهد.\nپشتیبانی شده توسط [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "File upload failed." : "بارگذاری پرونده انجام نشد."
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
+}
