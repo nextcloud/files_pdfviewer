@@ -4,6 +4,16 @@ files_pdfviewer
 This application integrates the [PDF.js](https://mozilla.github.io/pdf.js/) library into Nextcloud's Viewer.
 You can view PDF files as well as Adobe Illustrator files (.ai)
 
+### Enable Javascript execution in PDF files
+
+To allow Javascript embedded in PDF-files to be executed inside the PDF-viewer inside your browser, enable it with:
+
+`php occ config:app:set files_pdfviewer enable_scripting --value=yes`
+
+Disable:
+
+`php occ config:app:delete files_pdfviewer enable_scripting`
+
 ## 🏗 Development setup
 
 1. ☁ Clone this app into the `apps` folder of your Nextcloud: `git clone https://github.com/nextcloud/files_pdfviewer.git`
