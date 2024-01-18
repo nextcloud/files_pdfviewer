@@ -6,6 +6,15 @@ You can view PDF files as well as Adobe Illustrator files (.ai)
 
 ![PDF Logo](https://user-images.githubusercontent.com/59488153/189176433-2f6d97a1-b151-4099-84f4-d1446a007b8a.png)
 
+### Enable Javascript execution in PDF files
+
+To allow Javascript embedded in PDF-files to be executed inside the PDF-viewer inside your browser, enable it with:
+
+`php occ config:app:set files_pdfviewer enable_scripting --value=yes`
+
+Disable:
+
+`php occ config:app:delete files_pdfviewer enable_scripting`
 
 ## 🏗 Development setup
 
