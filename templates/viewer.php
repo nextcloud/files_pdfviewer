@@ -3,6 +3,10 @@
 /** @var OCP\IURLGenerator $urlGenerator */
 $urlGenerator = $_['urlGenerator'];
 $version = \OC::$server->getAppManager()->getAppVersion('files_pdfviewer');
+$enableScripting = false;
+if (\OC::$server->getConfig()->getAppValue('files_pdfviewer', 'enable_scripting', 'no') === 'yes') {
+	$enableScripting = true;
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +33,8 @@ See https://github.com/adobe-type-tools/cmap-resources
 -->
 <html dir="ltr" mozdisallowselectionprint>
   <head data-workersrc="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.worker.js')) ?>?v=<?php p($version) ?>"
+        data-enableScripting="<?php p($enableScripting ? true : false) ?>"
+        data-sandbox="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.sandbox.js'))?>"
         data-cmapurl="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/cmaps/')) ?>">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
