@@ -45,8 +45,10 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('isEvalSupported', false)
 	PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
+	PDFViewerApplicationOptions.set('sandboxBundleSrc', head.getAttribute('data-sandbox'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
 	PDFViewerApplicationOptions.set('imageResourcesPath', './js/pdfjs/web/images/')
+	PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
 	// AnnotationMode.ENABLE value is 1 in PDF.js, which shows forms, but does
 	// not allow to interact with them
 	PDFViewerApplicationOptions.set('annotationMode', 1)
