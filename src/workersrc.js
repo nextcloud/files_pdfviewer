@@ -50,6 +50,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('workerSrc', document.getElementsByTagName('head')[0].getAttribute('data-workersrc'))
 	PDFViewerApplicationOptions.set('cMapUrl', document.getElementsByTagName('head')[0].getAttribute('data-cmapurl'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
+	PDFViewerApplicationOptions.set('enableScripting', document.getElementsByTagName('head')[0].getAttribute('data-enableScripting') === true)
 
 	if (canDownload === '0') {
 		const pdfViewer = window.document.querySelector('.pdfViewer')
