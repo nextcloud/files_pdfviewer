@@ -30,7 +30,7 @@
     "@nextcloud/axios": "^2.4.0",
     "@nextcloud/dialogs": "^5.1.1",
     "@nextcloud/logger": "^2.7.0",
-    "@nextcloud/router": "^2.2.1",
+    "@nextcloud/router": "^3.0.0",
     "pdfjs-dist": "^3.11.174"
   },
   "browserslist": [
