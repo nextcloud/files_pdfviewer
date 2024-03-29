@@ -2315,6 +2315,7 @@ body {
 .secondaryToolbar :is(input, button, a, select) {
   outline: none;
   font: message-box;
+  font-size: 13px;
 }
 
 #toolbarContainer {
@@ -2435,7 +2436,7 @@ body {
   padding: 0 4px;
   margin: 4px 2px;
   font: message-box;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 14px;
   text-align: left;
   cursor: default;
