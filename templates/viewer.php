@@ -1,4 +1,11 @@
 <?php
+/**
+ * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2012-2016 ownCloud, Inc.
+ * SPDX-FileCopyrightText: 2012 Mozilla Foundation
+ * SPDX-FileCopyrightText: 1990-2015 Adobe Systems Incorporated.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 /** @var array $_ */
 /** @var OCP\IURLGenerator $urlGenerator */
 $urlGenerator = $_['urlGenerator'];

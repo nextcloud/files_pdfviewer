@@ -1,3 +1,7 @@
+/**
+ * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 const path = require('path')
 const AdmZip = require('adm-zip')
 const axios = require('axios')
