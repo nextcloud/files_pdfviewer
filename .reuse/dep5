@@ -15,7 +15,7 @@ Files: composer.json composer.lock package-lock.json package.json
 Copyright: 2020 Nextcloud GmbH and Nextcloud contributors
 License: AGPL-3.0-or-later
 
-Files: files_pdfviewer-data_image_svg_xml_*.js
+Files: js/files_pdfviewer-data_image_svg_xml_*.js
 Copyright: 2024 Nextcloud GmbH and Nextcloud contributors
 License: AGPL-3.0-or-later
 
