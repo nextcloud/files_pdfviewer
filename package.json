@@ -16,6 +16,7 @@
   "private": true,
   "scripts": {
     "prebuild": "rm -rf js && npm run pdfjs:get",
+    "postbuild": "build/npm-post-build.sh",
     "build": "webpack --node-env production --progress",
     "dev": "webpack --node-env development --progress",
     "watch": "webpack --node-env development --progress --watch",
@@ -37,8 +38,8 @@
     "extends @nextcloud/browserslist-config"
   ],
   "engines": {
-    "node": "^16.0.0",
-    "npm": "^7.0.0 || ^8.0.0"
+    "node": "^20.0.0",
+    "npm": "^10.0.0"
   },
   "devDependencies": {
     "@nextcloud/babel-config": "^1.2.0",
