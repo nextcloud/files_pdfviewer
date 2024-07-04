@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
 # just sane ignores
 .*.sw[po]
 *.bak
@@ -60,5 +62,4 @@ nbproject
 .php_cs.cache
 node_modules
 /vendor
-/build
 composer.phar

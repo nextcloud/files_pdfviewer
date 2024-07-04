@@ -1,0 +1,60 @@
+<!--
+  - SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+# Authors
+
+- acsfer <carlos@reendex.com>
+- Andreas Jacobsen <anjac@itu.dk>
+- Andy Scherzinger <info@andy-scherzinger.de>
+- Andy Xheli <axheli@axtsolutions.com>
+- Bart Visscher <bartv@thisnet.nl>
+- Bartek Przybylski <bart.p.pl@gmail.com>
+- Bastien Ho <bastienho@urbancube.fr>
+- Benjamin Renard <brenard@easter-eggs.com>
+- Bjoern Schiessle <bjoern@schiessle.org>
+- Björn Schießle <bjoern@schiessle.org>
+- blizzz <blizzz@arthur-schiwon.de>
+- Christoph Wurst <christoph@winzerhof-wurst.at>
+- Daniel Calviño Sánchez <danxuliu@gmail.com>
+- Daniel Kesselberg <mail@danielkesselberg.de>
+- DJCrashdummy <DJCrashdummy@users.noreply.github.com>
+- Frank Karlitschek <frank@owncloud.org>
+- Georg Ehrke <developer@georgehrke.com>
+- Grigorii Horos <horosgrisa@gmail.com>
+- grisa <grisa@udom.tk>
+- Hajo Möller <dasjoe@gmail.com>
+- Hendrik Leppelsack <hendrik@leppelsack.de>
+- hirschrobert <info@robert-hirsch.de>
+- Jan-Christoph Borchardt <hey@jancborchardt.net>
+- Joas Schilling <coding@schilljs.com>
+- John Molakvoæ <skjnldsv@protonmail.com>
+- Jonas <jonas@freesources.org>
+- Jos Poortvliet <jos@opensuse.org>
+- Julius Härtl <jus@bitgrid.net>
+- Jörn Friedrich Dreyer <jfd@butonic.de>
+- kondou <kondou@ts.unde.re>
+- libracious <libracious@gmail.com>
+- Louis Chemineau <louis@chmn.me>
+- Lukas Reschke <lukas@statuscode.ch>
+- Marco <marcoambrosini@icloud.com>
+- Marius Blüm <marius@lineone.io>
+- Maxence Lange <maxence@nextcloud.com>
+- Michael Gapczynski <mtgap@owncloud.com>
+- Mishel Shaji <itconsultant@gpsrenewables.com>
+- Morris Jobke <hey@morrisjobke.de>
+- RealRancor <RealRancor@users.noreply.github.com>
+- Robbert Gurdeep Singh <git@beardhatcode.be>
+- Robert Hirsch <info@robert-hirsch.de>
+- Robin Appelman <robin@icewind.nl>
+- Roeland Jago Douma <roeland@famdouma.nl>
+- Simon L <szaimen@e.mail.de>
+- szaimen <szaimen@e.mail.de>
+- tahaa karim <tahaalibra@gmail.com>
+- Thomas Müller <thomas.mueller@tmit.eu>
+- Thomas Tanghus <thomas@tanghus.net>
+- Tobias Speicher <rootcommander@gmail.com>
+- Tom Needham <needham.thomas@gmail.com>
+- Vincent Petry <PVince81@yahoo.fr>
+- Nextcloud GmbH
+- ownCloud, Inc.
