@@ -31,10 +31,10 @@ Files: js/pdfjs/web/cmaps/CNS2-V.bcmap js/pdfjs/web/cmaps/ETenms-B5-H.bcmap js/p
 Copyright: 1990-2009 Adobe Systems Incorporated. (https://github.com/adobe-type-tools/cmap-resources)
 License: BSD-3-Clause
 
-Files: js/pdfjs/web/standard_fonts/FoxitDingbats.pfb js/pdfjs/web/standard_fonts/FoxitFixed.pfb js/pdfjs/web/standard_fonts/FoxitFixedBold.pfb js/pdfjs/web/standard_fonts/FoxitFixedBoldItalic.pfb js/pdfjs/web/standard_fonts/FoxitFixedItalic.pfb js/pdfjs/web/standard_fonts/FoxitSerif.pfb js/pdfjs/web/standard_fonts/FoxitSerifBold.pfb js/pdfjs/web/standard_fonts/FoxitSerifBoldItalic.pfb js/pdfjs/web/standard_fonts/FoxitSerifItalic.pfb js/pdfjs/web/standard_fonts/FoxitSymbol.pfb
+Files: js/pdfjs/web/standard_fonts/FoxitDingbats.pfb js/pdfjs/web/standard_fonts/FoxitFixed.pfb js/pdfjs/web/standard_fonts/FoxitFixedBold.pfb js/pdfjs/web/standard_fonts/FoxitFixedBoldItalic.pfb js/pdfjs/web/standard_fonts/FoxitFixedItalic.pfb js/pdfjs/web/standard_fonts/FoxitSerif.pfb js/pdfjs/web/standard_fonts/FoxitSerifBold.pfb js/pdfjs/web/standard_fonts/FoxitSerifBoldItalic.pfb js/pdfjs/web/standard_fonts/FoxitSerifItalic.pfb js/pdfjs/web/standard_fonts/FoxitSymbol.pfb js/pdfjs/web/standard_fonts/LICENSE_FOXIT
 Copyright: 2014 PDFium Authors. All rights reserved.
 License: BSD-3-Clause
 
-Files: js/pdfjs/web/standard_fonts/LiberationSans-Bold.ttf js/pdfjs/web/standard_fonts/LiberationSans-BoldItalic.ttf js/pdfjs/web/standard_fonts/LiberationSans-Italic.ttf js/pdfjs/web/standard_fonts/LiberationSans-Regular.ttf
+Files: js/pdfjs/web/standard_fonts/LiberationSans-Bold.ttf js/pdfjs/web/standard_fonts/LiberationSans-BoldItalic.ttf js/pdfjs/web/standard_fonts/LiberationSans-Italic.ttf js/pdfjs/web/standard_fonts/LiberationSans-Regular.ttf js/pdfjs/web/standard_fonts/LICENSE_LIBERATION
 Copyright: 2010 Google Corporation with Reserved Font Arimo, Tinos and Cousine, 2012 Red Hat, Inc. with Reserved Font Name Liberation.
 License: OFL-1.1-RFN
