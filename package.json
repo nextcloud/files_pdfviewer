@@ -16,7 +16,7 @@
   "private": true,
   "scripts": {
     "prebuild": "rm -rf js && npm run pdfjs:get",
-    "postbuild": "build/npm-post-build.sh",
+    "postbuild": "build-js/npm-post-build.sh",
     "build": "webpack --node-env production --progress",
     "dev": "webpack --node-env development --progress",
     "watch": "webpack --node-env development --progress --watch",
