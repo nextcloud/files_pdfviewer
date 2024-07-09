@@ -62,4 +62,5 @@ nbproject
 .php_cs.cache
 node_modules
 /vendor
+/build
 composer.phar
