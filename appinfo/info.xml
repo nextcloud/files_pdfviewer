@@ -12,7 +12,7 @@
 	<description><![CDATA[Directly view PDF documents in your Nextcloud. 
 As an added bonus, this app can also display Adobe Illustrator (.ai) files. 
 Powered by [pdf.js](https://mozilla.github.io/pdf.js/)]]></description>
-	<version>3.0.0</version>
+	<version>4.0.0</version>
 	<licence>agpl</licence>
 	<author mail="skjnldsv@protonmail.com">John Molakvoæ</author>
 
@@ -26,6 +26,6 @@ Powered by [pdf.js](https://mozilla.github.io/pdf.js/)]]></description>
 	<repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
   
 	<dependencies>
-		<nextcloud min-version="30" max-version="30" />
+		<nextcloud min-version="31" max-version="31" />
 	</dependencies>
 </info>
