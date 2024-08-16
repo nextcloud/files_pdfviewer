@@ -27,7 +27,7 @@
     "stylelint:fix": "stylelint src css --fix"
   },
   "dependencies": {
-    "@nextcloud/auth": "^2.2.1",
+    "@nextcloud/auth": "^2.4.0",
     "@nextcloud/axios": "^2.5.0",
     "@nextcloud/dialogs": "^5.3.5",
     "@nextcloud/logger": "^2.7.0",
