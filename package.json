@@ -48,7 +48,7 @@
     "@nextcloud/stylelint-config": "^3.0.1",
     "@nextcloud/webpack-vue-config": "^6.0.1",
     "adm-zip": "^0.5.15",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "cli-progress": "^3.12.0"
   }
 }
