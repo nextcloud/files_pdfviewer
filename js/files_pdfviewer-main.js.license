@@ -38,7 +38,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.0.1
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 5.3.5
+	- version: 5.3.6
 	- license: AGPL-3.0-or-later
 - semver
 	- version: 7.6.2
