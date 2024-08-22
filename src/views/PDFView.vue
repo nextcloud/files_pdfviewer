@@ -4,11 +4,13 @@
   -->
 <template>
 	<iframe ref="iframe"
-		:src="iframeSrc" />
+		:src="iframeSrc"
+		@load="onIFrameLoaded" />
 </template>
 
 <script>
 import { showError } from '@nextcloud/dialogs'
+import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
@@ -59,14 +61,6 @@ export default {
 		this.$nextTick(function() {
 			this.$el.focus()
 		})
-
-		if (this.isEditable) {
-			this.$refs.iframe.addEventListener('load', () => {
-				this.getDownloadElement().removeAttribute('hidden')
-
-				this.getEditorModeButtonsElement().removeAttribute('hidden')
-			})
-		}
 	},
 
 	beforeDestroy() {
@@ -74,6 +68,15 @@ export default {
 	},
 
 	methods: {
+		onIFrameLoaded() {
+			if (this.isEditable) {
+				this.$nextTick(() => {
+					this.getDownloadElement().removeAttribute('hidden')
+					this.getEditorModeButtonsElement().removeAttribute('hidden')
+				})
+			}
+		},
+
 		getIframeDocument() {
 			// $refs are not reactive, so a method is used instead of a computed
 			// property for clarity.
@@ -90,6 +93,23 @@ export default {
 
 		handleWebviewerloaded() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+
+			const language = getLanguage()
+			const supportedLanguages = SUPPORTED_LANGUAGES
+			// If the user language is supported we use that language,
+			// if the unflavored language is supported we use that,
+			// and if nothing is supported we do not set it as that would fallback to English but we let PDFjs use the browser language.
+			if (supportedLanguages.includes(language)) {
+				// Set the language (they misused "locale") to the user configured value
+				// instead of defaulting to the browser language
+				PDFViewerApplicationOptions.set('locale', language)
+			} else {
+				// Sometimes a flavored language is not named correctly (PDFjs uses iso639-2 and Nextcloud iso639-1)
+				const unflavoredLanguage = language.split('-')[0]
+				if (supportedLanguages.includes(unflavoredLanguage) || supportedLanguages.find((language) => language.startsWith(`${unflavoredLanguage}-`))) {
+					PDFViewerApplicationOptions.set('locale', unflavoredLanguage)
+				}
+			}
 
 			if (!this.isEditable) {
 				// Preferences override options, so they must be disabled for

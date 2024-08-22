@@ -29,9 +29,10 @@
   "dependencies": {
     "@nextcloud/auth": "^2.2.1",
     "@nextcloud/axios": "^2.5.0",
-    "@nextcloud/dialogs": "^5.3.5",
-    "@nextcloud/logger": "^2.7.0",
-    "@nextcloud/router": "^2.2.1",
+    "@nextcloud/dialogs": "^6.0.0",
+    "@nextcloud/l10n": "^3.1.0",
+    "@nextcloud/logger": "^3.0.2",
+    "@nextcloud/router": "^3.0.1",
     "pdfjs-dist": "^3.11.174"
   },
   "browserslist": [
