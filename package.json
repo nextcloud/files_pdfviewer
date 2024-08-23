@@ -30,7 +30,7 @@
     "@nextcloud/auth": "^2.4.0",
     "@nextcloud/axios": "^2.5.0",
     "@nextcloud/dialogs": "^6.0.0",
-    "@nextcloud/logger": "^2.7.0",
+    "@nextcloud/logger": "^3.0.2",
     "@nextcloud/router": "^2.2.1",
     "pdfjs-dist": "^3.11.174"
   },
