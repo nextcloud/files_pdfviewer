@@ -2,11 +2,9 @@ SPDX-License-Identifier: MIT
 SPDX-License-Identifier: ISC
 SPDX-License-Identifier: GPL-3.0-or-later
 SPDX-License-Identifier: AGPL-3.0-or-later
-SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: GitHub Inc.
-SPDX-FileCopyrightText: Denis Pushkarev
 SPDX-FileCopyrightText: Christoph Wurst
 
 
@@ -17,17 +15,8 @@ This file is generated from multiple sources. Included packages:
 - semver
 	- version: 7.6.2
 	- license: ISC
-- @nextcloud/router
-	- version: 2.2.1
-	- license: GPL-3.0-or-later
-- core-js
-	- version: 3.37.0
-	- license: MIT
 - process
 	- version: 0.11.10
-	- license: MIT
-- webpack
-	- version: 5.88.2
 	- license: MIT
 - files_pdfviewer
 	- version: 4.0.0
