@@ -13,6 +13,9 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 
+/**
+ * @template-implements IEventListener<LoadViewer>
+ */
 class LoadViewerListener implements IEventListener {
 	public function handle(Event $event): void {
 		if (!$event instanceof LoadViewer) {

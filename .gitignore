@@ -61,6 +61,6 @@ nbproject
 /tests/karma-coverage
 .php_cs.cache
 node_modules
-/vendor
+**/vendor/
 /build
 composer.phar
