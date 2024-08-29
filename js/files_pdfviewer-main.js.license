@@ -112,7 +112,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 2.7.16
 	- license: MIT
 - webpack
-	- version: 5.88.2
+	- version: 5.94.0
 	- license: MIT
 - files_pdfviewer
 	- version: 4.0.0
