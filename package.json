@@ -26,19 +26,20 @@
     "stylelint:fix": "stylelint src css --fix"
   },
   "dependencies": {
-    "@nextcloud/auth": "^2.2.1",
-    "@nextcloud/axios": "^2.4.0",
-    "@nextcloud/dialogs": "^5.2.1",
-    "@nextcloud/logger": "^2.7.0",
-    "@nextcloud/router": "^2.2.1",
+    "@nextcloud/auth": "^2.4.0",
+    "@nextcloud/axios": "^2.5.0",
+    "@nextcloud/dialogs": "^6.0.0",
+    "@nextcloud/l10n": "^3.1.0",
+    "@nextcloud/logger": "^3.0.2",
+    "@nextcloud/router": "^3.0.1",
     "pdfjs-dist": "^3.11.174"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
   ],
   "engines": {
-    "node": "^16.0.0",
-    "npm": "^7.0.0 || ^8.0.0"
+    "node": "^20.0.0",
+    "npm": "^10.0.0"
   },
   "devDependencies": {
     "@nextcloud/babel-config": "^1.0.0",

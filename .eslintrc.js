@@ -3,8 +3,9 @@ module.exports = {
 		PDFViewerApplicationOptions: true,
 		PDFViewerApplication: true,
 		pdfjsLib: true,
+		SUPPORTED_LANGUAGES: true,
 	},
 	extends: [
 		'@nextcloud',
-	]
+	],
 }
