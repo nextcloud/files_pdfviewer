@@ -8,7 +8,6 @@ SPDX-FileCopyrightText: escape-html developers
 SPDX-FileCopyrightText: Varun A P
 SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: T. Jameson Little <t.jameson.little@gmail.com>
-SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Matt Zabriskie
 SPDX-FileCopyrightText: John-David Dalton <john.david.dalton@gmail.com> (http://allyoucanleet.com/)
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
@@ -73,7 +72,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 6.0.3
 	- license: MIT
 - css-loader
-	- version: 6.8.1
+	- version: 7.1.2
 	- license: MIT
 - dompurify
 	- version: 3.1.5
@@ -99,11 +98,8 @@ This file is generated from multiple sources. Included packages:
 - path-browserify
 	- version: 1.0.1
 	- license: MIT
-- process
-	- version: 0.11.10
-	- license: MIT
 - style-loader
-	- version: 3.3.3
+	- version: 4.0.0
 	- license: MIT
 - toastify-js
 	- version: 1.12.0
