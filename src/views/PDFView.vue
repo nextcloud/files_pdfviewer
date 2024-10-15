@@ -189,7 +189,9 @@ export default {
 iframe {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
+	height: calc(100dvh - var(--header-height));
 	margin-top: var(--header-height);
+	top: calc(var(--header-height) * -1);
 	position: absolute;
 }
 
