@@ -1,7 +1,7 @@
 OC.L10N.register(
     "files_pdfviewer",
     {
-    "PDF viewer" : "عارض ملفات الـ PDF",
+    "PDF viewer" : "عارض ملفات PDF",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "يقوم بعرض ملفات الـ PDF مباشرة داخل نكست كلاود.\nبالإضافة لذلك، يقوم هذا التطبيق بعرض ملفات Adobe Illustrator ذات الامتداد (.ai). \nهذا التطبيق مبنى باستعمال مكتبة [pdf.js] (https://mozilla.github.io/pdf.js/)",
     "File upload failed." : "تعذّر رفع الملف."
 },
