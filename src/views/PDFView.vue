@@ -57,12 +57,32 @@ export default {
 			return this.fileList.find((file) => file.fileid === this.fileid)
 		},
 
+		isDownloadable() {
+			if (!this.file.shareAttributes) {
+				return true
+			}
+
+			const shareAttributes = JSON.parse(this.file.shareAttributes)
+			const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
+			if (downloadPermissions) {
+				return downloadPermissions.value
+			}
+
+			return true
+		},
+
 		isEditable() {
 			return this.file?.permissions?.indexOf('W') >= 0
 		},
 	},
 
 	async mounted() {
+		if (!this.isDownloadable) {
+			this.doneLoading()
+
+			return
+		}
+
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
 
 		if (isPublicPage() && isPdf()) {
@@ -184,6 +204,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#emptycontent {
+	margin: 0;
+	padding: 10% 5%;
+	background-color: var(--color-main-background);
+}
+
 iframe {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
