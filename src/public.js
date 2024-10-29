@@ -5,7 +5,7 @@
 import { generateUrl } from '@nextcloud/router'
 
 import logger from './services/logger.js'
-import canDownload from './utils/canDownload.js'
+import hideDownload from './utils/hideDownload.js'
 import isPublicPage from './utils/isPublicPage.js'
 import isPdf from './utils/isPdf.js'
 import isSecureViewerAvailable from './utils/isSecureViewerAvailable.js'
@@ -13,7 +13,7 @@ import isSecureViewerAvailable from './utils/isSecureViewerAvailable.js'
 window.addEventListener('DOMContentLoaded', function() {
 	logger.debug('Initializing for public page', {
 		isPublicPage: isPublicPage(),
-		canDownload: canDownload(),
+		hideDownload: hideDownload(),
 		isSecureViewerAvailable: isSecureViewerAvailable(),
 	})
 
@@ -36,8 +36,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		const sharingToken = sharingTokenElmt.value
 		const downloadUrl = generateUrl('/s/{token}/download', { token: sharingToken })
-		const viewerUrl = generateUrl('/apps/files_pdfviewer/?file={downloadUrl}&canDownload={canDownload}#page={page}', {
-			canDownload: canDownload() ? 1 : 0,
+		const viewerUrl = generateUrl('/apps/files_pdfviewer/?file={downloadUrl}&hideDownload={hideDownload}#page={page}', {
+			hideDownload: hideDownload() ? 1 : 0,
 			downloadUrl,
 			page,
 		})
