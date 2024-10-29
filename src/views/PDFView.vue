@@ -14,7 +14,7 @@ import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
-import canDownload from '../utils/canDownload.js'
+import hideDownload from '../utils/hideDownload.js'
 import isPdf from '../utils/isPdf.js'
 import isPublicPage from '../utils/isPublicPage.js'
 
@@ -30,8 +30,8 @@ export default {
 
 	computed: {
 		iframeSrc() {
-			return generateUrl('/apps/files_pdfviewer/?file={file}&canDownload={canDownload}', {
-				canDownload: canDownload() ? 1 : 0,
+			return generateUrl('/apps/files_pdfviewer/?file={file}&hideDownload={hideDownload}', {
+				hideDownload: hideDownload() ? 1 : 0,
 				file: this.source ?? this.davPath,
 			})
 		},
