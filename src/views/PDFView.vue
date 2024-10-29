@@ -21,8 +21,13 @@
   -
   -->
 <template>
-	<iframe ref="iframe"
+	<iframe v-if="isDownloadable"
+		ref="iframe"
 		:src="iframeSrc" />
+	<div v-else id="emptycontent">
+		<div class="icon-error" />
+		<h3>{{ t('files_pdfviewer', 'To view a shared PDF file, the download needs to be allowed for this file share') }}</h3>
+	</div>
 </template>
 
 <script>
@@ -57,12 +62,32 @@ export default {
 			return this.fileList.find((file) => file.fileid === this.fileid)
 		},
 
+		isDownloadable() {
+			if (!this.file.shareAttributes) {
+				return true
+			}
+
+			const shareAttributes = JSON.parse(this.file.shareAttributes)
+			const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
+			if (downloadPermissions) {
+				return downloadPermissions.enabled
+			}
+
+			return true
+		},
+
 		isEditable() {
 			return this.file?.permissions?.indexOf('W') >= 0
 		},
 	},
 
 	async mounted() {
+		if (!this.isDownloadable) {
+			this.doneLoading()
+
+			return
+		}
+
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
 
 		if (isPublicPage() && isPdf()) {
@@ -184,6 +209,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#emptycontent {
+	margin: 0;
+	padding: 10% 5%;
+	background-color: var(--color-main-background);
+}
+
 iframe {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
