@@ -27,11 +27,11 @@ import redirectIfNotIframe from './utils/redirectIfNotIframe.js'
 // Checks if the page is displayed in an iframe. If not redirect to /.
 redirectIfNotIframe()
 
-// Retrieve the canDownload from the url, this is
+// Retrieve the hideDownload from the url, this is
 // the most easy way to pass the prop to this iframe
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
-const canDownload = urlParams.get('canDownload')
+const hideDownload = urlParams.get('hideDownload')
 
 function initializeCustomPDFViewerApplication() {
 	const head = document.getElementsByTagName('head')[0]
@@ -49,7 +49,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('imageResourcesPath', './js/pdfjs/web/images/')
 	PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
 
-	if (canDownload === '0') {
+	if (hideDownload === '1') {
 		const pdfViewer = window.document.querySelector('.pdfViewer')
 
 		if (pdfViewer) {
