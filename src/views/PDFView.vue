@@ -3,9 +3,14 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
   -->
 <template>
-	<iframe ref="iframe"
+	<iframe v-if="isDownloadable"
+		ref="iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
+	<div v-else id="emptycontent">
+		<div class="icon-error" />
+		<h3>{{ t('files_pdfviewer', 'To view a shared PDF file, the download needs to be allowed for this file share') }}</h3>
+	</div>
 </template>
 
 <script>
@@ -14,7 +19,7 @@ import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
-import canDownload from '../utils/canDownload.js'
+import hideDownload from '../utils/hideDownload.js'
 import isPdf from '../utils/isPdf.js'
 import isPublicPage from '../utils/isPublicPage.js'
 
@@ -30,8 +35,8 @@ export default {
 
 	computed: {
 		iframeSrc() {
-			return generateUrl('/apps/files_pdfviewer/?file={file}&canDownload={canDownload}', {
-				canDownload: canDownload() ? 1 : 0,
+			return generateUrl('/apps/files_pdfviewer/?file={file}&hideDownload={hideDownload}', {
+				hideDownload: hideDownload() ? 1 : 0,
 				file: this.source ?? this.davPath,
 			})
 		},
@@ -41,12 +46,32 @@ export default {
 			return this.fileList.find((file) => file.fileid === this.fileid)
 		},
 
+		isDownloadable() {
+			if (!this.file.shareAttributes) {
+				return true
+			}
+
+			const shareAttributes = JSON.parse(this.file.shareAttributes)
+			const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
+			if (downloadPermissions) {
+				return downloadPermissions.value
+			}
+
+			return true
+		},
+
 		isEditable() {
 			return this.file?.permissions?.indexOf('W') >= 0
 		},
 	},
 
 	async mounted() {
+		if (!this.isDownloadable) {
+			this.doneLoading()
+
+			return
+		}
+
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
 
 		if (isPublicPage() && isPdf()) {
@@ -186,6 +211,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#emptycontent {
+	margin: 0;
+	padding: 10% 5%;
+	background-color: var(--color-main-background);
+}
+
 iframe {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
