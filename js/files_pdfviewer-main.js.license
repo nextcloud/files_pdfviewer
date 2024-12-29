@@ -37,7 +37,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 0.4.0
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 6.0.0
+	- version: 6.0.1
 	- license: AGPL-3.0-or-later
 - semver
 	- version: 7.6.2
@@ -54,12 +54,15 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/router
 	- version: 3.0.1
 	- license: GPL-3.0-or-later
-- @vueuse/core
-	- version: 11.1.0
-	- license: MIT
 - @nextcloud/vue
-	- version: 8.19.0
+	- version: 8.22.0
 	- license: AGPL-3.0-or-later
+- @vueuse/core
+	- version: 11.3.0
+	- license: MIT
+- @vueuse/shared
+	- version: 11.3.0
+	- license: MIT
 - axios
 	- version: 1.7.7
 	- license: MIT
@@ -101,6 +104,9 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - style-loader
 	- version: 4.0.0
+	- license: MIT
+- tabbable
+	- version: 6.2.0
 	- license: MIT
 - toastify-js
 	- version: 1.12.0
