@@ -322,16 +322,16 @@
         },
         {
             "name": "php-cs-fixer/shim",
-            "version": "v3.17.0",
+            "version": "v3.66.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/shim.git",
-                "reference": "f51b4aed90565c447136f1d015798f6f7c82490f"
+                "reference": "6824b91b16d2e123afed9bf9c96ec283882346c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/f51b4aed90565c447136f1d015798f6f7c82490f",
-                "reference": "f51b4aed90565c447136f1d015798f6f7c82490f",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/6824b91b16d2e123afed9bf9c96ec283882346c9",
+                "reference": "6824b91b16d2e123afed9bf9c96ec283882346c9",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +366,11 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2023-05-22T20:00:38+00:00"
+            "support": {
+                "issues": "https://github.com/PHP-CS-Fixer/shim/issues",
+                "source": "https://github.com/PHP-CS-Fixer/shim/tree/v3.66.0"
+            },
+            "time": "2024-12-29T13:46:48+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1721,5 +1725,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.3.0"
 }
