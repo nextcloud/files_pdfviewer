@@ -129,7 +129,7 @@ export default {
 			return this.getIframeDocument().getElementById('download')
 		},
 
-		handleWebviewerloaded() {
+		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
 
 			const language = getLanguage()
@@ -162,6 +162,10 @@ export default {
 				// prevents editing annotations
 				PDFViewerApplicationOptions.set('annotationEditorMode', -1)
 			}
+		},
+
+		handleWebviewerloaded() {
+			this.initializePDFViewerApplicationOptions()
 
 			// PDFViewerApplication can not be set when the "webviewerloaded"
 			// event is dispatched, as at this point the application was not
