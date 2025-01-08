@@ -34,21 +34,6 @@ const urlParams = new URLSearchParams(queryString)
 const hideDownload = urlParams.get('hideDownload')
 
 function initializeCustomPDFViewerApplication() {
-	const head = document.getElementsByTagName('head')[0]
-
-	// Preferences override options, so they must be disabled for
-	// "externalLinkTarget" to take effect.
-	PDFViewerApplicationOptions.set('disablePreferences', true)
-	// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
-	PDFViewerApplicationOptions.set('externalLinkTarget', 2)
-	PDFViewerApplicationOptions.set('isEvalSupported', false)
-	PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
-	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
-	PDFViewerApplicationOptions.set('sandboxBundleSrc', head.getAttribute('data-sandbox'))
-	PDFViewerApplicationOptions.set('enablePermissions', true)
-	PDFViewerApplicationOptions.set('imageResourcesPath', head.getAttribute('data-imageresourcespath'))
-	PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
-
 	if (hideDownload === '1') {
 		const pdfViewer = window.document.querySelector('.pdfViewer')
 
