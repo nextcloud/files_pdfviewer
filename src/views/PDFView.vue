@@ -114,6 +114,21 @@ export default {
 		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
 
+			const head = this.getIframeDocument().getElementsByTagName('head')[0]
+
+			// Preferences override options, so they must be disabled for
+			// "externalLinkTarget" and "annotationMode" to take effect.
+			PDFViewerApplicationOptions.set('disablePreferences', true)
+			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
+			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
+			PDFViewerApplicationOptions.set('isEvalSupported', false)
+			PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
+			PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
+			PDFViewerApplicationOptions.set('sandboxBundleSrc', head.getAttribute('data-sandbox'))
+			PDFViewerApplicationOptions.set('enablePermissions', true)
+			PDFViewerApplicationOptions.set('imageResourcesPath', head.getAttribute('data-imageresourcespath'))
+			PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
+
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
 			// If the user language is supported we use that language,
@@ -132,10 +147,6 @@ export default {
 			}
 
 			if (!this.isEditable) {
-				// Preferences override options, so they must be disabled for
-				// "annotationMode" to take effect.
-				PDFViewerApplicationOptions.set('disablePreferences', true)
-
 				// AnnotationMode.ENABLE value is 1 in PDF.js, which shows
 				// forms, but does not allow to interact with them
 				PDFViewerApplicationOptions.set('annotationMode', 1)
