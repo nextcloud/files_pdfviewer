@@ -111,10 +111,14 @@ export default {
 			return this.getIframeDocument().getElementById('download')
 		},
 
+		getViewerTemplateParameter(parameterName) {
+			// templates/viewer.php provides the PDF viewer parameters in the
+			// data attributes of the head element.
+			return this.getIframeDocument().getElementsByTagName('head')[0].getAttribute('data-' + parameterName)
+		},
+
 		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
-
-			const head = this.getIframeDocument().getElementsByTagName('head')[0]
 
 			// Preferences override options, so they must be disabled for
 			// "externalLinkTarget" and "annotationMode" to take effect.
@@ -122,12 +126,12 @@ export default {
 			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
 			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
 			PDFViewerApplicationOptions.set('isEvalSupported', false)
-			PDFViewerApplicationOptions.set('workerSrc', head.getAttribute('data-workersrc'))
-			PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
-			PDFViewerApplicationOptions.set('sandboxBundleSrc', head.getAttribute('data-sandbox'))
+			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
+			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
+			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
 			PDFViewerApplicationOptions.set('enablePermissions', true)
-			PDFViewerApplicationOptions.set('imageResourcesPath', head.getAttribute('data-imageresourcespath'))
-			PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
+			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
+			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enableScripting') === true)
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
