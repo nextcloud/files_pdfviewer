@@ -161,6 +161,31 @@ export default {
 			}
 		},
 
+		initializePDFViewerApplication() {
+			this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
+
+			this.PDFViewerApplication.save = this.handleSave
+
+			// Not all fields of PDFViewerApplication are reactive.
+			// Specifically, it can not be known if annotations were created by
+			// watching "pdfDocument.annotationStorage.size" (maybe because
+			// "size" is a getter based on a private field, so it does not work
+			// even if the rest of the chain is skipped and "size" is directly
+			// watched). However, "annotationStorage" has callbacks used by
+			// PDFViewerApplication to know when an annotation was set, so that
+			// callback can be wrapped to also enable the save button.
+			this.PDFViewerApplication.eventBus.on('documentinit', () => {
+				const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
+
+				const onSetModifiedOriginal = annotationStorage.onSetModified
+				annotationStorage.onSetModified = () => {
+					onSetModifiedOriginal.apply(null, arguments)
+
+					this.getDownloadElement().removeAttribute('disabled')
+				}
+			})
+		},
+
 		handleWebviewerloaded() {
 			this.initializePDFViewerApplicationOptions()
 
@@ -174,29 +199,7 @@ export default {
 			// PDFViewerApplication.pdfViewer to be set already and thus uses it
 			// unconditionally).
 			this.$refs.iframe.contentWindow.PDFViewerApplication.initializedPromise.then(() => {
-				this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
-
-				this.PDFViewerApplication.save = this.handleSave
-
-				// Not all fields of PDFViewerApplication are reactive.
-				// Specifically, it can not be known if annotations were created
-				// by watching "pdfDocument.annotationStorage.size" (maybe
-				// because "size" is a getter based on a private field, so it
-				// does not work even if the rest of the chain is skipped and
-				// "size" is directly watched). However, "annotationStorage" has
-				// callbacks used by PDFViewerApplication to know when an
-				// annotation was set, so that callback can be wrapped to also
-				// enable the save button.
-				this.PDFViewerApplication.eventBus.on('documentinit', () => {
-					const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
-
-					const onSetModifiedOriginal = annotationStorage.onSetModified
-					annotationStorage.onSetModified = () => {
-						onSetModifiedOriginal.apply(null, arguments)
-
-						this.getDownloadElement().removeAttribute('disabled')
-					}
-				})
+				this.initializePDFViewerApplication()
 			})
 		},
 
