@@ -115,7 +115,6 @@ export default {
 			if (this.isEditable) {
 				this.$nextTick(() => {
 					this.getDownloadElement().removeAttribute('hidden')
-					this.getEditorModeButtonsElement().removeAttribute('hidden')
 				})
 			}
 		},
@@ -128,10 +127,6 @@ export default {
 
 		getDownloadElement() {
 			return this.getIframeDocument().getElementById('download')
-		},
-
-		getEditorModeButtonsElement() {
-			return this.getIframeDocument().getElementById('editorModeButtons')
 		},
 
 		handleWebviewerloaded() {
@@ -162,6 +157,10 @@ export default {
 				// AnnotationMode.ENABLE value is 1 in PDF.js, which shows
 				// forms, but does not allow to interact with them
 				PDFViewerApplicationOptions.set('annotationMode', 1)
+
+				// AnnotationEditorType.DISABLE value is -1 in PDF.js, which
+				// prevents editing annotations
+				PDFViewerApplicationOptions.set('annotationEditorMode', -1)
 			}
 
 			// PDFViewerApplication can not be set when the "webviewerloaded"
