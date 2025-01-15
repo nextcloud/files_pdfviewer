@@ -1,0 +1,55 @@
+# This workflow is provided via the organization template repository
+#
+# https://github.com/nextcloud/.github
+# https://docs.github.com/en/actions/learn-github-actions/sharing-workflows-with-your-organization
+
+# SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
+
+name: Update all workflows from org templates
+
+on:
+  workflow_dispatch:
+  schedule:
+    # At 4:00 on Sundays
+    - cron: '0 4 * * 0'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+       branches: ["master", "stable30", "stable29"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+        with:
+          ref: ${{ matrix.branches }}
+
+      - name: Checkout workflows repository
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+        with:
+          path: workflow-templates
+          repository: nextcloud/.github
+
+      - name: Copy workflows
+        run: |
+          rsync -rv --existing --include="*/" --include="*.yml" --exclude="*" ./workflow-templates/workflow-templates/ ./.github/workflows/
+          rm -r workflow-templates
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04 # v4
+        with:
+          body: Automated update of all workflows from https://github.com/nextcloud/.github
+          commit-message: Update all workflows from templates
+          committer: GitHub <noreply@github.com>
+          author: nextcloud-command <nextcloud-command@users.noreply.github.com>
+          signoff: true
+          title: "[${{ matrix.branches }}] Update all workflows from templates"
+          token: ${{ secrets.COMMAND_BOT_PAT }}
+          branch: automated/noid/${{ matrix.branches }}-update-workflows
+          labels: |
+            dependencies
+            3. to review
