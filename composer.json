@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
-			"@composer bin psalm install --ansi"
+			"[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all install --ansi"
 		],
 		"cs:fix": "php-cs-fixer fix",
 		"cs:check": "php-cs-fixer fix --dry-run --diff",
