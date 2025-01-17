@@ -46,7 +46,7 @@ function initializeCustomPDFViewerApplication() {
 	PDFViewerApplicationOptions.set('cMapUrl', head.getAttribute('data-cmapurl'))
 	PDFViewerApplicationOptions.set('sandboxBundleSrc', head.getAttribute('data-sandbox'))
 	PDFViewerApplicationOptions.set('enablePermissions', true)
-	PDFViewerApplicationOptions.set('imageResourcesPath', './js/pdfjs/web/images/')
+	PDFViewerApplicationOptions.set('imageResourcesPath', head.getAttribute('data-imageresourcespath'))
 	PDFViewerApplicationOptions.set('enableScripting', head.getAttribute('data-enableScripting') === true)
 
 	if (hideDownload === '1') {
