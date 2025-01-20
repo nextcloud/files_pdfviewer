@@ -14,6 +14,7 @@ const l10nContent = readdirSync(path.resolve(__dirname, 'js', 'pdfjs', 'web', 'l
 
 webpackConfig.entry.workersrc = path.resolve(path.join('src', 'workersrc.js'))
 webpackConfig.entry.public = path.resolve(path.join('src', 'public.js'))
+webpackConfig.entry.init = path.resolve(path.join('src', 'init.js'))
 
 // keep pdfjs vendor in the js folder
 webpackConfig.output.clean = false
