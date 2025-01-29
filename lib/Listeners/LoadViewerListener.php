@@ -18,6 +18,14 @@ class LoadViewerListener implements IEventListener {
 		if (!$event instanceof LoadViewer) {
 			return;
 		}
+
+		// The PDF viewer needs to register the "share-attributes" DAV property
+		// before the viewer is loaded in public share pages. Therefore an init
+		// script is needed rather than a regular script, and it needs to be
+		// done for "LoadViewer" rather than the "BeforeTemplateRenderedEvent",
+		// as when that event is handled the viewer is already initialized.
+		Util::addInitScript(Application::APP_ID, 'files_pdfviewer-init');
+
 		Util::addScript(Application::APP_ID, 'files_pdfviewer-main', 'viewer');
 	}
 }
