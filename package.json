@@ -33,7 +33,7 @@
     "@nextcloud/l10n": "^3.1.0",
     "@nextcloud/logger": "^3.0.2",
     "@nextcloud/router": "^3.0.1",
-    "pdfjs-dist": "^3.11.174"
+    "pdfjs-dist": "^4.0.189"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
