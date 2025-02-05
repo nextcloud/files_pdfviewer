@@ -53,8 +53,7 @@ export default {
 
 	computed: {
 		iframeSrc() {
-			return generateUrl('/apps/files_pdfviewer/?file={file}&hideDownload={hideDownload}', {
-				hideDownload: hideDownload() ? 1 : 0,
+			return generateUrl('/apps/files_pdfviewer/?file={file}', {
 				file: this.source ?? this.davPath,
 			})
 		},
@@ -129,8 +128,27 @@ export default {
 			return this.getIframeDocument().getElementById('download')
 		},
 
-		handleWebviewerloaded() {
+		getViewerTemplateParameter(parameterName) {
+			// templates/viewer.php provides the PDF viewer parameters in the
+			// data attributes of the head element.
+			return this.getIframeDocument().getElementsByTagName('head')[0].getAttribute('data-' + parameterName)
+		},
+
+		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+
+			// Preferences override options, so they must be disabled for
+			// "externalLinkTarget" and "annotationMode" to take effect.
+			PDFViewerApplicationOptions.set('disablePreferences', true)
+			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
+			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
+			PDFViewerApplicationOptions.set('isEvalSupported', false)
+			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
+			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
+			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
+			PDFViewerApplicationOptions.set('enablePermissions', true)
+			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
+			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enableScripting') === true)
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
@@ -150,10 +168,6 @@ export default {
 			}
 
 			if (!this.isEditable) {
-				// Preferences override options, so they must be disabled for
-				// "annotationMode" to take effect.
-				PDFViewerApplicationOptions.set('disablePreferences', true)
-
 				// AnnotationMode.ENABLE value is 1 in PDF.js, which shows
 				// forms, but does not allow to interact with them
 				PDFViewerApplicationOptions.set('annotationMode', 1)
@@ -162,6 +176,75 @@ export default {
 				// prevents editing annotations
 				PDFViewerApplicationOptions.set('annotationEditorMode', -1)
 			}
+		},
+
+		initializePDFViewerApplication() {
+			this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
+
+			this.PDFViewerApplication.save = this.handleSave
+
+			// Not all fields of PDFViewerApplication are reactive.
+			// Specifically, it can not be known if annotations were created by
+			// watching "pdfDocument.annotationStorage.size" (maybe because
+			// "size" is a getter based on a private field, so it does not work
+			// even if the rest of the chain is skipped and "size" is directly
+			// watched). However, "annotationStorage" has callbacks used by
+			// PDFViewerApplication to know when an annotation was set, so that
+			// callback can be wrapped to also enable the save button.
+			this.PDFViewerApplication.eventBus.on('documentinit', () => {
+				const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
+
+				const onSetModifiedOriginal = annotationStorage.onSetModified
+				annotationStorage.onSetModified = () => {
+					onSetModifiedOriginal.apply(null, arguments)
+
+					this.getDownloadElement().removeAttribute('disabled')
+				}
+			})
+
+			if (hideDownload()) {
+				const pdfViewer = this.getIframeDocument().querySelector('.pdfViewer')
+
+				if (pdfViewer) {
+					pdfViewer.classList.add('disabledTextSelection')
+				}
+
+				// Disable download function when downloads are hidden, as even
+				// if the buttons in the UI are hidden the download could still
+				// be triggered with Ctrl|Meta+S.
+				this.PDFViewerApplication.download = () => {
+				}
+
+				// Disable printing service when downloads are hidden, as even
+				// if the buttons in the UI are hidden the printing could still
+				// be triggered with Ctrl|Meta+P.
+				// Abuse the "supportsPrinting" parameter, which signals that
+				// the browser does not fully support printing, to make
+				// PDFViewer disable the printing service.
+				// "supportsPrinting" is a getter function, so it needs to be
+				// deleted before replacing it with a simple value.
+				delete this.PDFViewerApplication.supportsPrinting
+				this.PDFViewerApplication.supportsPrinting = false
+
+				// When printing is not supported a warning is shown by the
+				// default "beforePrint" function when trying to print. That
+				// function needs to be replaced with an empty one to prevent
+				// that warning to be shown.
+				this.PDFViewerApplication.beforePrint = () => {
+				}
+
+				logger.info('Download, print and user interaction disabled')
+			} else {
+				logger.info('Download and print available')
+			}
+
+			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+
+			logger.debug('Initialized files_pdfviewer', PDFViewerApplicationOptions.getAll())
+		},
+
+		handleWebviewerloaded() {
+			this.initializePDFViewerApplicationOptions()
 
 			// PDFViewerApplication can not be set when the "webviewerloaded"
 			// event is dispatched, as at this point the application was not
@@ -173,29 +256,7 @@ export default {
 			// PDFViewerApplication.pdfViewer to be set already and thus uses it
 			// unconditionally).
 			this.$refs.iframe.contentWindow.PDFViewerApplication.initializedPromise.then(() => {
-				this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
-
-				this.PDFViewerApplication.save = this.handleSave
-
-				// Not all fields of PDFViewerApplication are reactive.
-				// Specifically, it can not be known if annotations were created
-				// by watching "pdfDocument.annotationStorage.size" (maybe
-				// because "size" is a getter based on a private field, so it
-				// does not work even if the rest of the chain is skipped and
-				// "size" is directly watched). However, "annotationStorage" has
-				// callbacks used by PDFViewerApplication to know when an
-				// annotation was set, so that callback can be wrapped to also
-				// enable the save button.
-				this.PDFViewerApplication.eventBus.on('documentinit', () => {
-					const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
-
-					const onSetModifiedOriginal = annotationStorage.onSetModified
-					annotationStorage.onSetModified = () => {
-						onSetModifiedOriginal.apply(null, arguments)
-
-						this.getDownloadElement().removeAttribute('disabled')
-					}
-				})
+				this.initializePDFViewerApplication()
 			})
 		},
 
