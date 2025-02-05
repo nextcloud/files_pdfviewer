@@ -36,7 +36,7 @@ SPDX-FileCopyrightText = "2018-2024 Google LLC"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = ["js/pdfjs/build/**", "js/pdfjs/web/debugger.js", "js/pdfjs/web/viewer.js", "js/pdfjs/web/viewer.js.map", "js/pdfjs/web/locale/**", "js/pdfjs/web/images/**", "js/pdfjs/web/debugger.css", "js/pdfjs/web/viewer.css", "js/pdfjs/web/viewer.html", "js/pdfjs/web/compressed.tracemonkey-pldi-09.pdf"]
+path = ["js/pdfjs/build/**", "js/pdfjs/web/debugger.mjs", "js/pdfjs/web/viewer.mjs", "js/pdfjs/web/viewer.mjs.map", "js/pdfjs/web/locale/**", "js/pdfjs/web/images/**", "js/pdfjs/web/debugger.css", "js/pdfjs/web/viewer.css", "js/pdfjs/web/viewer.html", "js/pdfjs/web/compressed.tracemonkey-pldi-09.pdf"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2012-2024 Mozilla Foundation"
 SPDX-License-Identifier = "Apache-2.0"
