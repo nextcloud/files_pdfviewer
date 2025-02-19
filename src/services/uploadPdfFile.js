@@ -5,7 +5,8 @@
 import { getRequestToken } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 
-import { getRootPath, getToken } from '../utils/davUtils.js'
+import { getRootPath } from '../utils/davUtils.js'
+import { getSharingToken } from '@nextcloud/sharing/public'
 
 /**
  * Upload the given contents of a PDF file to the given filename.
@@ -36,11 +37,11 @@ export default async function(filename, data) {
 			requesttoken: getRequestToken(),
 		},
 	}
-	if (getToken()) {
+	if (getSharingToken()) {
 		requestConfig.auth = {
 			// Password is not needed due to "public_link_authenticated" being
 			// set in the session when the share was loaded.
-			username: getToken(),
+			username: getSharingToken(),
 		}
 	}
 

@@ -36,11 +36,3 @@ export const getUserRoot = function() {
 export const isPublic = function() {
 	return !getCurrentUser()
 }
-
-/**
- * Get the current share link token
- */
-export const getToken = function() {
-	const tokenInput = document.getElementById('sharingToken')
-	return tokenInput && tokenInput.value
-}
