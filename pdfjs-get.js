@@ -6,10 +6,10 @@ const path = require('path')
 const AdmZip = require('adm-zip')
 const axios = require('axios')
 const cliProgress = require('cli-progress')
-const npmPackage = require('./package.json')
+const npmPackageLock = require('./package-lock.json')
 
 // Fetching pdf.js build release
-const PDFJSversion = npmPackage.dependencies['pdfjs-dist'].slice(1)
+const PDFJSversion = npmPackageLock.dependencies['pdfjs-dist']['version']
 console.info('Fetching pdfjs', PDFJSversion)
 
 // Init progress
