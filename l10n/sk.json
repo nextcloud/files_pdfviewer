@@ -1,7 +1,7 @@
 { "translations": {
     "PDF viewer" : "PDF prehliadač",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Zobrazujte PDF dokumenty priamo vo vašom Nextcloude. \nAko bonus dokáže táto aplikácia zobraziť aj súbory Adobe Illustrator (.ai). \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)",
-    "To view a shared PDF file, the download needs to be allowed for this file share" : "Ak chcete zobraziť zdieľaný súbor PDF, sťahovanie musí byť povolené pre toto zdieľanie súboru",
-    "File upload failed." : "Nahrávanie súboru zlyhalo."
+    "File upload failed." : "Nahrávanie súboru zlyhalo.",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Ak chcete zobraziť zdieľaný súbor PDF, sťahovanie musí byť povolené pre toto zdieľanie súboru"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }
