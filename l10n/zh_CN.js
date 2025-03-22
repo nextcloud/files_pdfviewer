@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "PDF viewer" : "PDF 阅读器",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "直接在 Nextcloud 中查看 PDF 文件。\n除此之外，该应用也可以直接显示 Adobe Illustrator（.ai）文件。\n由 [pdf.js](https://mozilla.github.io/pdf.js/) 提供",
-    "File upload failed." : "文件上传失败。"
+    "File upload failed." : "文件上传失败。",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "要查看已分享的 PDF 文件，必须允许该文件分享能被下载"
 },
 "nplurals=1; plural=0;");
