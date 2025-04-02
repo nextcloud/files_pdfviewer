@@ -4,6 +4,7 @@
  */
 import { getRequestToken } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
+import { encodePath } from '@nextcloud/paths'
 
 import { getRootPath } from '../utils/davUtils.js'
 import { getSharingToken } from '@nextcloud/sharing/public'
@@ -25,7 +26,7 @@ import { getSharingToken } from '@nextcloud/sharing/public'
 export default async function(filename, data) {
 	// getRootPath takes into account the differences between files of
 	// registered users and public shares.
-	const filePath = getRootPath() + filename
+	const filePath = getRootPath() + encodePath(filename)
 
 	const blob = new Blob([data], { type: 'application/pdf' })
 
