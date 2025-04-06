@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "PDF viewer" : "Leitor de PDF",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Acesse documentos PDF diretamente do seu Nextcloud.\nComo um bônus, este app também pode exibir arquivos do Adobe Illustrator (.ai).\nDesenvolvido com [pdf.js](https://mozilla.github.io/pdf.js/)",
-    "File upload failed." : "Envio de arquivo falhou.",
+    "File upload failed." : "Upload de arquivos falhou.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Para visualizar um arquivo PDF compartilhado, o download precisa ser permitido para esse compartilhamento de arquivo"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
