@@ -19,7 +19,6 @@ import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
-import hideDownload from '../utils/hideDownload.js'
 
 export default {
 	name: 'PDFView',
@@ -41,6 +40,10 @@ export default {
 		file() {
 			// fileList and fileid are provided by the Mime mixin of the Viewer.
 			return this.fileList.find((file) => file.fileid === this.fileid)
+		},
+
+		hideDownload() {
+			return this.file.hideDownload
 		},
 
 		isDownloadable() {
@@ -195,7 +198,7 @@ export default {
 				}
 			})
 
-			if (hideDownload()) {
+			if (this.hideDownload) {
 				const pdfViewer = this.getIframeDocument().querySelector('.pdfViewer')
 
 				if (pdfViewer) {
