@@ -14,7 +14,6 @@ SPDX-FileCopyrightText: Matt Zabriskie
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: James Halliday
-SPDX-FileCopyrightText: Guillaume Chau <guillaume.b.chau@gmail.com>
 SPDX-FileCopyrightText: GitHub Inc.
 SPDX-FileCopyrightText: Feross Aboukhadijeh
 SPDX-FileCopyrightText: Evan You
@@ -37,7 +36,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 0.4.0
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 6.1.1
+	- version: 6.2.0
 	- license: AGPL-3.0-or-later
 - semver
 	- version: 7.7.1
@@ -58,7 +57,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.0.1
 	- license: GPL-3.0-or-later
 - @nextcloud/vue
-	- version: 8.25.1
+	- version: 8.26.0
 	- license: AGPL-3.0-or-later
 - @vueuse/shared
 	- version: 11.3.0
@@ -87,9 +86,6 @@ This file is generated from multiple sources. Included packages:
 - escape-html
 	- version: 1.0.3
 	- license: MIT
-- floating-vue
-	- version: 1.0.0-beta.19
-	- license: MIT
 - focus-trap
 	- version: 7.5.4
 	- license: MIT
@@ -104,9 +100,6 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - style-loader
 	- version: 4.0.0
-	- license: MIT
-- tabbable
-	- version: 6.2.0
 	- license: MIT
 - toastify-js
 	- version: 1.12.0
