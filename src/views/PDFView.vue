@@ -7,7 +7,7 @@
 		ref="iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
-	<div v-else id="emptycontent">
+	<div v-else-if="!isRichDocumentsAvailable" id="emptycontent">
 		<div class="icon-error" />
 		<h3>{{ t('files_pdfviewer', 'To view a shared PDF file, the download needs to be allowed for this file share') }}</h3>
 	</div>
@@ -59,6 +59,10 @@ export default {
 			return true
 		},
 
+		isRichDocumentsAvailable() {
+			return 'richdocuments' in OC.appswebroots
+		},
+
 		isEditable() {
 			return this.file?.permissions?.indexOf('W') >= 0
 		},
@@ -67,6 +71,23 @@ export default {
 	async mounted() {
 		if (!this.isDownloadable) {
 			this.doneLoading()
+
+			if (this.isRichDocumentsAvailable) {
+				console.info('PDF file is not downloadable, but "richdocuments" is available, so falling back to it')
+
+				// Opening the viewer again overwrites its current state, so the
+				// current options need to be explicitly passed again.
+				OCA.Viewer.openWith('richdocuments', {
+					fileInfo: this.file,
+					list: OCA.Viewer.list,
+					enableSidebar: OCA.Viewer.enableSidebar,
+					loadMore: OCA.Viewer.loadMore,
+					canLoop: OCA.Viewer.canLoop,
+					onPrev: OCA.Viewer.onPrev,
+					onNext: OCA.Viewer.onNext,
+					onClose: OCA.Viewer.onClose,
+				})
+			}
 
 			return
 		}
