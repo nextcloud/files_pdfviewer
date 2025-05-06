@@ -19,9 +19,6 @@ import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
-import hideDownload from '../utils/hideDownload.js'
-import isPdf from '../utils/isPdf.js'
-import isPublicPage from '../utils/isPublicPage.js'
 
 export default {
 	name: 'PDFView',
@@ -43,6 +40,10 @@ export default {
 		file() {
 			// fileList and fileid are provided by the Mime mixin of the Viewer.
 			return this.fileList.find((file) => file.fileid === this.fileid)
+		},
+
+		hideDownload() {
+			return this.file.hideDownload
 		},
 
 		isDownloadable() {
@@ -69,11 +70,11 @@ export default {
 	},
 
 	async mounted() {
-		if (!this.isDownloadable) {
+		if (!this.isDownloadable || (this.hideDownload && this.isRichDocumentsAvailable)) {
 			this.doneLoading()
 
 			if (this.isRichDocumentsAvailable) {
-				console.info('PDF file is not downloadable, but "richdocuments" is available, so falling back to it')
+				console.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
 
 				// Opening the viewer again overwrites its current state, so the
 				// current options need to be explicitly passed again.
@@ -93,14 +94,6 @@ export default {
 		}
 
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
-
-		if (isPublicPage() && isPdf()) {
-			// Force style for public shares of a single PDF file, as there are
-			// no CSS selectors that could be used only for that case.
-			this.$refs.iframe.style.height = '100%'
-			this.$refs.iframe.style.position = 'absolute'
-			this.$refs.iframe.style.marginTop = 'unset'
-		}
 
 		this.doneLoading()
 		this.$nextTick(function() {
@@ -205,7 +198,7 @@ export default {
 				}
 			})
 
-			if (hideDownload()) {
+			if (this.hideDownload) {
 				const pdfViewer = this.getIframeDocument().querySelector('.pdfViewer')
 
 				if (pdfViewer) {
