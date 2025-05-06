@@ -70,11 +70,11 @@ export default {
 	},
 
 	async mounted() {
-		if (!this.isDownloadable) {
+		if (!this.isDownloadable || (this.hideDownload && this.isRichDocumentsAvailable)) {
 			this.doneLoading()
 
 			if (this.isRichDocumentsAvailable) {
-				console.info('PDF file is not downloadable, but "richdocuments" is available, so falling back to it')
+				console.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
 
 				// Opening the viewer again overwrites its current state, so the
 				// current options need to be explicitly passed again.
