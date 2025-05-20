@@ -24,5 +24,3 @@ Server::get(IAppManager::class)->loadApp('files_pdfviewer');
 if (!class_exists(TestCase::class)) {
 	require_once('PHPUnit/Autoload.php');
 }
-
-OC_Hook::clear();
