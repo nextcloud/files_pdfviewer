@@ -75,7 +75,7 @@ export default {
 			this.doneLoading()
 
 			if (this.isRichDocumentsAvailable) {
-				console.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
+				logger.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
 
 				// Opening the viewer again overwrites its current state, so the
 				// current options need to be explicitly passed again.
