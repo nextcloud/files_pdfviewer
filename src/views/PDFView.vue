@@ -268,7 +268,7 @@ export default {
 				return uploadPdfFile(this.file.filename, data)
 			}).then(() => {
 				logger.info('File uploaded successfully')
-			}).catch(error => {
+			}).catch((error) => {
 				logger.error('Error uploading file:', error)
 
 				showError(t('files_pdfviewer', 'File upload failed.'))
