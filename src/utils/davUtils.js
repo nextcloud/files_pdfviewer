@@ -10,7 +10,7 @@ import { generateRemoteUrl } from '@nextcloud/router'
  * e.g /remote.php/dav/files/USERID
  * or /public.php/webdav for public shares
  */
-export const getRootPath = function() {
+export function getRootPath() {
 	if (!isPublic()) {
 		return generateRemoteUrl(`dav${getUserRoot()}`)
 	} else {
@@ -22,7 +22,7 @@ export const getRootPath = function() {
  * Get the user root path relative to
  * the dav service endpoint
  */
-export const getUserRoot = function() {
+export function getUserRoot() {
 	if (isPublic()) {
 		throw new Error('No user logged in')
 	}
@@ -33,6 +33,6 @@ export const getUserRoot = function() {
 /**
  * Is the current user an unauthenticated user?
  */
-export const isPublic = function() {
+export function isPublic() {
 	return !getCurrentUser()
 }
