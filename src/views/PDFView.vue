@@ -192,8 +192,8 @@ export default {
 				const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
 
 				const onSetModifiedOriginal = annotationStorage.onSetModified
-				annotationStorage.onSetModified = () => {
-					onSetModifiedOriginal(...arguments)
+				annotationStorage.onSetModified = (...args) => {
+					onSetModifiedOriginal(...args)
 
 					this.getDownloadElement().removeAttribute('disabled')
 				}
