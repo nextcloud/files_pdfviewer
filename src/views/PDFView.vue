@@ -193,7 +193,7 @@ export default {
 
 				const onSetModifiedOriginal = annotationStorage.onSetModified
 				annotationStorage.onSetModified = () => {
-					onSetModifiedOriginal.apply(null, arguments)
+					onSetModifiedOriginal(...arguments)
 
 					this.getDownloadElement().removeAttribute('disabled')
 				}
