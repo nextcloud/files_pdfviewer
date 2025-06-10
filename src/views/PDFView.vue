@@ -3,7 +3,8 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
   -->
 <template>
-	<iframe v-if="isDownloadable"
+	<iframe
+		v-if="isDownloadable"
 		ref="iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
