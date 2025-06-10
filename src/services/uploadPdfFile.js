@@ -5,9 +5,8 @@
 import { getRequestToken } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 import { encodePath } from '@nextcloud/paths'
-
-import { getRootPath } from '../utils/davUtils.js'
 import { getSharingToken } from '@nextcloud/sharing/public'
+import { getRootPath } from '../utils/davUtils.js'
 
 /**
  * Upload the given contents of a PDF file to the given filename.
