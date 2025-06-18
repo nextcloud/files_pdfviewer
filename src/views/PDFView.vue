@@ -300,8 +300,14 @@ export default {
 
 iframe {
 	width: 100%;
-	height: calc(100vh - var(--header-height));
-	margin-top: var(--header-height);
+	/* The height is increased to cover the full modal content. Note that the
+	 * added height is not related to the header itself, but to the "bottom"
+	 * property of ".modal-container" in the viewer, which just happens to use
+	 * the header height. */
+	height: calc(100% + var(--header-height));
+	/* Align the PDF viewer with the top of the viewer content so it appears
+	 * below its header. */
+	top: 0;
 	position: absolute;
 }
 
