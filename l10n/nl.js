@@ -1,0 +1,9 @@
+OC.L10N.register(
+    "files_pdfviewer",
+    {
+    "PDF viewer" : "PDF viewer",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Direct PDF-documenten bekijken in je Nextcloud. \nAls bonus kan deze app ook bestanden van Adobe Illustrator (.ai) weergeven. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "File upload failed." : "Uploaden van bestand mislukt.",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Om een gedeeld PDF-bestand te bekijken, moet downloaden worden toegestaan voor dit bestandsaandeel"
+},
+"nplurals=2; plural=(n != 1);");
