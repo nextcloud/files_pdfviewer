@@ -1,0 +1,9 @@
+OC.L10N.register(
+    "files_pdfviewer",
+    {
+    "PDF viewer" : "PDF ko'rsatuvchi",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "To'g'ridan-to'g'ri PDF hujjatlarini NextCloud-da ko'ring. Qo‘shimcha bonus sifatida ushbu ilova Adobe Illustrator (.ai) fayllarini ham ko‘rsatishi mumkin.  [pdf.js](https://mozilla.github.io/pdf.js/) tomonidan taqdim etilmoqda",
+    "File upload failed." : "Fayl yangilanishida xatolik",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Umumiy PDF faylni ko'rish uchun ushbu fayl almashish uchun yuklab olishga ruxsat berilishi kerak"
+},
+"nplurals=1; plural=0;");
