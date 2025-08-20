@@ -3,7 +3,8 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
   -->
 <template>
-	<iframe v-if="isDownloadable"
+	<iframe
+		v-if="isDownloadable"
 		ref="iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
@@ -74,7 +75,7 @@ export default {
 			this.doneLoading()
 
 			if (this.isRichDocumentsAvailable) {
-				console.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
+				logger.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
 
 				// Opening the viewer again overwrites its current state, so the
 				// current options need to be explicitly passed again.
@@ -191,8 +192,8 @@ export default {
 				const annotationStorage = this.PDFViewerApplication.pdfDocument.annotationStorage
 
 				const onSetModifiedOriginal = annotationStorage.onSetModified
-				annotationStorage.onSetModified = () => {
-					onSetModifiedOriginal.apply(null, arguments)
+				annotationStorage.onSetModified = (...args) => {
+					onSetModifiedOriginal(...args)
 
 					this.getDownloadElement().removeAttribute('disabled')
 				}
@@ -267,7 +268,7 @@ export default {
 				return uploadPdfFile(this.file.filename, data)
 			}).then(() => {
 				logger.info('File uploaded successfully')
-			}).catch(error => {
+			}).catch((error) => {
 				logger.error('Error uploading file:', error)
 
 				showError(t('files_pdfviewer', 'File upload failed.'))
