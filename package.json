@@ -34,7 +34,7 @@
     "@nextcloud/logger": "^3.0.2",
     "@nextcloud/paths": "^2.2.1",
     "@nextcloud/router": "^3.0.1",
-    "@nextcloud/sharing": "^0.2.5",
+    "@nextcloud/sharing": "^0.3.0",
     "pdfjs-dist": "4.0.189"
   },
   "browserslist": [
