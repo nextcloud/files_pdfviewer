@@ -48,7 +48,7 @@ export default {
 		},
 
 		isDownloadable() {
-			if (!this.file.shareAttributes) {
+			if (!this.file || !this.file.shareAttributes) {
 				return true
 			}
 
