@@ -10,7 +10,6 @@ SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: T. Jameson Little <t.jameson.little@gmail.com>
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
-SPDX-FileCopyrightText: Matt Zabriskie
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: James Halliday
 SPDX-FileCopyrightText: GitHub Inc.
@@ -28,7 +27,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 2.5.2
 	- license: GPL-3.0-or-later
 - @nextcloud/axios
-	- version: 2.5.1
+	- version: 2.5.2
 	- license: GPL-3.0-or-later
 - @nextcloud/browser-storage
 	- version: 0.4.0
@@ -62,9 +61,6 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - @vueuse/shared
 	- version: 11.3.0
-	- license: MIT
-- axios
-	- version: 1.12.2
 	- license: MIT
 - base64-js
 	- version: 1.5.1
