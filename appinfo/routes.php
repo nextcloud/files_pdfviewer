@@ -10,4 +10,6 @@ namespace OCA\Files_PDFViewer\AppInfo;
 
 return ['routes' => [
 	['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
+	['name' => 'settings#getSettings', 'url' => '/settings', 'verb' => 'GET'],
+	['name' => 'settings#setSettings', 'url' => '/settings', 'verb' => 'POST'],
 ]];
