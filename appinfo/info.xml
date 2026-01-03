@@ -28,4 +28,8 @@ Powered by [pdf.js](https://mozilla.github.io/pdf.js/)]]></description>
 	<dependencies>
 		<nextcloud min-version="34" max-version="34" />
 	</dependencies>
+
+	<settings>
+		<admin>OCA\Files_PDFViewer\Settings\AdminSettings</admin>
+	</settings>
 </info>
