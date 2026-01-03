@@ -8,6 +8,12 @@ declare(strict_types=1);
  */
 namespace OCA\Files_PDFViewer\AppInfo;
 
-return ['routes' => [
-	['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
-]];
+return [
+	'routes' => [
+		['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
+	],
+	'ocs' => [
+		['name' => 'settings#getSettings', 'url' => '/api/v1/settings', 'verb' => 'GET'],
+		['name' => 'settings#setEnableScripting', 'url' => '/api/v1/settings/enable-scripting', 'verb' => 'PUT'],
+	],
+];
