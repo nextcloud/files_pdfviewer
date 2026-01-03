@@ -9,6 +9,7 @@ namespace OCA\Files_PDFViewer\AppInfo;
 
 use OCA\Files_PDFViewer\Listeners\CSPListener;
 use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
+use OCA\Files_PDFViewer\Settings\AdminSettings;
 
 use OCA\Viewer\Event\LoadViewer;
 
@@ -17,6 +18,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
+use OCP\Settings\ISettings;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'files_pdfviewer';
@@ -28,6 +30,7 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(LoadViewer::class, LoadViewerListener::class);
 		$context->registerEventListener(AddContentSecurityPolicyEvent::class, CSPListener::class);
+        $context->registerSettings(ISettings::class, AdminSettings::class);
 	}
 
 	public function boot(IBootContext $context): void {
