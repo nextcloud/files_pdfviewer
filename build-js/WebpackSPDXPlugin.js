@@ -202,7 +202,9 @@ class WebpackSPDXPlugin {
 				output = `SPDX-FileCopyrightText: ${author}\n${output}`
 			}
 			for (const license of [...licenses].sort()) {
+				// REUSE-IgnoreStart
 				output = `SPDX-License-Identifier: ${license}\n${output}`
+				// REUSE-IgnoreEnd
 			}
 
 			compilation.emitAsset(
