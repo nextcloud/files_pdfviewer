@@ -190,7 +190,7 @@ See https://github.com/adobe-type-tools/cmap-resources
               <span data-l10n-id="pdfjs-print-button-label">Print</span>
             </button>
 
-            <button id="secondaryDownload" class="secondaryToolbarButton visibleMediumView" title="Save" tabindex="53" data-l10n-id="pdfjs-save-button" hidden="true">
+            <button id="secondaryDownload" class="secondaryToolbarButton visibleMediumView" disabled="disabled" title="Save" tabindex="53" data-l10n-id="pdfjs-save-button" hidden="true">
               <span data-l10n-id="pdfjs-save-button-label">Save</span>
             </button>
 

@@ -111,6 +111,7 @@ export default {
 			if (this.isEditable) {
 				this.$nextTick(() => {
 					this.getDownloadElement().removeAttribute('hidden')
+					this.getSecondaryDownloadElement().removeAttribute('hidden')
 				})
 			}
 		},
@@ -123,6 +124,10 @@ export default {
 
 		getDownloadElement() {
 			return this.getIframeDocument().getElementById('download')
+		},
+
+		getSecondaryDownloadElement() {
+			return this.getIframeDocument().getElementById('secondaryDownload')
 		},
 
 		getViewerTemplateParameter(parameterName) {
@@ -196,6 +201,7 @@ export default {
 					onSetModifiedOriginal(...args)
 
 					this.getDownloadElement().removeAttribute('disabled')
+					this.getSecondaryDownloadElement().removeAttribute('disabled')
 				}
 			})
 
@@ -262,6 +268,10 @@ export default {
 			downloadElement.setAttribute('disabled', 'disabled')
 			downloadElement.classList.add('icon-loading-small')
 
+			const secondaryDownloadElement = this.getSecondaryDownloadElement()
+			secondaryDownloadElement.setAttribute('disabled', 'disabled')
+			secondaryDownloadElement.classList.add('icon-loading-small')
+
 			logger.info('PDF Document with annotation is being saved')
 
 			this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
@@ -277,8 +287,10 @@ export default {
 				// successful it will be enabled again when a new annotation is
 				// added.
 				downloadElement.removeAttribute('disabled')
+				secondaryDownloadElement.removeAttribute('disabled')
 			}).finally(() => {
 				downloadElement.classList.remove('icon-loading-small')
+				secondaryDownloadElement.classList.remove('icon-loading-small')
 			})
 		},
 	},
