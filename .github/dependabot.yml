@@ -12,6 +12,8 @@ updates:
   labels:
     - "3. to review"
     - "dependencies"
+  cooldown:
+    default-days: 7
 
 - package-ecosystem: npm
   directory: "/"
@@ -23,6 +25,8 @@ updates:
   labels:
     - "3. to review"
     - "dependencies"
+  cooldown:
+    default-days: 7
 
 # Main stableXX npm
 - package-ecosystem: npm
@@ -40,6 +44,8 @@ updates:
     # ignore all GitHub linguist patch updates
     - dependency-name: "*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
+  cooldown:
+    default-days: 7
 
 - package-ecosystem: npm
   directory: "/"
@@ -56,3 +62,5 @@ updates:
     # ignore all GitHub linguist patch updates
     - dependency-name: "*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
+  cooldown:
+    default-days: 7
