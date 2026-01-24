@@ -1,0 +1,7 @@
+{ "translations": {
+    "PDF viewer" : "Penampil PDF",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Lihat dokumen PDF secara langsung di Nextcloud Anda. \nSebagai bonus tambahan, aplikasi ini juga dapat menampilkan berkas Adobe Illustrator (.ai). \nDidukung oleh [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "File upload failed." : "Pengunggahan berkas gagal.",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Untuk melihat berkas PDF yang dibagikan, pengunduhan harus diizinkan untuk pembagian berkas ini"
+},"pluralForm" :"nplurals=1; plural=0;"
+}
