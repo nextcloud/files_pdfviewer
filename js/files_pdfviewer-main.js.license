@@ -370,7 +370,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 15.11.1
 	- license: MIT
 - webpack
-	- version: 5.94.0
+	- version: 5.105.0
 	- license: MIT
 - files_pdfviewer
 	- version: 7.0.0-dev.0
