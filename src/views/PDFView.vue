@@ -48,17 +48,22 @@ export default {
 		},
 
 		isDownloadable() {
-			if (!this.file.shareAttributes) {
+			if (!this.file || !this.file.shareAttributes) {
 				return true
 			}
-
-			const shareAttributes = JSON.parse(this.file.shareAttributes)
-			const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
-			if (downloadPermissions) {
-				return downloadPermissions.value
+			try {
+				const shareAttributes = JSON.parse(this.file.shareAttributes)
+				const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
+				if (downloadPermissions) {
+					return downloadPermissions.value
+				}
+				return true
+			} catch (e) {
+				logger.error('Error parsing shareAttributes:', e)
+				// If shareAttributes can not be parsed, assume the file is
+				// downloadable to avoid locking users out of their files.
+				return true
 			}
-
-			return true
 		},
 
 		isRichDocumentsAvailable() {
