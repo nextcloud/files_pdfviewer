@@ -9,6 +9,7 @@ namespace OCA\Files_PDFViewer\AppInfo;
 
 use OCA\Files_PDFViewer\Listeners\CSPListener;
 use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
+use OCA\Files_PDFViewer\Settings\AdminSettings;
 
 use OCA\Viewer\Event\LoadViewer;
 
@@ -31,5 +32,7 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function boot(IBootContext $context): void {
+		$server = $context->getServerContainer();
+		$server->getSettingsManager()->registerSetting('admin', AdminSettings::class);
 	}
 }

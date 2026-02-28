@@ -150,7 +150,7 @@ export default {
 			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
 			PDFViewerApplicationOptions.set('enablePermissions', true)
 			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
-			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enableScripting') === true)
+			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enableScripting') === '1')
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
