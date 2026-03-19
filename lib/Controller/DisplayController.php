@@ -11,6 +11,8 @@ namespace OCA\Files_PDFViewer\Controller;
 use OCA\Files_PDFViewer\AppInfo\Application;
 use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
@@ -45,12 +47,11 @@ class DisplayController extends Controller {
 	}
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
 	 * @param bool $minmode
 	 * @return TemplateResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function showPdfViewer(bool $minmode = false): TemplateResponse {
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
