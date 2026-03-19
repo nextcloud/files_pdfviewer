@@ -62,7 +62,7 @@ class DisplayControllerTest extends TestCase {
 			'version' => '1.0.0',
 			'enableScripting' => false,
 		];
-		$expectedResponse = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
+		$expectedResponse = new TemplateResponse(Application::APP_ID, 'viewer', $params, TemplateResponse::RENDER_AS_BLANK);
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
