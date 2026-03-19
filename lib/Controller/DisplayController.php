@@ -60,7 +60,7 @@ class DisplayController extends Controller {
 			'enableScripting' => $this->config->getAppValue(Application::APP_ID, 'enable_scripting', 'no') === 'yes',
 		];
 
-		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
+		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, TemplateResponse::RENDER_AS_BLANK);
 
 		$policy = new ContentSecurityPolicy();
 		$policy->addAllowedChildSrcDomain('\'self\'');
