@@ -9,11 +9,8 @@
 /** @var array $_ */
 /** @var OCP\IURLGenerator $urlGenerator */
 $urlGenerator = $_['urlGenerator'];
-$version = \OC::$server->getAppManager()->getAppVersion('files_pdfviewer');
-$enableScripting = false;
-if (\OC::$server->getConfig()->getAppValue('files_pdfviewer', 'enable_scripting', 'no') === 'yes') {
-	$enableScripting = true;
-}
+$version = $_['version'];
+$enableScripting = $_['enableScripting'];
 ?>
 
 <!DOCTYPE html>
