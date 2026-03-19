@@ -4,7 +4,7 @@
   -->
 <template>
 	<iframe
-		v-if="isDownloadable"
+		v-if="isDownloadable || allowViewWithoutDownload"
 		ref="iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
@@ -16,6 +16,7 @@
 
 <script>
 import { showError } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import logger from '../services/logger.js'
@@ -61,6 +62,10 @@ export default {
 			return true
 		},
 
+		allowViewWithoutDownload() {
+			return loadState('files_pdfviewer', 'allowViewWithoutDownload')
+		},
+
 		isRichDocumentsAvailable() {
 			return 'richdocuments' in OC.appswebroots
 		},
@@ -71,7 +76,7 @@ export default {
 	},
 
 	async mounted() {
-		if (!this.isDownloadable || (this.hideDownload && this.isRichDocumentsAvailable)) {
+		if ((!this.isDownloadable && !this.allowViewWithoutDownload) || (this.hideDownload && this.isRichDocumentsAvailable)) {
 			this.doneLoading()
 
 			if (this.isRichDocumentsAvailable) {
@@ -205,7 +210,7 @@ export default {
 				}
 			})
 
-			if (this.hideDownload) {
+			if (this.hideDownload || (!this.isDownloadable && this.allowViewWithoutDownload)) {
 				const pdfViewer = this.getIframeDocument().querySelector('.pdfViewer')
 
 				if (pdfViewer) {
