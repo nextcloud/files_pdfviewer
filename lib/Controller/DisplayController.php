@@ -9,9 +9,13 @@
 namespace OCA\Files_PDFViewer\Controller;
 
 use OCA\Files_PDFViewer\AppInfo\Application;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -20,27 +24,40 @@ class DisplayController extends Controller {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var IAppManager */
+	private $appManager;
+
+	/** @var IConfig */
+	private $config;
+
 	/**
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
+	 * @param IAppManager $appManager
+	 * @param IConfig $config
 	 */
 	public function __construct(IRequest $request,
-		IURLGenerator $urlGenerator) {
+		IURLGenerator $urlGenerator,
+		IAppManager $appManager,
+		IConfig $config) {
 		parent::__construct(Application::APP_ID, $request);
 		$this->urlGenerator = $urlGenerator;
+		$this->appManager = $appManager;
+		$this->config = $config;
 	}
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
 	 * @param bool $minmode
 	 * @return TemplateResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function showPdfViewer(bool $minmode = false): TemplateResponse {
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
-			'minmode' => $minmode
+			'minmode' => $minmode,
+			'version' => $this->appManager->getAppVersion(Application::APP_ID),
+			'enableScripting' => $this->config->getAppValue(Application::APP_ID, 'enable_scripting', 'no') === 'yes',
 		];
 
 		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
