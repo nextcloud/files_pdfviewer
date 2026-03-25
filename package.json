@@ -36,6 +36,7 @@
     "@nextcloud/paths": "^2.2.2",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/sharing": "^0.2.5",
+    "@nextcloud/vue": "^8.37.0",
     "pdfjs-dist": "4.0.189"
   },
   "browserslist": [
