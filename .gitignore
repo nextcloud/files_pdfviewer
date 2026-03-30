@@ -64,3 +64,9 @@ node_modules
 **/vendor/
 /build
 composer.phar
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
