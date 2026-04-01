@@ -3,6 +3,8 @@ OC.L10N.register(
     {
     "PDF viewer" : "Leitor de PDF",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Acesse documentos PDF diretamente no seu Nextcloud.\nComo um bônus, este app também pode exibir arquivos do Adobe Illustrator (.ai).\nDesenvolvido com [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Failed to load settings" : "Falha ao carregar configurações",
+    "Failed to save settings" : "Falha ao salvar configurações",
     "File upload failed." : "Upload de arquivos falhou.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Para visualizar um arquivo PDF compartilhado, o download precisa ser permitido para este compartilhamento de arquivo"
 },
