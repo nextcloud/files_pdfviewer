@@ -3,6 +3,8 @@ OC.L10N.register(
     {
     "PDF viewer" : "Breathnóir PDF",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Féach go díreach ar dhoiciméid PDF i do Nextcloud.\nMar bhónas breise, is féidir leis an aip seo comhaid Adobe Illustrator (.ai) a thaispeáint freisin.\nCumhachtaithe ag [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Failed to load settings" : "Theip ar lódáil na socruithe",
+    "Failed to save settings" : "Theip ar na socruithe a shábháil",
     "File upload failed." : "Theip ar uaslódáil an chomhaid.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Chun féachaint ar chomhad PDF roinnte, ní mór an íoslódáil a cheadú don chomhroinnt comhaid seo"
 },

@@ -3,6 +3,8 @@ OC.L10N.register(
     {
     "PDF viewer" : "Mtazamaji wa PDF",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Tazama hati za PDF moja kwa moja kwenye Nextcloud yako. \nKama bonasi iliyoongezwa, programu hii inaweza pia kuonyesha faili za Adobe Illustrator (.ai). \nInaendeshwa na [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Failed to load settings" : "Imeshindwa kupakia mipangilio",
+    "Failed to save settings" : "Imeshindwa kuhifadhi mipangilio",
     "File upload failed." : "Upakiaji wa faili umeshindikana",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Ili kutazama faili ya PDF iliyoshirikiwa, upakuaji unahitaji kuruhusiwa kwa kushiriki faili hii"
 },
