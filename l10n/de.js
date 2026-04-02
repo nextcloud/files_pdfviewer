@@ -3,6 +3,12 @@ OC.L10N.register(
     {
     "PDF viewer" : "PDF-Viewer",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "PDF-Dokumente direkt in der Nextcloud ansehen.\nAls zusätzlichen Bonus kann diese App auch Adobe Illustrator-Dateien (.ai) anzeigen.\nUnterstützt von [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Failed to load settings" : "Einstellungen konnten nicht geladen werden",
+    "Failed to save settings" : "Einstellungen konnten nicht gespeichert werden",
+    "PDF Viewer" : "PDF-Viewer",
+    "Configure PDF viewer settings" : "PDF-Viewer-Einstellungen konfigurieren",
+    "Enable PDF scripting" : "PDF-Skripting aktivieren",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Durch Aktivieren von PDF-Skripting ist die Ausführung von JavaScript in PDF-Dokumenten möglich. Dies ermöglicht Formularberechnungen und dynamische Inhalte, kann jedoch bei nicht vertrauenswürdigen PDFs ein Sicherheitsrisiko bedeuten. PDF-Skripte werden in einer Sandbox-Umgebung ausgeführt.",
     "File upload failed." : "Datei hochladen fehlgeschlagen",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Um eine freigegebene PDF-Datei anzuzeigen, muss das Herunterladen für diese Dateifreigabe erlaubt sein"
 },
