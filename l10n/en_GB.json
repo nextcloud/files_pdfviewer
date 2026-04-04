@@ -1,6 +1,12 @@
 { "translations": {
     "PDF viewer" : "PDF viewer",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Failed to load settings" : "Failed to load settings",
+    "Failed to save settings" : "Failed to save settings",
+    "PDF Viewer" : "PDF Viewer",
+    "Configure PDF viewer settings" : "Configure PDF viewer settings",
+    "Enable PDF scripting" : "Enable PDF scripting",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment.",
     "File upload failed." : "File upload failed.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "To view a shared PDF file, the download needs to be allowed for this file share"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
