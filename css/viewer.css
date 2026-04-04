@@ -9,6 +9,22 @@
 		visibility: hidden;
 		display: none;
 	}
+
+	.toolbar,
+	#secondaryToolbar,
+	#sidebarContainer {
+		display: none;
+	}
+
+	#viewerContainer {
+		top: 0 !important;
+	}
+
+	.pdfViewer .page {
+		margin: 0 !important;
+		border: initial !important;
+		box-shadow: initial !important;
+	}
 }
 
 /* Prevent text selection when the download of a share is hidden. */
