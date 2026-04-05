@@ -11,6 +11,7 @@ SPDX-FileCopyrightText: T. Jameson Little <t.jameson.little@gmail.com>
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
+SPDX-FileCopyrightText: Guillaume Chau <guillaume.b.chau@gmail.com>
 SPDX-FileCopyrightText: GitHub Inc.
 SPDX-FileCopyrightText: Feross Aboukhadijeh
 SPDX-FileCopyrightText: Evan You
@@ -78,6 +79,9 @@ This file is generated from multiple sources. Included packages:
 	- license: (MPL-2.0 OR Apache-2.0)
 - escape-html
 	- version: 1.0.3
+	- license: MIT
+- floating-vue
+	- version: 1.0.0-beta.19
 	- license: MIT
 - focus-trap
 	- version: 7.8.0
