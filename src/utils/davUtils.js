@@ -16,7 +16,7 @@ export function getRootPath() {
 	if (isPublic()) {
 		return davUrl.replace('/remote.php', '/public.php') + `/files/${getSharingToken()}`
 	}
-	return davUrl + `/files/${getCurrentUser()?.uid}`
+	return davUrl + `/files/${getCurrentUser().uid}`
 }
 
 /**
