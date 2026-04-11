@@ -52,7 +52,7 @@
     "@nextcloud/eslint-config": "^9.0.0-rc.8",
     "@nextcloud/stylelint-config": "^3.1.1",
     "@nextcloud/webpack-vue-config": "^6.3.2",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.5.17",
     "axios": "^1.10.0",
     "cli-progress": "^3.12.0",
     "vue-loader": "^15.11.1"
