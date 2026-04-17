@@ -67,7 +67,7 @@ class DisplayControllerTest extends TestCase {
 		$policy->addAllowedWorkerSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
 		$policy->addAllowedImageDomain('*');
-		$policy->allowEvalScript(true);
+		$policy->addAllowedScriptDomain('\'wasm-unsafe-eval\'');
 		$expectedResponse->setContentSecurityPolicy($policy);
 
 		$this->assertEquals($expectedResponse, $this->controller->showPdfViewer());

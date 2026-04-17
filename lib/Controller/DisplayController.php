@@ -66,8 +66,7 @@ class DisplayController extends Controller {
 		$policy->addAllowedWorkerSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
 		$policy->addAllowedImageDomain('*');
-		// Needed for the ES5 compatible build of PDF.js
-		$policy->allowEvalScript(true);
+		$policy->addAllowedScriptDomain('\'wasm-unsafe-eval\'');
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
