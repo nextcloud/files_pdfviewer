@@ -2,7 +2,14 @@ OC.L10N.register(
     "files_pdfviewer",
     {
     "PDF viewer" : "PDF failų žiūryklė",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Tiesiogiai peržiūrėkite PDF dokumentus savo „Nextcloud“ saugykloje.\n\nPapildomas privalumas – ši programėlė taip pat gali rodyti „Adobe Illustrator“ (.ai) failus.\n\nNaudojama [pdf.js](https://mozilla.github.io/pdf.js/)",
     "Failed to load settings" : "Nepavyko įkelti nustatymų",
-    "Failed to save settings" : "Nepavyko įrašyti nustatymų"
+    "Failed to save settings" : "Nepavyko įrašyti nustatymų",
+    "PDF Viewer" : "PDF failų žiūryklė",
+    "Configure PDF viewer settings" : "Konfigūruokite PDF žiūryklės nustatymus",
+    "Enable PDF scripting" : "Įjungti PDF nuskaitymą",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Įjungus PDF nuskaitymą, PDF dokumentuose galima vykdyti „JavaScript“. Tai įgalina formų skaičiavimus ir dinaminį turinį, tačiau gali kelti saugumo grėsmę naudojant nepatikimus PDF failus. PDF nuskaitymai veikia izoliuotoje aplinkoje.",
+    "File upload failed." : "Failo įkėlimas nepavyko.",
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Norint peržiūrėti bendrinamą PDF failą, šiam bendrinamam failui turi būti leistas atsisiuntimas."
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");
