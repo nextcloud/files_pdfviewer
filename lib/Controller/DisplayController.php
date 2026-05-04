@@ -63,11 +63,10 @@ class DisplayController extends Controller {
 		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, TemplateResponse::RENDER_AS_BLANK);
 
 		$policy = new ContentSecurityPolicy();
-		$policy->addAllowedChildSrcDomain('\'self\'');
+		$policy->addAllowedWorkerSrcDomain('\'self\'');
 		$policy->addAllowedFontDomain('data:');
 		$policy->addAllowedImageDomain('*');
-		// Needed for the ES5 compatible build of PDF.js
-		$policy->allowEvalScript(true);
+		$policy->addAllowedScriptDomain('\'wasm-unsafe-eval\'');
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
