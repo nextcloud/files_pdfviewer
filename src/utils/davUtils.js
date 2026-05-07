@@ -4,17 +4,18 @@
  */
 import { getCurrentUser } from '@nextcloud/auth'
 import { generateRemoteUrl } from '@nextcloud/router'
+import { getSharingToken } from '@nextcloud/sharing/public'
 
 /**
  * Get the current dav root path
  * e.g /remote.php/dav/files/USERID
- * or /public.php/webdav for public shares
+ * or /public.php/dav/files/SHARING_TOKEN for public shares
  */
 export function getRootPath() {
 	if (!isPublic()) {
 		return generateRemoteUrl(`dav${getUserRoot()}`)
 	} else {
-		return generateRemoteUrl('webdav').replace('/remote.php', '/public.php')
+		return generateRemoteUrl('dav').replace('/remote.php', '/public.php') + `/files/${getSharingToken()}`
 	}
 }
 
