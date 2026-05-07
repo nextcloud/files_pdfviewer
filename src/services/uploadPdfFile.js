@@ -5,7 +5,6 @@
 import { getRequestToken } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 import { encodePath } from '@nextcloud/paths'
-import { getSharingToken } from '@nextcloud/sharing/public'
 import { getRootPath } from '../utils/davUtils.js'
 
 /**
@@ -36,13 +35,6 @@ export default async function(filename, data) {
 			// is set.
 			requesttoken: getRequestToken(),
 		},
-	}
-	if (getSharingToken()) {
-		requestConfig.auth = {
-			// Password is not needed due to "public_link_authenticated" being
-			// set in the session when the share was loaded.
-			username: getSharingToken(),
-		}
 	}
 
 	// Uploading file with nextcloud axios. This will create a new file version
