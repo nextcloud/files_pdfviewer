@@ -28,7 +28,7 @@ export function getUserRoot() {
 		throw new Error('No user logged in')
 	}
 
-	return `/files/${getCurrentUser()?.uid}`
+	return `/files/${getCurrentUser().uid}`
 }
 
 /**
