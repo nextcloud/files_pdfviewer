@@ -5,8 +5,7 @@
 import { getRequestToken } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 import { encodePath } from '@nextcloud/paths'
-import { getSharingToken } from '@nextcloud/sharing/public'
-import { getRootPath } from '../utils/davUtils.js'
+import { getRootPath, isPublic } from '../utils/davUtils.js'
 
 /**
  * Upload the given contents of a PDF file to the given filename.
@@ -32,17 +31,10 @@ export default async function(filename, data) {
 	const requestConfig = {
 		headers: {
 			'Content-Type': 'application/pdf',
-			// Not needed for public pages, although there is no problem if it
-			// is set.
-			requesttoken: getRequestToken(),
+			// requesttoken is only needed for authenticated users (CSRF protection).
+			// Public shares authenticate via the token in the DAV URL path.
+			...(!isPublic() && { requesttoken: getRequestToken() }),
 		},
-	}
-	if (getSharingToken()) {
-		requestConfig.auth = {
-			// Password is not needed due to "public_link_authenticated" being
-			// set in the session when the share was loaded.
-			username: getSharingToken(),
-		}
 	}
 
 	// Uploading file with nextcloud axios. This will create a new file version
