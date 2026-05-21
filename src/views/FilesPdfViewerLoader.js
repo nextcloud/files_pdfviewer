@@ -24,7 +24,8 @@ export default defineComponent({
 	render: (h) => h('div'),
 	inheritAttrs: false,
 	mounted() {
-		innerVue = new Vue({
+		this.innerVue = new Vue({
+			name: 'FilesPdfViewerProxy',
 			render: (h) => {
 				return h(AsyncPdfView, {
 					// Hand down props as added by the viewers Mime mixin.
@@ -40,9 +41,9 @@ export default defineComponent({
 				})
 			},
 		})
-		innerVue.$mount(this.$el)
+		this.innerVue.$mount(this.$el)
 	},
 	beforeDestroy() {
-		innerVue.$destroy()
+		this.innerVue.$destroy()
 	},
 })
