@@ -5,7 +5,7 @@
 
 import { getCSPNonce } from '@nextcloud/auth'
 import { generateFilePath } from '@nextcloud/router'
-import ViewerView from './views/ViewerView.js'
+import FilesPdfViewerLoader from './views/FilesPdfViewerLoader.js'
 
 __webpack_nonce__ = getCSPNonce()
 __webpack_public_path__ = generateFilePath('files_pdfviewer', '', 'js/')
@@ -18,7 +18,7 @@ OCA.Viewer.registerHandler({
 		'application/illustrator',
 	],
 
-	component: ViewerView,
+	component: FilesPdfViewerLoader,
 
 	canCompare: true,
 })

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -28,7 +28,7 @@ let innerVue
  * These are all handed down to the PDFView component.
  */
 export default defineComponent({
-	name: 'ViewerView',
+	name: 'FilesPdfViewerLoader',
 	render: (h) => h('div'),
 	inheritAttrs: false,
 	mounted() {
