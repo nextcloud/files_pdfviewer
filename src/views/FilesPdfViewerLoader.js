@@ -3,17 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import Vue, { defineComponent } from 'vue'
+import Vue, { defineAsyncComponent, defineComponent } from 'vue'
 
-/**
- *
- */
-function AsyncPDFViewComponent() {
-	return import('./PDFView.vue')
-}
-
-// The vue instance used inside text constructed with the import above.
-let innerVue
+const AsyncPdfView = defineAsyncComponent(() => import('./PDFView.vue'))
 
 /**
  * This thin Component wrapper can be rendered inside the viewer.
@@ -34,7 +26,7 @@ export default defineComponent({
 	mounted() {
 		innerVue = new Vue({
 			render: (h) => {
-				return h(AsyncPDFViewComponent, {
+				return h(AsyncPdfView, {
 					// Hand down props as added by the viewers Mime mixin.
 					props: {
 						...this.$props,
