@@ -3,6 +3,10 @@
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "PDF belgelerini doğrudan Nextcloud içinde görüntüleyin.\nBu uygulama ayrıca Adobe Illustrator (.ai) dosyalarını da görüntüleyebilir.\n[pdf.js](https://mozilla.github.io/pdf.js/) tarafından sunulmaktadır",
     "Failed to load settings" : "Ayarlar yüklenemedi",
     "Failed to save settings" : "Ayarlar kaydedilemedi",
+    "PDF Viewer" : "PDF görüntüleyici",
+    "Configure PDF viewer settings" : "PDF görüntüleyici ayarlarını yapılandırın",
+    "Enable PDF scripting" : "PDF betikleri kullanılabilsin",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "PDF betikleri etkinleştirildiğinde, PDF belgelerinde JavaScript betikleri yürütülebilir. Bu özellik, form hesaplamaları ve dinamik içerik gibi şeyler sağlar, ancak güvenilmeyen PDF belgelerinde güvenlik riskleri oluşturabilir. PDF betikleri korunan bir ortamda yürütülür.",
     "File upload failed." : "Dosya yüklenemedi.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Paylaşılan bir PDF dosyasını görüntülemek için, bu dosya paylaşımının indirilmesine izin verilmesi gerekir"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
