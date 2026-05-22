@@ -7,4 +7,12 @@ import { recommendedVue2 } from '@nextcloud/eslint-config'
 
 export default [
 	...recommendedVue2,
+	{
+		name: 'files_pdf/config',
+		languageOptions: {
+			globals: {
+				__webpack_public_path__: 'writable',
+			},
+		},
+	},
 ]

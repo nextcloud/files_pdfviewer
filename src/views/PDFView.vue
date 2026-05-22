@@ -24,6 +24,32 @@ import uploadPdfFile from '../services/uploadPdfFile.js'
 
 export default {
 	name: 'PDFView',
+	inheritAttrs: false,
+	props: {
+		// file source to fetch contents from
+		source: {
+			type: String,
+			default: undefined,
+		},
+
+		// unique file id
+		fileid: {
+			type: [Number, String],
+			default: undefined,
+		},
+
+		// list of all the visible files
+		fileList: {
+			type: Array,
+			default: () => [],
+		},
+
+		// file source to fetch contents from
+		davPath: {
+			type: String,
+			default: undefined,
+		},
+	},
 
 	data() {
 		return {
@@ -77,7 +103,7 @@ export default {
 
 	async mounted() {
 		if ((!this.isDownloadable && !this.allowViewWithoutDownload) || (this.hideDownload && this.isRichDocumentsAvailable)) {
-			this.doneLoading()
+			this.$emit('done-loading')
 
 			if (this.isRichDocumentsAvailable) {
 				logger.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
@@ -101,7 +127,7 @@ export default {
 
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
 
-		this.doneLoading()
+		this.$emit('done-loading')
 		this.$nextTick(function() {
 			this.$el.focus()
 		})
