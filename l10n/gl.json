@@ -3,6 +3,10 @@
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Ver documentos PDF directamente no seu Nextcloud.\nAdemáis, esta aplicación tamén pode amosar ficheiros de Adobe Illustrator (.ai).\nDesenvolvido por [pdf.js](https://mozilla.github.io/pdf.js/)",
     "Failed to load settings" : "Produciuse un fallo ao cargar os axustes",
     "Failed to save settings" : "Produciuse un fallo ao gardar os axustes",
+    "PDF Viewer" : "Visor de PDF",
+    "Configure PDF viewer settings" : "Configurar os axustes do visor de PDF",
+    "Enable PDF scripting" : "Activar os scripts de PDF",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Activar os scripts de PDF permite a execución de JavaScript dentro dos documentos PDF. Isto posibilita os cálculos en formularios e o contido dinámico, pero pode supoñer riscos de seguridade con PDFs non fiables. Os scripts de PDF execútanse nun contorno illado.",
     "File upload failed." : "Produciuse un fallo ao enviar o ficheiro.",
     "To view a shared PDF file, the download needs to be allowed for this file share" : "Para ver un ficheiro PDF compartido, cómpre permitir a descarga para este ficheiro compartido"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
