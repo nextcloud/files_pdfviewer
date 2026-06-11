@@ -36,7 +36,9 @@ export default defineComponent({
 					on: {
 						...this.$listeners,
 						// doneLoading is provided by the viewers Mime mixin.
-						doneLoading: () => this.doneLoading(),
+						'done-loading': () => {
+							this.doneLoading()
+						},
 					},
 				})
 			},
