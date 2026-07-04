@@ -6,6 +6,7 @@ OC.L10N.register(
     "Failed to load settings" : "Falha ao carregar configurações",
     "Failed to save settings" : "Erro ao gravar as definições",
     "PDF Viewer" : "Visualizador de PDF",
+    "Configure PDF viewer settings" : "Configure as configurações do visualizador de PDF",
     "Enable PDF scripting" : "Ativar scripts em PDF",
     "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "A ativação de scripts em PDF permite a execução de JavaScript dentro de documentos PDF. Isso possibilita cálculos em formulários e conteúdo dinâmico, mas pode representar riscos de segurança em PDFs não confiáveis. Os scripts de PDF são executados em um ambiente isolado.",
     "File upload failed." : "Upload de arquivos falhou.",
