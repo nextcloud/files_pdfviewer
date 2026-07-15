@@ -305,7 +305,7 @@ export default {
 
 			logger.info('PDF Document with annotation is being saved')
 
-			this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
+			return this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
 				return uploadPdfFile(this.file.filename, data)
 			}).then(() => {
 				logger.info('File uploaded successfully')
