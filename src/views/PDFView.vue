@@ -163,14 +163,14 @@ export default {
 			// if the unflavored language is supported we use that,
 			// and if nothing is supported we do not set it as that would fallback to English but we let PDFjs use the browser language.
 			if (supportedLanguages.includes(language)) {
-				// Set the language (they misused "locale") to the user configured value
-				// instead of defaulting to the browser language
-				PDFViewerApplicationOptions.set('locale', language)
+				// Set the language to the user configured value instead of
+				// defaulting to the browser language
+				PDFViewerApplicationOptions.set('localeProperties', { lang: language })
 			} else {
 				// Sometimes a flavored language is not named correctly (PDFjs uses iso639-2 and Nextcloud iso639-1)
 				const unflavoredLanguage = language.split('-')[0]
 				if (supportedLanguages.includes(unflavoredLanguage) || supportedLanguages.find((language) => language.startsWith(`${unflavoredLanguage}-`))) {
-					PDFViewerApplicationOptions.set('locale', unflavoredLanguage)
+					PDFViewerApplicationOptions.set('localeProperties', { lang: unflavoredLanguage })
 				}
 			}
 
