@@ -154,7 +154,7 @@ export default {
 		},
 
 		getDownloadElement() {
-			return this.getIframeDocument().getElementById('download')
+			return this.getIframeDocument().getElementById('downloadButton')
 		},
 
 		getSecondaryDownloadElement() {
