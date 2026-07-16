@@ -26,7 +26,7 @@
 
 /* Replace default "Download" icon in "Download / Save" button with a "Save"
  * icon. */
-.toolbarButton#download::before,
+.toolbarButton#downloadButton::before,
 #secondaryToolbar #secondaryToolbarButtonContainer #secondaryDownload::before {
 	-webkit-mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
 	mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
