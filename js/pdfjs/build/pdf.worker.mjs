@@ -800,6 +800,13 @@ function fromBase64Util(str) {
   }
   return stringToBytes(atob(str));
 }
+if (typeof Promise.try !== "function") {
+  Promise.try = function (fn, ...args) {
+    return new Promise(resolve => {
+      resolve(fn(...args));
+    });
+  };
+}
 
 ;// ./src/core/primitives.js
 
@@ -51176,7 +51183,7 @@ class InkAnnotation extends MarkupAnnotation {
     } = params;
     this.data.annotationType = AnnotationType.INK;
     this.data.inkLists = [];
-    this.data.isEditable = !this.data.noHTML && this.data.it === "InkHighlight";
+    this.data.isEditable = !this.data.noHTML;
     this.data.noHTML = false;
     this.data.opacity = dict.get("CA") || 1;
     const rawInkLists = dict.getArray("InkList");
@@ -51237,22 +51244,27 @@ class InkAnnotation extends MarkupAnnotation {
     ap
   }) {
     const {
+      oldAnnotation,
       color,
       opacity,
       paths,
       outlines,
       rect,
       rotation,
-      thickness
+      thickness,
+      user
     } = annotation;
-    const ink = new Dict(xref);
+    const ink = oldAnnotation || new Dict(xref);
     ink.set("Type", Name.get("Annot"));
     ink.set("Subtype", Name.get("Ink"));
-    ink.set("CreationDate", `D:${getModificationDate()}`);
+    ink.set(oldAnnotation ? "M" : "CreationDate", `D:${getModificationDate()}`);
     ink.set("Rect", rect);
     ink.set("InkList", outlines?.points || paths.points);
     ink.set("F", 4);
     ink.set("Rotate", rotation);
+    if (user) {
+      ink.set("T", stringToAsciiOrUTF16BE(user));
+    }
     if (outlines) {
       ink.set("IT", Name.get("InkHighlight"));
     }
@@ -51286,9 +51298,10 @@ class InkAnnotation extends MarkupAnnotation {
       appearanceBuffer.push("/R0 gs");
     }
     for (const outline of paths.lines) {
-      for (let i = 0, ii = outline.length; i < ii; i += 6) {
+      appearanceBuffer.push(`${numberToString(outline[4])} ${numberToString(outline[5])} m`);
+      for (let i = 6, ii = outline.length; i < ii; i += 6) {
         if (isNaN(outline[i])) {
-          appearanceBuffer.push(`${numberToString(outline[i + 4])} ${numberToString(outline[i + 5])} m`);
+          appearanceBuffer.push(`${numberToString(outline[i + 4])} ${numberToString(outline[i + 5])} l`);
         } else {
           const [c1x, c1y, c2x, c2y, x, y] = outline.slice(i, i + 6);
           appearanceBuffer.push([c1x, c1y, c2x, c2y, x, y].map(numberToString).join(" ") + " c");
@@ -51670,7 +51683,6 @@ class StampAnnotation extends MarkupAnnotation {
     stamp.set("Type", Name.get("Annot"));
     stamp.set("Subtype", Name.get("Stamp"));
     stamp.set(oldAnnotation ? "M" : "CreationDate", `D:${getModificationDate()}`);
-    stamp.set("CreationDate", `D:${getModificationDate()}`);
     stamp.set("Rect", rect);
     stamp.set("F", 4);
     stamp.set("Border", [0, 0, 0]);
@@ -55787,6 +55799,7 @@ const StreamKind = {
   PULL_COMPLETE: 7,
   START_COMPLETE: 8
 };
+function onFn() {}
 function wrapReason(reason) {
   if (!(reason instanceof Error || typeof reason === "object" && reason !== null)) {
     unreachable('wrapReason: Expected "reason" to be a (possibly cloned) Error.');
@@ -55856,9 +55869,7 @@ class MessageHandler {
       const sourceName = this.sourceName,
         targetName = data.sourceName,
         comObj = this.comObj;
-      new Promise(function (resolve) {
-        resolve(action(data.data));
-      }).then(function (result) {
+      Promise.try(action, data.data).then(function (result) {
         comObj.postMessage({
           sourceName,
           targetName,
@@ -56031,9 +56042,7 @@ class MessageHandler {
     streamSink.sinkCapability.resolve();
     streamSink.ready = streamSink.sinkCapability.promise;
     this.streamSinks[streamId] = streamSink;
-    new Promise(function (resolve) {
-      resolve(action(data.data, streamSink));
-    }).then(function () {
+    Promise.try(action, data.data, streamSink).then(function () {
       comObj.postMessage({
         sourceName,
         targetName,
@@ -56088,9 +56097,7 @@ class MessageHandler {
           streamSink.sinkCapability.resolve();
         }
         streamSink.desiredSize = data.desiredSize;
-        new Promise(function (resolve) {
-          resolve(streamSink.onPull?.());
-        }).then(function () {
+        Promise.try(streamSink.onPull || onFn).then(function () {
           comObj.postMessage({
             sourceName,
             targetName,
@@ -56141,9 +56148,8 @@ class MessageHandler {
         if (!streamSink) {
           break;
         }
-        new Promise(function (resolve) {
-          resolve(streamSink.onCancel?.(wrapReason(data.reason)));
-        }).then(function () {
+        const dataReason = wrapReason(data.reason);
+        Promise.try(streamSink.onCancel || onFn, dataReason).then(function () {
           comObj.postMessage({
             sourceName,
             targetName,
@@ -56160,7 +56166,7 @@ class MessageHandler {
             reason: wrapReason(reason)
           });
         });
-        streamSink.sinkCapability.reject(wrapReason(data.reason));
+        streamSink.sinkCapability.reject(dataReason);
         streamSink.isCancelled = true;
         delete this.streamSinks[streamId];
         break;
@@ -56347,7 +56353,7 @@ class WorkerMessageHandler {
       docId,
       apiVersion
     } = docParams;
-    const workerVersion = "4.9.124";
+    const workerVersion = "4.9.155";
     if (apiVersion !== workerVersion) {
       throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${workerVersion}".`);
     }
@@ -56886,8 +56892,8 @@ class WorkerMessageHandler {
 
 ;// ./src/pdf.worker.js
 
-const pdfjsVersion = "4.9.124";
-const pdfjsBuild = "867aaf01f";
+const pdfjsVersion = "4.9.155";
+const pdfjsBuild = "a4eb8407c";
 
 var __webpack_exports__WorkerMessageHandler = __webpack_exports__.WorkerMessageHandler;
 export { __webpack_exports__WorkerMessageHandler as WorkerMessageHandler };
