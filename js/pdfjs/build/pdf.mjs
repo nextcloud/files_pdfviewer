@@ -88,6 +88,7 @@ __webpack_require__.d(__webpack_exports__, {
   normalizeUnicode: () => (/* reexport */ normalizeUnicode),
   setLayerDimensions: () => (/* reexport */ setLayerDimensions),
   shadow: () => (/* reexport */ shadow),
+  stopEvent: () => (/* reexport */ stopEvent),
   version: () => (/* reexport */ version)
 });
 
@@ -138,7 +139,8 @@ const AnnotationEditorParamsType = {
   HIGHLIGHT_DEFAULT_COLOR: 32,
   HIGHLIGHT_THICKNESS: 33,
   HIGHLIGHT_FREE: 34,
-  HIGHLIGHT_SHOW_ALL: 35
+  HIGHLIGHT_SHOW_ALL: 35,
+  DRAW_STEP: 41
 };
 const PermissionFlag = {
   PRINT: 0x04,
@@ -552,6 +554,9 @@ class util_FeatureTest {
   static get isOffscreenCanvasSupported() {
     return shadow(this, "isOffscreenCanvasSupported", typeof OffscreenCanvas !== "undefined");
   }
+  static get isImageDecoderSupported() {
+    return shadow(this, "isImageDecoderSupported", typeof ImageDecoder !== "undefined");
+  }
   static get platform() {
     if (typeof navigator !== "undefined" && typeof navigator?.platform === "string") {
       return shadow(this, "platform", {
@@ -801,17 +806,11 @@ function normalizeUnicode(str) {
   return str.replaceAll(NormalizeRegex, (_, p1, p2) => p1 ? p1.normalize("NFKC") : NormalizationMap.get(p2));
 }
 function getUuid() {
-  if (typeof crypto !== "undefined" && typeof crypto?.randomUUID === "function") {
+  if (typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }
   const buf = new Uint8Array(32);
-  if (typeof crypto !== "undefined" && typeof crypto?.getRandomValues === "function") {
-    crypto.getRandomValues(buf);
-  } else {
-    for (let i = 0; i < 32; i++) {
-      buf[i] = Math.floor(Math.random() * 255);
-    }
-  }
+  crypto.getRandomValues(buf);
   return bytesToString(buf);
 }
 const AnnotationPrefix = "pdfjs_internal_id_";
@@ -1096,6 +1095,10 @@ function isValidFetchUrl(url, baseUrl) {
 function noContextMenu(e) {
   e.preventDefault();
 }
+function stopEvent(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
 function deprecated(details) {
   console.log("Deprecated API usage: " + details);
 }
@@ -1290,13 +1293,11 @@ class EditorToolbar {
   }
   #focusIn(e) {
     this.#editor._focusEventsAllowed = false;
-    e.preventDefault();
-    e.stopPropagation();
+    stopEvent(e);
   }
   #focusOut(e) {
     this.#editor._focusEventsAllowed = true;
-    e.preventDefault();
-    e.stopPropagation();
+    stopEvent(e);
   }
   #addListenersToElement(element) {
     const signal = this.#editor._uiManager._signal;
@@ -1523,7 +1524,7 @@ class ImageManager {
       }
       data.refCounter = 1;
     } catch (e) {
-      console.error(e);
+      warn(e);
       data = null;
     }
     this.#cache.set(key, data);
@@ -1711,6 +1712,20 @@ class CommandManager {
   hasSomethingToRedo() {
     return this.#position < this.#commands.length - 1;
   }
+  cleanType(type) {
+    if (this.#position === -1) {
+      return;
+    }
+    for (let i = this.#position; i >= 0; i--) {
+      if (this.#commands[i].type !== type) {
+        this.#commands.splice(i + 1, this.#position - i);
+        this.#position = i;
+        return;
+      }
+    }
+    this.#commands.length = 0;
+    this.#position = -1;
+  }
   destroy() {
     this.#commands = null;
   }
@@ -1781,8 +1796,7 @@ class KeyboardManager {
     }
     callback.bind(self, ...args, event)();
     if (!bubbles) {
-      event.stopPropagation();
-      event.preventDefault();
+      stopEvent(event);
     }
   }
 }
@@ -2086,6 +2100,7 @@ class AnnotationEditorUIManager {
     for (const editor of this.#editorsToRescale) {
       editor.onScaleChanging();
     }
+    this.currentLayer?.onScaleChanging();
   }
   onRotationChanging({
     pagesRotation
@@ -2772,6 +2787,9 @@ class AnnotationEditorUIManager {
       this.#dispatchUpdateUI(editor.propertiesToUpdate);
     }
   }
+  updateUIForDefaultProperties(editorType) {
+    this.#dispatchUpdateUI(editorType.defaultPropertiesToUpdate);
+  }
   toggleSelected(editor) {
     if (this.#selectedEditors.has(editor)) {
       this.#selectedEditors.delete(editor);
@@ -2789,6 +2807,7 @@ class AnnotationEditorUIManager {
     });
   }
   setSelected(editor) {
+    this.currentLayer?.commitOrRemove();
     for (const ed of this.#selectedEditors) {
       if (ed !== editor) {
         ed.unselect();
@@ -2845,6 +2864,9 @@ class AnnotationEditorUIManager {
       isEmpty: this.#isEmpty()
     });
   }
+  cleanUndoStack(type) {
+    this.#commandManager.cleanType(type);
+  }
   #isEmpty() {
     if (this.#allEditors.size === 0) {
       return true;
@@ -2858,10 +2880,11 @@ class AnnotationEditorUIManager {
   }
   delete() {
     this.commitOrRemove();
-    if (!this.hasSelection) {
+    const drawingEditor = this.currentLayer?.endDrawingSession(true);
+    if (!this.hasSelection && !drawingEditor) {
       return;
     }
-    const editors = [...this.#selectedEditors];
+    const editors = drawingEditor ? [drawingEditor] : [...this.#selectedEditors];
     const cmd = () => {
       for (const editor of editors) {
         editor.remove();
@@ -2912,6 +2935,9 @@ class AnnotationEditorUIManager {
       if (this.#mode !== AnnotationEditorType.NONE) {
         return;
       }
+    }
+    if (this.currentLayer?.commitOrRemove()) {
+      return;
     }
     if (!this.hasSelection) {
       return;
@@ -3449,8 +3475,11 @@ class AnnotationEditor {
   #allResizerDivs = null;
   #altText = null;
   #disabled = false;
+  #dragPointerId = null;
+  #dragPointerType = "";
   #keepAspectRatio = false;
   #resizersDiv = null;
+  #lastPointerCoords = null;
   #savedDimensions = null;
   #focusAC = null;
   #focusedResizerName = "";
@@ -3532,6 +3561,9 @@ class AnnotationEditor {
   }
   get editorType() {
     return Object.getPrototypeOf(this).constructor._type;
+  }
+  static get isDrawer() {
+    return false;
   }
   static get _defaultLineColor() {
     return shadow(this, "_defaultLineColor", this._colorManager.getHexCode("CanvasText"));
@@ -3680,6 +3712,7 @@ class AnnotationEditor {
     [x, y] = this.screenToPageTranslation(x, y);
     this.x += x / width;
     this.y += y / height;
+    this._onTranslating(this.x, this.y);
     this.fixAndSetPosition();
   }
   translate(x, y) {
@@ -3694,7 +3727,10 @@ class AnnotationEditor {
   }
   drag(tx, ty) {
     this.#initialPosition ||= [this.x, this.y];
-    const [parentWidth, parentHeight] = this.parentDimensions;
+    const {
+      div,
+      parentDimensions: [parentWidth, parentHeight]
+    } = this;
     this.x += tx / parentWidth;
     this.y += ty / parentHeight;
     if (this.parent && (this.x < 0 || this.x > 1 || this.y < 0 || this.y > 1)) {
@@ -3714,12 +3750,18 @@ class AnnotationEditor {
     const [bx, by] = this.getBaseTranslation();
     x += bx;
     y += by;
-    this.div.style.left = `${(100 * x).toFixed(2)}%`;
-    this.div.style.top = `${(100 * y).toFixed(2)}%`;
-    this.div.scrollIntoView({
+    const {
+      style
+    } = div;
+    style.left = `${(100 * x).toFixed(2)}%`;
+    style.top = `${(100 * y).toFixed(2)}%`;
+    this._onTranslating(x, y);
+    div.scrollIntoView({
       block: "nearest"
     });
   }
+  _onTranslating(x, y) {}
+  _onTranslated(x, y) {}
   get _hasBeenMoved() {
     return !!this.#initialPosition && (this.#initialPosition[0] !== this.x || this.#initialPosition[1] !== this.y);
   }
@@ -3745,7 +3787,12 @@ class AnnotationEditor {
     return true;
   }
   fixAndSetPosition(rotation = this.rotation) {
-    const [pageWidth, pageHeight] = this.pageDimensions;
+    const {
+      div: {
+        style
+      },
+      pageDimensions: [pageWidth, pageHeight]
+    } = this;
     let {
       x,
       y,
@@ -3781,9 +3828,6 @@ class AnnotationEditor {
     const [bx, by] = this.getBaseTranslation();
     x += bx;
     y += by;
-    const {
-      style
-    } = this.div;
     style.left = `${(100 * x).toFixed(2)}%`;
     style.top = `${(100 * y).toFixed(2)}%`;
     this.moveInDOM();
@@ -3839,9 +3883,12 @@ class AnnotationEditor {
   }
   setDims(width, height) {
     const [parentWidth, parentHeight] = this.parentDimensions;
-    this.div.style.width = `${(100 * width / parentWidth).toFixed(2)}%`;
+    const {
+      style
+    } = this.div;
+    style.width = `${(100 * width / parentWidth).toFixed(2)}%`;
     if (!this.#keepAspectRatio) {
-      this.div.style.height = `${(100 * height / parentHeight).toFixed(2)}%`;
+      style.height = `${(100 * height / parentHeight).toFixed(2)}%`;
     }
   }
   fixDims() {
@@ -3902,6 +3949,7 @@ class AnnotationEditor {
     this.#altText?.toggle(false);
     const savedDraggable = this._isDraggable;
     this._isDraggable = false;
+    this.#lastPointerCoords = [event.screenX, event.screenY];
     const ac = new AbortController();
     const signal = this._uiManager.combinedSignal(ac);
     this.parent.togglePointerEvents(false);
@@ -3910,13 +3958,19 @@ class AnnotationEditor {
       capture: true,
       signal
     });
+    window.addEventListener("touchmove", stopEvent, {
+      passive: false,
+      signal
+    });
     window.addEventListener("contextmenu", noContextMenu, {
       signal
     });
-    const savedX = this.x;
-    const savedY = this.y;
-    const savedWidth = this.width;
-    const savedHeight = this.height;
+    this.#savedDimensions = {
+      savedX: this.x,
+      savedY: this.y,
+      savedWidth: this.width,
+      savedHeight: this.height
+    };
     const savedParentCursor = this.parent.div.style.cursor;
     const savedCursor = this.div.style.cursor;
     this.div.style.cursor = this.parent.div.style.cursor = window.getComputedStyle(event.target).cursor;
@@ -3927,7 +3981,7 @@ class AnnotationEditor {
       this._isDraggable = savedDraggable;
       this.parent.div.style.cursor = savedParentCursor;
       this.div.style.cursor = savedCursor;
-      this.#addResizeToUndoStack(savedX, savedY, savedWidth, savedHeight);
+      this.#addResizeToUndoStack();
     };
     window.addEventListener("pointerup", pointerUpCallback, {
       signal
@@ -3936,7 +3990,28 @@ class AnnotationEditor {
       signal
     });
   }
-  #addResizeToUndoStack(savedX, savedY, savedWidth, savedHeight) {
+  #resize(x, y, width, height) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    const [parentWidth, parentHeight] = this.parentDimensions;
+    this.setDims(parentWidth * width, parentHeight * height);
+    this.fixAndSetPosition();
+    this._onResized();
+  }
+  _onResized() {}
+  #addResizeToUndoStack() {
+    if (!this.#savedDimensions) {
+      return;
+    }
+    const {
+      savedX,
+      savedY,
+      savedWidth,
+      savedHeight
+    } = this.#savedDimensions;
+    this.#savedDimensions = null;
     const newX = this.x;
     const newY = this.y;
     const newWidth = this.width;
@@ -3945,24 +4020,8 @@ class AnnotationEditor {
       return;
     }
     this.addCommands({
-      cmd: () => {
-        this.width = newWidth;
-        this.height = newHeight;
-        this.x = newX;
-        this.y = newY;
-        const [parentWidth, parentHeight] = this.parentDimensions;
-        this.setDims(parentWidth * newWidth, parentHeight * newHeight);
-        this.fixAndSetPosition();
-      },
-      undo: () => {
-        this.width = savedWidth;
-        this.height = savedHeight;
-        this.x = savedX;
-        this.y = savedY;
-        const [parentWidth, parentHeight] = this.parentDimensions;
-        this.setDims(parentWidth * savedWidth, parentHeight * savedHeight);
-        this.fixAndSetPosition();
-      },
+      cmd: this.#resize.bind(this, newX, newY, newWidth, newHeight),
+      undo: this.#resize.bind(this, savedX, savedY, savedWidth, savedHeight),
       mustExec: true
     });
   }
@@ -4030,7 +4089,22 @@ class AnnotationEditor {
     const oppositeY = round(savedY + transfOppositePoint[1]);
     let ratioX = 1;
     let ratioY = 1;
-    let [deltaX, deltaY] = this.screenToPageTranslation(event.movementX, event.movementY);
+    let deltaX, deltaY;
+    if (!event.fromKeyboard) {
+      const {
+        screenX,
+        screenY
+      } = event;
+      const [lastScreenX, lastScreenY] = this.#lastPointerCoords;
+      [deltaX, deltaY] = this.screenToPageTranslation(screenX - lastScreenX, screenY - lastScreenY);
+      this.#lastPointerCoords[0] = screenX;
+      this.#lastPointerCoords[1] = screenY;
+    } else {
+      ({
+        deltaX,
+        deltaY
+      } = event);
+    }
     [deltaX, deltaY] = invTransf(deltaX / parentWidth, deltaY / parentHeight);
     if (isDiagonal) {
       const oldDiag = Math.hypot(savedWidth, savedHeight);
@@ -4051,7 +4125,9 @@ class AnnotationEditor {
     this.y = newY;
     this.setDims(parentWidth * newWidth, parentHeight * newHeight);
     this.fixAndSetPosition();
+    this._onResizing();
   }
+  _onResizing() {}
   altTextFinish() {
     this.#altText?.finish();
   }
@@ -4177,35 +4253,55 @@ class AnnotationEditor {
     this._uiManager.setUpDragSession();
     const ac = new AbortController();
     const signal = this._uiManager.combinedSignal(ac);
+    const opts = {
+      capture: true,
+      passive: false,
+      signal
+    };
+    const cancelDrag = e => {
+      ac.abort();
+      this.#dragPointerId = null;
+      this.#hasBeenClicked = false;
+      if (!this._uiManager.endDragSession()) {
+        this.#selectOnPointerEvent(e);
+      }
+    };
     if (isSelected) {
-      this.div.classList.add("moving");
       this.#prevDragX = event.clientX;
       this.#prevDragY = event.clientY;
-      const pointerMoveCallback = e => {
+      this.#dragPointerId = event.pointerId;
+      this.#dragPointerType = event.pointerType;
+      window.addEventListener("pointermove", e => {
         const {
           clientX: x,
-          clientY: y
+          clientY: y,
+          pointerId
         } = e;
+        if (pointerId !== this.#dragPointerId) {
+          stopEvent(e);
+          return;
+        }
         const [tx, ty] = this.screenToPageTranslation(x - this.#prevDragX, y - this.#prevDragY);
         this.#prevDragX = x;
         this.#prevDragY = y;
         this._uiManager.dragSelectedEditors(tx, ty);
-      };
-      window.addEventListener("pointermove", pointerMoveCallback, {
-        passive: true,
-        capture: true,
-        signal
-      });
+      }, opts);
+      window.addEventListener("touchmove", stopEvent, opts);
+      window.addEventListener("pointerdown", e => {
+        if (e.isPrimary && e.pointerType === this.#dragPointerType) {
+          cancelDrag(e);
+        }
+        stopEvent(e);
+      }, opts);
     }
-    const pointerUpCallback = () => {
-      ac.abort();
-      if (isSelected) {
-        this.div.classList.remove("moving");
+    this._onStartDragging();
+    const pointerUpCallback = e => {
+      if (!this.#dragPointerId || this.#dragPointerId === e.pointerId) {
+        cancelDrag(e);
+        this._onStopDragging();
+        return;
       }
-      this.#hasBeenClicked = false;
-      if (!this._uiManager.endDragSession()) {
-        this.#selectOnPointerEvent(event);
-      }
+      stopEvent(e);
     };
     window.addEventListener("pointerup", pointerUpCallback, {
       signal
@@ -4214,6 +4310,8 @@ class AnnotationEditor {
       signal
     });
   }
+  _onStartDragging() {}
+  _onStopDragging() {}
   moveInDOM() {
     if (this.#moveInDOMTimeout) {
       clearTimeout(this.#moveInDOMTimeout);
@@ -4228,6 +4326,7 @@ class AnnotationEditor {
     this.x = x;
     this.y = y;
     this.fixAndSetPosition();
+    this._onTranslated();
   }
   getRect(tx, ty, rotation = this.rotation) {
     const scale = this.parentScale;
@@ -4305,6 +4404,7 @@ class AnnotationEditor {
     this.#addFocusListeners();
   }
   rotate(_angle) {}
+  resize() {}
   serializeDeleted() {
     return {
       id: this.annotationElementId,
@@ -4463,23 +4563,15 @@ class AnnotationEditor {
       return;
     }
     this.#resizerPointermove(this.#focusedResizerName, {
-      movementX: x,
-      movementY: y
+      deltaX: x,
+      deltaY: y,
+      fromKeyboard: true
     });
   }
   #stopResizing() {
     this.#isResizerEnabledForKeyboard = false;
     this.#setResizerTabIndex(-1);
-    if (this.#savedDimensions) {
-      const {
-        savedX,
-        savedY,
-        savedWidth,
-        savedHeight
-      } = this.#savedDimensions;
-      this.#addResizeToUndoStack(savedX, savedY, savedWidth, savedHeight);
-      this.#savedDimensions = null;
-    }
+    this.#addResizeToUndoStack();
   }
   _stopResizingWithKeyboard() {
     this.#stopResizing();
@@ -5269,6 +5361,7 @@ class FontFaceObject {
           break;
       }
     }
+    commands.push(ctx => ctx.closePath());
     return this.compiledGlyphs[character] = function glyphDrawer(ctx, size) {
       commands[0](ctx);
       commands[1](ctx);
@@ -5663,17 +5756,15 @@ class DOMFilterFactory extends BaseFilterFactory {
     return info.url;
   }
   destroy(keepHCM = false) {
-    if (keepHCM && this.#hcmCache.size !== 0) {
+    if (keepHCM && this.#_hcmCache?.size) {
       return;
     }
-    if (this.#_defs) {
-      this.#_defs.parentNode.parentNode.remove();
-      this.#_defs = null;
-    }
-    if (this.#_cache) {
-      this.#_cache.clear();
-      this.#_cache = null;
-    }
+    this.#_defs?.parentNode.parentNode.remove();
+    this.#_defs = null;
+    this.#_cache?.clear();
+    this.#_cache = null;
+    this.#_hcmCache?.clear();
+    this.#_hcmCache = null;
     this.#id = 0;
   }
   #addLuminosityConversion(filter) {
@@ -5759,50 +5850,16 @@ class DOMStandardFontDataFactory extends BaseStandardFontDataFactory {
 
 
 
-if (isNodeJS) {
-  var packageCapability = Promise.withResolvers();
-  var packageMap = null;
-  const loadPackages = async () => {
-    const fs = await import(/*webpackIgnore: true*/"fs"),
-      http = await import(/*webpackIgnore: true*/"http"),
-      https = await import(/*webpackIgnore: true*/"https"),
-      url = await import(/*webpackIgnore: true*/"url");
-    let canvas, path2d;
-    return new Map(Object.entries({
-      fs,
-      http,
-      https,
-      url,
-      canvas,
-      path2d
-    }));
-  };
-  loadPackages().then(map => {
-    packageMap = map;
-    packageCapability.resolve();
-  }, reason => {
-    warn(`loadPackages: ${reason}`);
-    packageMap = new Map();
-    packageCapability.resolve();
-  });
-}
-class NodePackages {
-  static get promise() {
-    return packageCapability.promise;
-  }
-  static get(name) {
-    return packageMap?.get(name);
-  }
-}
 async function node_utils_fetchData(url) {
-  const fs = NodePackages.get("fs");
+  const fs = process.getBuiltinModule("fs");
   const data = await fs.promises.readFile(url);
   return new Uint8Array(data);
 }
 class NodeFilterFactory extends BaseFilterFactory {}
 class NodeCanvasFactory extends BaseCanvasFactory {
   _createCanvas(width, height) {
-    const canvas = NodePackages.get("canvas");
+    const require = process.getBuiltinModule("module").createRequire("file:///home/timvandermeij/Documenten/Ontwikkeling/pdf.js/Code/src/display/node_utils.js");
+    const canvas = require("@napi-rs/canvas");
     return canvas.createCanvas(width, height);
   }
 }
@@ -6357,7 +6414,8 @@ function convertRGBToRGBA({
   height
 }) {
   let i = 0;
-  const len32 = src.length >> 2;
+  const len = width * height * 3;
+  const len32 = len >> 2;
   const src32 = new Uint32Array(src.buffer, srcPos, len32);
   if (FeatureTest.isLittleEndian) {
     for (; i < len32 - 2; i += 3, destPos += 4) {
@@ -6369,7 +6427,7 @@ function convertRGBToRGBA({
       dest[destPos + 2] = s2 >>> 16 | s3 << 16 | 0xff000000;
       dest[destPos + 3] = s3 >>> 8 | 0xff000000;
     }
-    for (let j = i * 4, jj = src.length; j < jj; j += 3) {
+    for (let j = i * 4, jj = srcPos + len; j < jj; j += 3) {
       dest[destPos++] = src[j] | src[j + 1] << 8 | src[j + 2] << 16 | 0xff000000;
     }
   } else {
@@ -6382,12 +6440,12 @@ function convertRGBToRGBA({
       dest[destPos + 2] = s2 << 16 | s3 >>> 16 | 0xff;
       dest[destPos + 3] = s3 << 8 | 0xff;
     }
-    for (let j = i * 4, jj = src.length; j < jj; j += 3) {
+    for (let j = i * 4, jj = srcPos + len; j < jj; j += 3) {
       dest[destPos++] = src[j] << 24 | src[j + 1] << 16 | src[j + 2] << 8 | 0xff;
     }
   }
   return {
-    srcPos,
+    srcPos: srcPos + len,
     destPos
   };
 }
@@ -6725,6 +6783,7 @@ class CanvasExtraState {
     this.fillColor = "#000000";
     this.strokeColor = "#000000";
     this.patternFill = false;
+    this.patternStroke = false;
     this.fillAlpha = 1;
     this.strokeAlpha = 1;
     this.lineWidth = 1;
@@ -6807,7 +6866,7 @@ class CanvasExtraState {
   }
 }
 function putBinaryImageData(ctx, imgData) {
-  if (typeof ImageData !== "undefined" && imgData instanceof ImageData) {
+  if (imgData instanceof ImageData) {
     ctx.putImageData(imgData, 0, 0);
     return;
   }
@@ -7730,7 +7789,7 @@ class CanvasGraphics {
   nextLine() {
     this.moveText(0, this.current.leading);
   }
-  paintChar(character, x, y, patternTransform) {
+  paintChar(character, x, y, patternFillTransform, patternStrokeTransform) {
     const ctx = this.ctx;
     const current = this.current;
     const font = current.font;
@@ -7739,22 +7798,26 @@ class CanvasGraphics {
     const fillStrokeMode = textRenderingMode & TextRenderingMode.FILL_STROKE_MASK;
     const isAddToPathSet = !!(textRenderingMode & TextRenderingMode.ADD_TO_PATH_FLAG);
     const patternFill = current.patternFill && !font.missingFile;
+    const patternStroke = current.patternStroke && !font.missingFile;
     let addToPath;
-    if (font.disableFontFace || isAddToPathSet || patternFill) {
+    if (font.disableFontFace || isAddToPathSet || patternFill || patternStroke) {
       addToPath = font.getPathGenerator(this.commonObjs, character);
     }
-    if (font.disableFontFace || patternFill) {
+    if (font.disableFontFace || patternFill || patternStroke) {
       ctx.save();
       ctx.translate(x, y);
       ctx.beginPath();
       addToPath(ctx, fontSize);
-      if (patternTransform) {
-        ctx.setTransform(...patternTransform);
-      }
       if (fillStrokeMode === TextRenderingMode.FILL || fillStrokeMode === TextRenderingMode.FILL_STROKE) {
+        if (patternFillTransform) {
+          ctx.setTransform(...patternFillTransform);
+        }
         ctx.fill();
       }
       if (fillStrokeMode === TextRenderingMode.STROKE || fillStrokeMode === TextRenderingMode.FILL_STROKE) {
+        if (patternStrokeTransform) {
+          ctx.setTransform(...patternStrokeTransform);
+        }
         ctx.stroke();
       }
       ctx.restore();
@@ -7823,13 +7886,20 @@ class CanvasGraphics {
     } else {
       ctx.scale(textHScale, 1);
     }
-    let patternTransform;
+    let patternFillTransform, patternStrokeTransform;
     if (current.patternFill) {
       ctx.save();
       const pattern = current.fillColor.getPattern(ctx, this, getCurrentTransformInverse(ctx), PathType.FILL);
-      patternTransform = getCurrentTransform(ctx);
+      patternFillTransform = getCurrentTransform(ctx);
       ctx.restore();
       ctx.fillStyle = pattern;
+    }
+    if (current.patternStroke) {
+      ctx.save();
+      const pattern = current.strokeColor.getPattern(ctx, this, getCurrentTransformInverse(ctx), PathType.STROKE);
+      patternStrokeTransform = getCurrentTransform(ctx);
+      ctx.restore();
+      ctx.strokeStyle = pattern;
     }
     let lineWidth = current.lineWidth;
     const scale = current.textMatrixScale;
@@ -7900,11 +7970,11 @@ class CanvasGraphics {
         if (simpleFillText && !accent) {
           ctx.fillText(character, scaledX, scaledY);
         } else {
-          this.paintChar(character, scaledX, scaledY, patternTransform);
+          this.paintChar(character, scaledX, scaledY, patternFillTransform, patternStrokeTransform);
           if (accent) {
             const scaledAccentX = scaledX + fontSize * accent.offset.x / fontSizeScale;
             const scaledAccentY = scaledY - fontSize * accent.offset.y / fontSizeScale;
-            this.paintChar(accent.fontChar, scaledAccentX, scaledAccentY, patternTransform);
+            this.paintChar(accent.fontChar, scaledAccentX, scaledAccentY, patternFillTransform, patternStrokeTransform);
           }
         }
       }
@@ -8001,6 +8071,7 @@ class CanvasGraphics {
   }
   setStrokeColorN() {
     this.current.strokeColor = this.getColorN_Pattern(arguments);
+    this.current.patternStroke = true;
   }
   setFillColorN() {
     this.current.fillColor = this.getColorN_Pattern(arguments);
@@ -8008,9 +8079,11 @@ class CanvasGraphics {
   }
   setStrokeRGBColor(r, g, b) {
     this.ctx.strokeStyle = this.current.strokeColor = Util.makeHexColor(r, g, b);
+    this.current.patternStroke = false;
   }
   setStrokeTransparent() {
     this.ctx.strokeStyle = this.current.strokeColor = "transparent";
+    this.current.patternStroke = false;
   }
   setFillRGBColor(r, g, b) {
     this.ctx.fillStyle = this.current.fillColor = Util.makeHexColor(r, g, b);
@@ -9720,6 +9793,12 @@ function createHeaders(isHttp, httpHeaders) {
   }
   return headers;
 }
+function getResponseOrigin(url) {
+  try {
+    return new URL(url).origin;
+  } catch {}
+  return null;
+}
 function validateRangeRequestCapabilities({
   responseHeaders,
   isHttp,
@@ -9800,6 +9879,7 @@ function getArrayBuffer(val) {
   return new Uint8Array(val).buffer;
 }
 class PDFFetchStream {
+  _responseOrigin = null;
   constructor(source) {
     this.source = source;
     this.isHttp = /^https?:/i.test(source.url);
@@ -9851,6 +9931,7 @@ class PDFFetchStreamReader {
     const headers = new Headers(stream.headers);
     const url = source.url;
     fetch(url, createFetchOptions(headers, this._withCredentials, this._abortController)).then(response => {
+      stream._responseOrigin = getResponseOrigin(response.url);
       if (!validateResponseStatus(response.status)) {
         throw createResponseStatusError(response.status, url);
       }
@@ -9931,6 +10012,10 @@ class PDFFetchStreamRangeReader {
     headers.append("Range", `bytes=${begin}-${end - 1}`);
     const url = source.url;
     fetch(url, createFetchOptions(headers, this._withCredentials, this._abortController)).then(response => {
+      const responseOrigin = getResponseOrigin(response.url);
+      if (responseOrigin !== stream._responseOrigin) {
+        throw new Error(`Expected range response-origin "${responseOrigin}" to match "${stream._responseOrigin}".`);
+      }
       if (!validateResponseStatus(response.status)) {
         throw createResponseStatusError(response.status, url);
       }
@@ -9982,6 +10067,7 @@ function network_getArrayBuffer(xhr) {
   return stringToBytes(data).buffer;
 }
 class NetworkManager {
+  _responseOrigin = null;
   constructor({
     url,
     httpHeaders,
@@ -10164,10 +10250,12 @@ class PDFNetworkStreamFullRequestReader {
   _onHeadersReceived() {
     const fullRequestXhrId = this._fullRequestId;
     const fullRequestXhr = this._manager.getRequestXhr(fullRequestXhrId);
-    const responseHeaders = new Headers(fullRequestXhr.getAllResponseHeaders().trim().split(/[\r\n]+/).map(x => {
+    this._manager._responseOrigin = getResponseOrigin(fullRequestXhr.responseURL);
+    const rawResponseHeaders = fullRequestXhr.getAllResponseHeaders();
+    const responseHeaders = new Headers(rawResponseHeaders ? rawResponseHeaders.trim().split(/[\r\n]+/).map(x => {
       const [key, ...val] = x.split(": ");
       return [key, val.join(": ")];
-    }));
+    }) : []);
     const {
       allowRangeRequests,
       suggestedLength
@@ -10242,6 +10330,7 @@ class PDFNetworkStreamFullRequestReader {
     return this._headersCapability.promise;
   }
   async read() {
+    await this._headersCapability.promise;
     if (this._storedError) {
       throw this._storedError;
     }
@@ -10282,6 +10371,7 @@ class PDFNetworkStreamRangeRequestReader {
   constructor(manager, begin, end) {
     this._manager = manager;
     const args = {
+      onHeadersReceived: this._onHeadersReceived.bind(this),
       onDone: this._onDone.bind(this),
       onError: this._onError.bind(this),
       onProgress: this._onProgress.bind(this)
@@ -10294,6 +10384,13 @@ class PDFNetworkStreamRangeRequestReader {
     this._storedError = undefined;
     this.onProgress = null;
     this.onClosed = null;
+  }
+  _onHeadersReceived() {
+    const responseOrigin = getResponseOrigin(this._manager.getRequestXhr(this._requestId)?.responseURL);
+    if (responseOrigin !== this._manager._responseOrigin) {
+      this._storedError = new Error(`Expected range response-origin "${responseOrigin}" to match "${this._manager._responseOrigin}".`);
+      this._onError(0);
+    }
   }
   _close() {
     this.onClosed?.(this);
@@ -10320,7 +10417,7 @@ class PDFNetworkStreamRangeRequestReader {
     this._close();
   }
   _onError(status) {
-    this._storedError = createResponseStatusError(status, this._url);
+    this._storedError ??= createResponseStatusError(status, this._url);
     for (const requestCapability of this._requests) {
       requestCapability.reject(this._storedError);
     }
@@ -10377,35 +10474,19 @@ class PDFNetworkStreamRangeRequestReader {
 
 ;// ./src/display/node_stream.js
 
-
-
 const urlRegex = /^[a-z][a-z0-9\-+.]+:/i;
 function parseUrlOrPath(sourceUrl) {
   if (urlRegex.test(sourceUrl)) {
     return new URL(sourceUrl);
   }
-  const url = NodePackages.get("url");
+  const url = process.getBuiltinModule("url");
   return new URL(url.pathToFileURL(sourceUrl));
-}
-function createRequest(url, headers, callback) {
-  if (url.protocol === "http:") {
-    const http = NodePackages.get("http");
-    return http.request(url, {
-      headers
-    }, callback);
-  }
-  const https = NodePackages.get("https");
-  return https.request(url, {
-    headers
-  }, callback);
 }
 class PDFNodeStream {
   constructor(source) {
     this.source = source;
     this.url = parseUrlOrPath(source.url);
-    this.isHttp = this.url.protocol === "http:" || this.url.protocol === "https:";
-    this.isFsUrl = this.url.protocol === "file:";
-    this.headers = createHeaders(this.isHttp, source.httpHeaders);
+    assert(this.url.protocol === "file:", "PDFNodeStream only supports file:// URLs.");
     this._fullRequestReader = null;
     this._rangeRequestReaders = [];
   }
@@ -10414,14 +10495,14 @@ class PDFNodeStream {
   }
   getFullReader() {
     assert(!this._fullRequestReader, "PDFNodeStream.getFullReader can only be called once.");
-    this._fullRequestReader = this.isFsUrl ? new PDFNodeStreamFsFullReader(this) : new PDFNodeStreamFullReader(this);
+    this._fullRequestReader = new PDFNodeStreamFsFullReader(this);
     return this._fullRequestReader;
   }
   getRangeReader(start, end) {
     if (end <= this._progressiveDataLength) {
       return null;
     }
-    const rangeReader = this.isFsUrl ? new PDFNodeStreamFsRangeReader(this, start, end) : new PDFNodeStreamRangeReader(this, start, end);
+    const rangeReader = new PDFNodeStreamFsRangeReader(this, start, end);
     this._rangeRequestReaders.push(rangeReader);
     return rangeReader;
   }
@@ -10432,7 +10513,7 @@ class PDFNodeStream {
     }
   }
 }
-class BaseFullReader {
+class PDFNodeStreamFsFullReader {
   constructor(stream) {
     this._url = stream.url;
     this._done = false;
@@ -10452,6 +10533,18 @@ class BaseFullReader {
     this._readableStream = null;
     this._readCapability = Promise.withResolvers();
     this._headersCapability = Promise.withResolvers();
+    const fs = process.getBuiltinModule("fs");
+    fs.promises.lstat(this._url).then(stat => {
+      this._contentLength = stat.size;
+      this._setReadableStream(fs.createReadStream(this._url));
+      this._headersCapability.resolve();
+    }, error => {
+      if (error.code === "ENOENT") {
+        error = new MissingPDFException(`Missing PDF "${this._url}".`);
+      }
+      this._storedError = error;
+      this._headersCapability.reject(error);
+    });
   }
   get headersReady() {
     return this._headersCapability.promise;
@@ -10527,8 +10620,8 @@ class BaseFullReader {
     }
   }
 }
-class BaseRangeReader {
-  constructor(stream) {
+class PDFNodeStreamFsRangeReader {
+  constructor(stream, start, end) {
     this._url = stream.url;
     this._done = false;
     this._storedError = null;
@@ -10538,6 +10631,11 @@ class BaseRangeReader {
     this._readCapability = Promise.withResolvers();
     const source = stream.source;
     this._isStreamingSupported = !source.disableStream;
+    const fs = process.getBuiltinModule("fs");
+    this._setReadableStream(fs.createReadStream(this._url, {
+      start,
+      end: end - 1
+    }));
   }
   get isStreamingSupported() {
     return this._isStreamingSupported;
@@ -10595,88 +10693,6 @@ class BaseRangeReader {
     if (this._storedError) {
       this._readableStream.destroy(this._storedError);
     }
-  }
-}
-class PDFNodeStreamFullReader extends BaseFullReader {
-  constructor(stream) {
-    super(stream);
-    const headers = Object.fromEntries(stream.headers);
-    const handleResponse = response => {
-      if (response.statusCode === 404) {
-        const error = new MissingPDFException(`Missing PDF "${this._url}".`);
-        this._storedError = error;
-        this._headersCapability.reject(error);
-        return;
-      }
-      this._headersCapability.resolve();
-      this._setReadableStream(response);
-      const responseHeaders = new Headers(this._readableStream.headers);
-      const {
-        allowRangeRequests,
-        suggestedLength
-      } = validateRangeRequestCapabilities({
-        responseHeaders,
-        isHttp: stream.isHttp,
-        rangeChunkSize: this._rangeChunkSize,
-        disableRange: this._disableRange
-      });
-      this._isRangeSupported = allowRangeRequests;
-      this._contentLength = suggestedLength || this._contentLength;
-      this._filename = extractFilenameFromHeader(responseHeaders);
-    };
-    this._request = createRequest(this._url, headers, handleResponse);
-    this._request.on("error", reason => {
-      this._storedError = reason;
-      this._headersCapability.reject(reason);
-    });
-    this._request.end();
-  }
-}
-class PDFNodeStreamRangeReader extends BaseRangeReader {
-  constructor(stream, start, end) {
-    super(stream);
-    const headers = Object.fromEntries(stream.headers);
-    headers.Range = `bytes=${start}-${end - 1}`;
-    const handleResponse = response => {
-      if (response.statusCode === 404) {
-        const error = new MissingPDFException(`Missing PDF "${this._url}".`);
-        this._storedError = error;
-        return;
-      }
-      this._setReadableStream(response);
-    };
-    this._request = createRequest(this._url, headers, handleResponse);
-    this._request.on("error", reason => {
-      this._storedError = reason;
-    });
-    this._request.end();
-  }
-}
-class PDFNodeStreamFsFullReader extends BaseFullReader {
-  constructor(stream) {
-    super(stream);
-    const fs = NodePackages.get("fs");
-    fs.promises.lstat(this._url).then(stat => {
-      this._contentLength = stat.size;
-      this._setReadableStream(fs.createReadStream(this._url));
-      this._headersCapability.resolve();
-    }, error => {
-      if (error.code === "ENOENT") {
-        error = new MissingPDFException(`Missing PDF "${this._url}".`);
-      }
-      this._storedError = error;
-      this._headersCapability.reject(error);
-    });
-  }
-}
-class PDFNodeStreamFsRangeReader extends BaseRangeReader {
-  constructor(stream, start, end) {
-    super(stream);
-    const fs = NodePackages.get("fs");
-    this._setReadableStream(fs.createReadStream(this._url, {
-      start,
-      end: end - 1
-    }));
   }
 }
 
@@ -11165,7 +11181,7 @@ function getDocument(src = {}) {
   const maxImageSize = Number.isInteger(src.maxImageSize) && src.maxImageSize > -1 ? src.maxImageSize : -1;
   const isEvalSupported = src.isEvalSupported !== false;
   const isOffscreenCanvasSupported = typeof src.isOffscreenCanvasSupported === "boolean" ? src.isOffscreenCanvasSupported : !isNodeJS;
-  const isChrome = typeof src.isChrome === "boolean" ? src.isChrome : !util_FeatureTest.platform.isFirefox && typeof window !== "undefined" && !!window?.chrome;
+  const isImageDecoderSupported = typeof src.isImageDecoderSupported === "boolean" ? src.isImageDecoderSupported : !isNodeJS && (util_FeatureTest.platform.isFirefox || !globalThis.chrome);
   const canvasMaxAreaInBytes = Number.isInteger(src.canvasMaxAreaInBytes) ? src.canvasMaxAreaInBytes : -1;
   const disableFontFace = typeof src.disableFontFace === "boolean" ? src.disableFontFace : isNodeJS;
   const fontExtraProperties = src.fontExtraProperties === true;
@@ -11216,7 +11232,7 @@ function getDocument(src = {}) {
   }
   const docParams = {
     docId,
-    apiVersion: "4.8.69",
+    apiVersion: "4.9.124",
     data,
     password,
     disableAutoFetch,
@@ -11230,7 +11246,7 @@ function getDocument(src = {}) {
       ignoreErrors,
       isEvalSupported,
       isOffscreenCanvasSupported,
-      isChrome,
+      isImageDecoderSupported,
       canvasMaxAreaInBytes,
       fontExtraProperties,
       useSystemFonts,
@@ -11269,8 +11285,14 @@ function getDocument(src = {}) {
       }
       let NetworkStream;
       if (isNodeJS) {
-        const isFetchSupported = typeof fetch !== "undefined" && typeof Response !== "undefined" && "body" in Response.prototype;
-        NetworkStream = isFetchSupported && isValidFetchUrl(url) ? PDFFetchStream : PDFNodeStream;
+        if (isValidFetchUrl(url)) {
+          if (typeof fetch === "undefined" || typeof Response === "undefined" || !("body" in Response.prototype)) {
+            throw new Error("getDocument - the Fetch API was disabled in Node.js, see `--no-experimental-fetch`.");
+          }
+          NetworkStream = PDFFetchStream;
+        } else {
+          NetworkStream = PDFNodeStream;
+        }
       } else {
         NetworkStream = isValidFetchUrl(url) ? PDFFetchStream : PDFNetworkStream;
       }
@@ -11358,10 +11380,8 @@ class PDFDocumentLoadingTask {
       throw ex;
     }
     this._transport = null;
-    if (this._worker) {
-      this._worker.destroy();
-      this._worker = null;
-    }
+    this._worker?.destroy();
+    this._worker = null;
   }
 }
 class PDFDataRangeTransport {
@@ -12073,9 +12093,6 @@ class PDFWorker {
     this._initialize();
   }
   get promise() {
-    if (isNodeJS) {
-      return Promise.all([NodePackages.promise, this._readyCapability.promise]);
-    }
     return this._readyCapability.promise;
   }
   #resolve() {
@@ -12187,16 +12204,12 @@ class PDFWorker {
   }
   destroy() {
     this.destroyed = true;
-    if (this._webWorker) {
-      this._webWorker.terminate();
-      this._webWorker = null;
-    }
+    this._webWorker?.terminate();
+    this._webWorker = null;
     PDFWorker.#workerPorts?.delete(this._port);
     this._port = null;
-    if (this._messageHandler) {
-      this._messageHandler.destroy();
-      this._messageHandler = null;
-    }
+    this._messageHandler?.destroy();
+    this._messageHandler = null;
   }
   static fromPort(params) {
     if (!params?.port) {
@@ -12351,10 +12364,8 @@ class WorkerTransport {
       this.filterFactory.destroy();
       TextLayer.cleanup();
       this._networkStream?.cancelAllRequests(new AbortException("Worker was terminated."));
-      if (this.messageHandler) {
-        this.messageHandler.destroy();
-        this.messageHandler = null;
-      }
+      this.messageHandler?.destroy();
+      this.messageHandler = null;
       this.destroyCapability.resolve();
     }, this.destroyCapability.reject);
     return this.destroyCapability.promise;
@@ -13018,8 +13029,8 @@ class InternalRenderTask {
     }
   }
 }
-const version = "4.8.69";
-const build = "3634dab10";
+const version = "4.9.124";
+const build = "867aaf01f";
 
 ;// ./src/shared/scripting_utils.js
 function makeColorComp(n) {
@@ -16514,6 +16525,7 @@ class FreeTextEditor extends AnnotationEditor {
 ;// ./src/display/editor/drawers/outline.js
 
 class Outline {
+  static PRECISION = 1e-4;
   toSVGPath() {
     unreachable("Abstract method `toSVGPath` must be implemented.");
   }
@@ -16523,14 +16535,56 @@ class Outline {
   serialize(_bbox, _rotation) {
     unreachable("Abstract method `serialize` must be implemented.");
   }
-  get classNamesForDrawing() {
-    unreachable("Abstract getter `classNamesForDrawing` must be implemented.");
+  static _rescale(src, tx, ty, sx, sy, dest) {
+    dest ||= new Float32Array(src.length);
+    for (let i = 0, ii = src.length; i < ii; i += 2) {
+      dest[i] = tx + src[i] * sx;
+      dest[i + 1] = ty + src[i + 1] * sy;
+    }
+    return dest;
   }
-  get classNamesForOutlining() {
-    unreachable("Abstract getter `classNamesForOutlining` must be implemented.");
+  static _rescaleAndSwap(src, tx, ty, sx, sy, dest) {
+    dest ||= new Float32Array(src.length);
+    for (let i = 0, ii = src.length; i < ii; i += 2) {
+      dest[i] = tx + src[i + 1] * sx;
+      dest[i + 1] = ty + src[i] * sy;
+    }
+    return dest;
   }
-  get mustRemoveSelfIntersections() {
-    return false;
+  static _translate(src, tx, ty, dest) {
+    dest ||= new Float32Array(src.length);
+    for (let i = 0, ii = src.length; i < ii; i += 2) {
+      dest[i] = tx + src[i];
+      dest[i + 1] = ty + src[i + 1];
+    }
+    return dest;
+  }
+  static svgRound(x) {
+    return Math.round(x * 10000);
+  }
+  static _normalizePoint(x, y, parentWidth, parentHeight, rotation) {
+    switch (rotation) {
+      case 90:
+        return [1 - y / parentWidth, x / parentHeight];
+      case 180:
+        return [1 - x / parentWidth, 1 - y / parentHeight];
+      case 270:
+        return [y / parentWidth, 1 - x / parentHeight];
+      default:
+        return [x / parentWidth, y / parentHeight];
+    }
+  }
+  static _normalizePagePoint(x, y, rotation) {
+    switch (rotation) {
+      case 90:
+        return [1 - y, x];
+      case 180:
+        return [1 - x, 1 - y];
+      case 270:
+        return [y, 1 - x];
+      default:
+        return [x, y];
+    }
   }
 }
 
@@ -16543,7 +16597,7 @@ class FreeDrawOutliner {
   #innerMargin;
   #isLTR;
   #top = [];
-  #last = new Float64Array(18);
+  #last = new Float32Array(18);
   #lastX;
   #lastY;
   #min;
@@ -16688,7 +16742,7 @@ class FreeDrawOutliner {
     const bottom = this.#bottom;
     const last = this.#last;
     const [layerX, layerY, layerWidth, layerHeight] = this.#box;
-    const points = new Float64Array((this.#points?.length ?? 0) + 2);
+    const points = new Float32Array((this.#points?.length ?? 0) + 2);
     for (let i = 0, ii = points.length - 2; i < ii; i += 2) {
       points[i] = (this.#points[i] - layerX) / layerWidth;
       points[i + 1] = (this.#points[i + 1] - layerY) / layerHeight;
@@ -16698,7 +16752,7 @@ class FreeDrawOutliner {
     if (isNaN(last[6]) && !this.isEmpty()) {
       return this.#getOutlineTwoPoints(points);
     }
-    const outline = new Float64Array(this.#top.length + 24 + this.#bottom.length);
+    const outline = new Float32Array(this.#top.length + 24 + this.#bottom.length);
     let N = top.length;
     for (let i = 0; i < N; i += 2) {
       if (isNaN(top[i])) {
@@ -16728,7 +16782,7 @@ class FreeDrawOutliner {
     const last = this.#last;
     const [layerX, layerY, layerWidth, layerHeight] = this.#box;
     const [lastTopX, lastTopY, lastBottomX, lastBottomY] = this.#getLastCoords();
-    const outline = new Float64Array(36);
+    const outline = new Float32Array(36);
     outline.set([NaN, NaN, NaN, NaN, (last[2] - layerX) / layerWidth, (last[3] - layerY) / layerHeight, NaN, NaN, NaN, NaN, (last[4] - layerX) / layerWidth, (last[5] - layerY) / layerHeight, NaN, NaN, NaN, NaN, lastTopX, lastTopY, NaN, NaN, NaN, NaN, lastBottomX, lastBottomY, NaN, NaN, NaN, NaN, (last[16] - layerX) / layerWidth, (last[17] - layerY) / layerHeight, NaN, NaN, NaN, NaN, (last[14] - layerX) / layerWidth, (last[15] - layerY) / layerHeight], 0);
     return this.newFreeDrawOutline(outline, points, this.#box, this.#scaleFactor, this.#innerMargin, this.#isLTR);
   }
@@ -16748,7 +16802,7 @@ class FreeDrawOutliner {
 }
 class FreeDrawOutline extends Outline {
   #box;
-  #bbox = null;
+  #bbox = new Float32Array(4);
   #innerMargin;
   #isLTR;
   #points;
@@ -16762,13 +16816,9 @@ class FreeDrawOutline extends Outline {
     this.#scaleFactor = scaleFactor;
     this.#innerMargin = innerMargin;
     this.#isLTR = isLTR;
+    this.lastPoint = [NaN, NaN];
     this.#computeMinMax(isLTR);
-    const {
-      x,
-      y,
-      width,
-      height
-    } = this.#bbox;
+    const [x, y, width, height] = this.#bbox;
     for (let i = 0, ii = outline.length; i < ii; i += 2) {
       outline[i] = (outline[i] - x) / width;
       outline[i + 1] = (outline[i + 1] - y) / height;
@@ -16797,42 +16847,26 @@ class FreeDrawOutline extends Outline {
     let points;
     switch (rotation) {
       case 0:
-        outline = this.#rescale(this.#outline, blX, trY, width, -height);
-        points = this.#rescale(this.#points, blX, trY, width, -height);
+        outline = Outline._rescale(this.#outline, blX, trY, width, -height);
+        points = Outline._rescale(this.#points, blX, trY, width, -height);
         break;
       case 90:
-        outline = this.#rescaleAndSwap(this.#outline, blX, blY, width, height);
-        points = this.#rescaleAndSwap(this.#points, blX, blY, width, height);
+        outline = Outline._rescaleAndSwap(this.#outline, blX, blY, width, height);
+        points = Outline._rescaleAndSwap(this.#points, blX, blY, width, height);
         break;
       case 180:
-        outline = this.#rescale(this.#outline, trX, blY, -width, height);
-        points = this.#rescale(this.#points, trX, blY, -width, height);
+        outline = Outline._rescale(this.#outline, trX, blY, -width, height);
+        points = Outline._rescale(this.#points, trX, blY, -width, height);
         break;
       case 270:
-        outline = this.#rescaleAndSwap(this.#outline, trX, trY, -width, -height);
-        points = this.#rescaleAndSwap(this.#points, trX, trY, -width, -height);
+        outline = Outline._rescaleAndSwap(this.#outline, trX, trY, -width, -height);
+        points = Outline._rescaleAndSwap(this.#points, trX, trY, -width, -height);
         break;
     }
     return {
       outline: Array.from(outline),
       points: [Array.from(points)]
     };
-  }
-  #rescale(src, tx, ty, sx, sy) {
-    const dest = new Float64Array(src.length);
-    for (let i = 0, ii = src.length; i < ii; i += 2) {
-      dest[i] = tx + src[i] * sx;
-      dest[i + 1] = ty + src[i + 1] * sy;
-    }
-    return dest;
-  }
-  #rescaleAndSwap(src, tx, ty, sx, sy) {
-    const dest = new Float64Array(src.length);
-    for (let i = 0, ii = src.length; i < ii; i += 2) {
-      dest[i] = tx + src[i + 1] * sx;
-      dest[i + 1] = ty + src[i] * sy;
-    }
-    return dest;
   }
   #computeMinMax(isLTR) {
     const outline = this.#outline;
@@ -16873,17 +16907,12 @@ class FreeDrawOutline extends Outline {
       lastX = outline[i + 4];
       lastY = outline[i + 5];
     }
-    const x = minX - this.#innerMargin,
-      y = minY - this.#innerMargin,
-      width = maxX - minX + 2 * this.#innerMargin,
-      height = maxY - minY + 2 * this.#innerMargin;
-    this.#bbox = {
-      x,
-      y,
-      width,
-      height,
-      lastPoint: [lastPointX, lastPointY]
-    };
+    const bbox = this.#bbox;
+    bbox[0] = minX - this.#innerMargin;
+    bbox[1] = minY - this.#innerMargin;
+    bbox[2] = maxX - minX + 2 * this.#innerMargin;
+    bbox[3] = maxY - minY + 2 * this.#innerMargin;
+    this.lastPoint = [lastPointX, lastPointY];
   }
   get box() {
     return this.#bbox;
@@ -16892,12 +16921,7 @@ class FreeDrawOutline extends Outline {
     return new FreeDrawOutliner(point, box, scaleFactor, thickness, isLTR, innerMargin);
   }
   getNewOutline(thickness, innerMargin) {
-    const {
-      x,
-      y,
-      width,
-      height
-    } = this.#bbox;
+    const [x, y, width, height] = this.#bbox;
     const [layerX, layerY, layerWidth, layerHeight] = this.#box;
     const sx = width * layerWidth;
     const sy = height * layerHeight;
@@ -16915,9 +16939,6 @@ class FreeDrawOutline extends Outline {
     }
     return outliner.getOutlines();
   }
-  get mustRemoveSelfIntersections() {
-    return true;
-  }
 }
 
 ;// ./src/display/editor/drawers/highlight.js
@@ -16925,6 +16946,7 @@ class FreeDrawOutline extends Outline {
 
 class HighlightOutliner {
   #box;
+  #lastPoint;
   #verticalEdges = [];
   #intervals = [];
   constructor(boxes, borderWidth = 0, innerMargin = 0, isLTR = true) {
@@ -16964,13 +16986,8 @@ class HighlightOutliner {
       edge[1] = (y1 - shiftedMinY) / bboxHeight;
       edge[2] = (y2 - shiftedMinY) / bboxHeight;
     }
-    this.#box = {
-      x: shiftedMinX,
-      y: shiftedMinY,
-      width: bboxWidth,
-      height: bboxHeight,
-      lastPoint
-    };
+    this.#box = new Float32Array([shiftedMinX, shiftedMinY, bboxWidth, bboxHeight]);
+    this.#lastPoint = lastPoint;
   }
   getOutlines() {
     this.#verticalEdges.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
@@ -17031,7 +17048,7 @@ class HighlightOutliner {
       }
       outline.push(lastPointX, lastPointY);
     }
-    return new HighlightOutline(outlines, this.#box);
+    return new HighlightOutline(outlines, this.#box, this.#lastPoint);
   }
   #binarySearch(y) {
     const array = this.#intervals;
@@ -17114,10 +17131,11 @@ class HighlightOutliner {
 class HighlightOutline extends Outline {
   #box;
   #outlines;
-  constructor(outlines, box) {
+  constructor(outlines, box, lastPoint) {
     super();
     this.#outlines = outlines;
     this.#box = box;
+    this.lastPoint = lastPoint;
   }
   toSVGPath() {
     const buffer = [];
@@ -17156,9 +17174,6 @@ class HighlightOutline extends Outline {
   get box() {
     return this.#box;
   }
-  get classNamesForDrawing() {
-    return ["highlight"];
-  }
   get classNamesForOutlining() {
     return ["highlightOutline"];
   }
@@ -17167,17 +17182,8 @@ class FreeHighlightOutliner extends FreeDrawOutliner {
   newFreeDrawOutline(outline, points, box, scaleFactor, innerMargin, isLTR) {
     return new FreeHighlightOutline(outline, points, box, scaleFactor, innerMargin, isLTR);
   }
-  get classNamesForDrawing() {
-    return ["highlight", "free"];
-  }
 }
 class FreeHighlightOutline extends FreeDrawOutline {
-  get classNamesForDrawing() {
-    return ["highlight", "free"];
-  }
-  get classNamesForOutlining() {
-    return ["highlightOutline", "free"];
-  }
   newOutliner(point, box, scaleFactor, thickness, isLTR, innerMargin = 0) {
     return new FreeHighlightOutliner(point, box, scaleFactor, thickness, isLTR, innerMargin);
   }
@@ -17508,17 +17514,12 @@ class HighlightEditor extends AnnotationEditor {
   #createOutlines() {
     const outliner = new HighlightOutliner(this.#boxes, 0.001);
     this.#highlightOutlines = outliner.getOutlines();
-    ({
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height
-    } = this.#highlightOutlines.box);
+    [this.x, this.y, this.width, this.height] = this.#highlightOutlines.box;
     const outlinerForOutline = new HighlightOutliner(this.#boxes, 0.0025, 0.001, this._uiManager.direction === "ltr");
     this.#focusOutlines = outlinerForOutline.getOutlines();
     const {
       lastPoint
-    } = this.#focusOutlines.box;
+    } = this.#focusOutlines;
     this.#lastPoint = [(lastPoint[0] - this.x) / this.width, (lastPoint[1] - this.y) / this.height];
   }
   #createFreeOutlines({
@@ -17532,21 +17533,38 @@ class HighlightEditor extends AnnotationEditor {
     if (highlightId >= 0) {
       this.#id = highlightId;
       this.#clipPathId = clipPathId;
-      this.parent.drawLayer.finalizeLine(highlightId, highlightOutlines);
-      this.#outlineId = this.parent.drawLayer.drawOutline(this.#focusOutlines);
+      this.parent.drawLayer.finalizeDraw(highlightId, {
+        bbox: highlightOutlines.box,
+        path: {
+          d: highlightOutlines.toSVGPath()
+        }
+      });
+      this.#outlineId = this.parent.drawLayer.drawOutline({
+        rootClass: {
+          highlightOutline: true,
+          free: true
+        },
+        bbox: this.#focusOutlines.box,
+        path: {
+          d: this.#focusOutlines.toSVGPath()
+        }
+      }, true);
     } else if (this.parent) {
       const angle = this.parent.viewport.rotation;
-      this.parent.drawLayer.updateLine(this.#id, highlightOutlines);
-      this.parent.drawLayer.updateBox(this.#id, HighlightEditor.#rotateBbox(this.#highlightOutlines.box, (angle - this.rotation + 360) % 360));
-      this.parent.drawLayer.updateLine(this.#outlineId, this.#focusOutlines);
-      this.parent.drawLayer.updateBox(this.#outlineId, HighlightEditor.#rotateBbox(this.#focusOutlines.box, angle));
+      this.parent.drawLayer.updateProperties(this.#id, {
+        bbox: HighlightEditor.#rotateBbox(this.#highlightOutlines.box, (angle - this.rotation + 360) % 360),
+        path: {
+          d: highlightOutlines.toSVGPath()
+        }
+      });
+      this.parent.drawLayer.updateProperties(this.#outlineId, {
+        bbox: HighlightEditor.#rotateBbox(this.#focusOutlines.box, angle),
+        path: {
+          d: this.#focusOutlines.toSVGPath()
+        }
+      });
     }
-    const {
-      x,
-      y,
-      width,
-      height
-    } = highlightOutlines.box;
+    const [x, y, width, height] = highlightOutlines.box;
     switch (this.rotation) {
       case 0:
         this.x = x;
@@ -17581,7 +17599,7 @@ class HighlightEditor extends AnnotationEditor {
     }
     const {
       lastPoint
-    } = this.#focusOutlines.box;
+    } = this.#focusOutlines;
     this.#lastPoint = [(lastPoint[0] - x) / width, (lastPoint[1] - y) / height];
   }
   static initialize(l10n, uiManager) {
@@ -17621,10 +17639,14 @@ class HighlightEditor extends AnnotationEditor {
   #updateColor(color) {
     const setColorAndOpacity = (col, opa) => {
       this.color = col;
-      this.parent?.drawLayer.changeColor(this.#id, col);
-      this.#colorPicker?.updateColor(col);
       this.#opacity = opa;
-      this.parent?.drawLayer.changeOpacity(this.#id, opa);
+      this.parent?.drawLayer.updateProperties(this.#id, {
+        root: {
+          fill: col,
+          "fill-opacity": opa
+        }
+      });
+      this.#colorPicker?.updateColor(col);
     };
     const savedColor = this.color;
     const savedOpacity = this.#opacity;
@@ -17759,47 +17781,45 @@ class HighlightEditor extends AnnotationEditor {
     ({
       id: this.#id,
       clipPathId: this.#clipPathId
-    } = parent.drawLayer.draw(this.#highlightOutlines, this.color, this.#opacity));
-    this.#outlineId = parent.drawLayer.drawOutline(this.#focusOutlines);
+    } = parent.drawLayer.draw({
+      bbox: this.#highlightOutlines.box,
+      root: {
+        viewBox: "0 0 1 1",
+        fill: this.color,
+        "fill-opacity": this.#opacity
+      },
+      rootClass: {
+        highlight: true,
+        free: this.#isFreeHighlight
+      },
+      path: {
+        d: this.#highlightOutlines.toSVGPath()
+      }
+    }, false, true));
+    this.#outlineId = parent.drawLayer.drawOutline({
+      rootClass: {
+        highlightOutline: true,
+        free: this.#isFreeHighlight
+      },
+      bbox: this.#focusOutlines.box,
+      path: {
+        d: this.#focusOutlines.toSVGPath()
+      }
+    }, this.#isFreeHighlight);
     if (this.#highlightDiv) {
       this.#highlightDiv.style.clipPath = this.#clipPathId;
     }
   }
-  static #rotateBbox({
-    x,
-    y,
-    width,
-    height
-  }, angle) {
+  static #rotateBbox([x, y, width, height], angle) {
     switch (angle) {
       case 90:
-        return {
-          x: 1 - y - height,
-          y: x,
-          width: height,
-          height: width
-        };
+        return [1 - y - height, x, height, width];
       case 180:
-        return {
-          x: 1 - x - width,
-          y: 1 - y - height,
-          width,
-          height
-        };
+        return [1 - x - width, 1 - y - height, width, height];
       case 270:
-        return {
-          x: y,
-          y: 1 - x - width,
-          width: height,
-          height: width
-        };
+        return [y, 1 - x - width, height, width];
     }
-    return {
-      x,
-      y,
-      width,
-      height
-    };
+    return [x, y, width, height];
   }
   rotate(angle) {
     const {
@@ -17810,12 +17830,20 @@ class HighlightEditor extends AnnotationEditor {
       angle = (angle - this.rotation + 360) % 360;
       box = HighlightEditor.#rotateBbox(this.#highlightOutlines.box, angle);
     } else {
-      box = HighlightEditor.#rotateBbox(this, angle);
+      box = HighlightEditor.#rotateBbox([this.x, this.y, this.width, this.height], angle);
     }
-    drawLayer.rotate(this.#id, angle);
-    drawLayer.rotate(this.#outlineId, angle);
-    drawLayer.updateBox(this.#id, box);
-    drawLayer.updateBox(this.#outlineId, HighlightEditor.#rotateBbox(this.#focusOutlines.box, angle));
+    drawLayer.updateProperties(this.#id, {
+      bbox: box,
+      root: {
+        "data-main-rotation": angle
+      }
+    });
+    drawLayer.updateProperties(this.#outlineId, {
+      bbox: HighlightEditor.#rotateBbox(this.#focusOutlines.box, angle),
+      root: {
+        "data-main-rotation": angle
+      }
+    });
   }
   render() {
     if (this.div) {
@@ -17846,12 +17874,20 @@ class HighlightEditor extends AnnotationEditor {
   }
   pointerover() {
     if (!this.isSelected) {
-      this.parent.drawLayer.addClass(this.#outlineId, "hovered");
+      this.parent?.drawLayer.updateProperties(this.#outlineId, {
+        rootClass: {
+          hovered: true
+        }
+      });
     }
   }
   pointerleave() {
     if (!this.isSelected) {
-      this.parent.drawLayer.removeClass(this.#outlineId, "hovered");
+      this.parent?.drawLayer.updateProperties(this.#outlineId, {
+        rootClass: {
+          hovered: false
+        }
+      });
     }
   }
   #keydown(event) {
@@ -17886,15 +17922,23 @@ class HighlightEditor extends AnnotationEditor {
     if (!this.#outlineId) {
       return;
     }
-    this.parent?.drawLayer.removeClass(this.#outlineId, "hovered");
-    this.parent?.drawLayer.addClass(this.#outlineId, "selected");
+    this.parent?.drawLayer.updateProperties(this.#outlineId, {
+      rootClass: {
+        hovered: false,
+        selected: true
+      }
+    });
   }
   unselect() {
     super.unselect();
     if (!this.#outlineId) {
       return;
     }
-    this.parent?.drawLayer.removeClass(this.#outlineId, "selected");
+    this.parent?.drawLayer.updateProperties(this.#outlineId, {
+      rootClass: {
+        selected: false
+      }
+    });
     if (!this.#isFreeHighlight) {
       this.#setCaret(false);
     }
@@ -17905,8 +17949,16 @@ class HighlightEditor extends AnnotationEditor {
   show(visible = this._isVisible) {
     super.show(visible);
     if (this.parent) {
-      this.parent.drawLayer.show(this.#id, visible);
-      this.parent.drawLayer.show(this.#outlineId, visible);
+      this.parent.drawLayer.updateProperties(this.#id, {
+        rootClass: {
+          hidden: !visible
+        }
+      });
+      this.parent.drawLayer.updateProperties(this.#outlineId, {
+        rootClass: {
+          hidden: !visible
+        }
+      });
     }
   }
   #getRotation() {
@@ -17928,11 +17980,11 @@ class HighlightEditor extends AnnotationEditor {
       height
     } of boxes) {
       const sx = x * pageWidth + pageX;
-      const sy = (1 - y - height) * pageHeight + pageY;
+      const sy = (1 - y) * pageHeight + pageY;
       quadPoints[i] = quadPoints[i + 4] = sx;
       quadPoints[i + 1] = quadPoints[i + 3] = sy;
       quadPoints[i + 2] = quadPoints[i + 6] = sx + width * pageWidth;
-      quadPoints[i + 5] = quadPoints[i + 7] = sy + height * pageHeight;
+      quadPoints[i + 5] = quadPoints[i + 7] = sy - height * pageHeight;
       i += 8;
     }
     return quadPoints;
@@ -17953,10 +18005,6 @@ class HighlightEditor extends AnnotationEditor {
     } = textLayer.getBoundingClientRect();
     const ac = new AbortController();
     const signal = parent.combinedSignal(ac);
-    const pointerDown = e => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
     const pointerUpCallback = e => {
       ac.abort();
       this.#endHighlight(parent, e);
@@ -17967,7 +18015,7 @@ class HighlightEditor extends AnnotationEditor {
     window.addEventListener("pointerup", pointerUpCallback, {
       signal
     });
-    window.addEventListener("pointerdown", pointerDown, {
+    window.addEventListener("pointerdown", stopEvent, {
       capture: true,
       passive: false,
       signal
@@ -17985,11 +18033,29 @@ class HighlightEditor extends AnnotationEditor {
     ({
       id: this._freeHighlightId,
       clipPathId: this._freeHighlightClipId
-    } = parent.drawLayer.draw(this._freeHighlight, this._defaultColor, this._defaultOpacity, true));
+    } = parent.drawLayer.draw({
+      bbox: [0, 0, 1, 1],
+      root: {
+        viewBox: "0 0 1 1",
+        fill: this._defaultColor,
+        "fill-opacity": this._defaultOpacity
+      },
+      rootClass: {
+        highlight: true,
+        free: true
+      },
+      path: {
+        d: this._freeHighlight.toSVGPath()
+      }
+    }, true, true));
   }
   static #highlightMove(parent, event) {
     if (this._freeHighlight.add(event)) {
-      parent.drawLayer.updatePath(this._freeHighlightId, this._freeHighlight);
+      parent.drawLayer.updateProperties(this._freeHighlightId, {
+        path: {
+          d: this._freeHighlight.toSVGPath()
+        }
+      });
     }
   }
   static #endHighlight(parent, event) {
@@ -18117,7 +18183,21 @@ class HighlightEditor extends AnnotationEditor {
       const {
         id,
         clipPathId
-      } = parent.drawLayer.draw(outliner, editor.color, editor._defaultOpacity, true);
+      } = parent.drawLayer.draw({
+        bbox: [0, 0, 1, 1],
+        root: {
+          viewBox: "0 0 1 1",
+          fill: editor.color,
+          "fill-opacity": editor._defaultOpacity
+        },
+        rootClass: {
+          highlight: true,
+          free: true
+        },
+        path: {
+          d: outliner.toSVGPath()
+        }
+      }, true, true);
       editor.#createFreeOutlines({
         highlightOutlines: outliner.getOutlines(),
         highlightId: id,
@@ -18171,132 +18251,228 @@ class HighlightEditor extends AnnotationEditor {
   }
 }
 
-;// ./src/display/editor/ink.js
+;// ./src/display/editor/draw.js
 
 
 
-
-
-class InkEditor extends AnnotationEditor {
-  #baseHeight = 0;
-  #baseWidth = 0;
-  #canvasContextMenuTimeoutId = null;
-  #currentPath2D = new Path2D();
-  #disableEditing = false;
-  #drawingAC = null;
-  #hasSomethingToDraw = false;
-  #isCanvasInitialized = false;
-  #observer = null;
-  #pointerdownAC = null;
-  #realWidth = 0;
-  #realHeight = 0;
-  #requestFrameCallback = null;
-  static _defaultColor = null;
-  static _defaultOpacity = 1;
-  static _defaultThickness = 1;
-  static _type = "ink";
-  static _editorType = AnnotationEditorType.INK;
-  constructor(params) {
-    super({
-      ...params,
-      name: "inkEditor"
-    });
-    this.color = params.color || null;
-    this.thickness = params.thickness || null;
-    this.opacity = params.opacity || null;
-    this.paths = [];
-    this.bezierPath2D = [];
-    this.allRawPaths = [];
-    this.currentPath = [];
-    this.scaleFactor = 1;
-    this.translationX = this.translationY = 0;
-    this.x = 0;
-    this.y = 0;
-    this._willKeepAspectRatio = true;
+class DrawingOptions {
+  #svgProperties = Object.create(null);
+  updateProperty(name, value) {
+    this[name] = value;
+    this.updateSVGProperty(name, value);
   }
-  static initialize(l10n, uiManager) {
-    AnnotationEditor.initialize(l10n, uiManager);
+  updateProperties(properties) {
+    if (!properties) {
+      return;
+    }
+    for (const [name, value] of Object.entries(properties)) {
+      this.updateProperty(name, value);
+    }
+  }
+  updateSVGProperty(name, value) {
+    this.#svgProperties[name] = value;
+  }
+  toSVGProperties() {
+    const root = this.#svgProperties;
+    this.#svgProperties = Object.create(null);
+    return {
+      root
+    };
+  }
+  reset() {
+    this.#svgProperties = Object.create(null);
+  }
+  updateAll(options = this) {
+    this.updateProperties(options);
+  }
+  clone() {
+    unreachable("Not implemented");
+  }
+}
+class DrawingEditor extends AnnotationEditor {
+  #drawOutlines = null;
+  #mustBeCommitted;
+  _drawId = null;
+  static _currentDrawId = -1;
+  static _currentDraw = null;
+  static _currentDrawingOptions = null;
+  static _currentParent = null;
+  static _INNER_MARGIN = 3;
+  constructor(params) {
+    super(params);
+    this.#mustBeCommitted = params.mustBeCommitted || false;
+    if (params.drawOutlines) {
+      this.#createDrawOutlines(params);
+      this.#addToDrawLayer();
+    }
+  }
+  #createDrawOutlines({
+    drawOutlines,
+    drawId,
+    drawingOptions
+  }) {
+    this.#drawOutlines = drawOutlines;
+    this._drawingOptions ||= drawingOptions;
+    if (drawId >= 0) {
+      this._drawId = drawId;
+      this.parent.drawLayer.finalizeDraw(drawId, drawOutlines.defaultProperties);
+    } else {
+      this._drawId = this.#createDrawing(drawOutlines, this.parent);
+    }
+    this.#updateBbox(drawOutlines.box);
+  }
+  #createDrawing(drawOutlines, parent) {
+    const {
+      id
+    } = parent.drawLayer.draw(DrawingEditor._mergeSVGProperties(this._drawingOptions.toSVGProperties(), drawOutlines.defaultSVGProperties), false, false);
+    return id;
+  }
+  static _mergeSVGProperties(p1, p2) {
+    const p1Keys = new Set(Object.keys(p1));
+    for (const [key, value] of Object.entries(p2)) {
+      if (p1Keys.has(key)) {
+        Object.assign(p1[key], value);
+      } else {
+        p1[key] = value;
+      }
+    }
+    return p1;
+  }
+  static getDefaultDrawingOptions(_options) {
+    unreachable("Not implemented");
+  }
+  static get typesMap() {
+    unreachable("Not implemented");
+  }
+  static get isDrawer() {
+    return true;
+  }
+  static get supportMultipleDrawings() {
+    return false;
   }
   static updateDefaultParams(type, value) {
-    switch (type) {
-      case AnnotationEditorParamsType.INK_THICKNESS:
-        InkEditor._defaultThickness = value;
-        break;
-      case AnnotationEditorParamsType.INK_COLOR:
-        InkEditor._defaultColor = value;
-        break;
-      case AnnotationEditorParamsType.INK_OPACITY:
-        InkEditor._defaultOpacity = value / 100;
-        break;
+    const propertyName = this.typesMap.get(type);
+    if (propertyName) {
+      this._defaultDrawingOptions.updateProperty(propertyName, value);
+    }
+    if (this._currentParent) {
+      this._currentDraw.updateProperty(propertyName, value);
+      this._currentParent.drawLayer.updateProperties(this._currentDrawId, this._defaultDrawingOptions.toSVGProperties());
     }
   }
   updateParams(type, value) {
-    switch (type) {
-      case AnnotationEditorParamsType.INK_THICKNESS:
-        this.#updateThickness(value);
-        break;
-      case AnnotationEditorParamsType.INK_COLOR:
-        this.#updateColor(value);
-        break;
-      case AnnotationEditorParamsType.INK_OPACITY:
-        this.#updateOpacity(value);
-        break;
+    const propertyName = this.constructor.typesMap.get(type);
+    if (propertyName) {
+      this._updateProperty(type, propertyName, value);
     }
   }
   static get defaultPropertiesToUpdate() {
-    return [[AnnotationEditorParamsType.INK_THICKNESS, InkEditor._defaultThickness], [AnnotationEditorParamsType.INK_COLOR, InkEditor._defaultColor || AnnotationEditor._defaultLineColor], [AnnotationEditorParamsType.INK_OPACITY, Math.round(InkEditor._defaultOpacity * 100)]];
+    const properties = [];
+    const options = this._defaultDrawingOptions;
+    for (const [type, name] of this.typesMap) {
+      properties.push([type, options[name]]);
+    }
+    return properties;
   }
   get propertiesToUpdate() {
-    return [[AnnotationEditorParamsType.INK_THICKNESS, this.thickness || InkEditor._defaultThickness], [AnnotationEditorParamsType.INK_COLOR, this.color || InkEditor._defaultColor || AnnotationEditor._defaultLineColor], [AnnotationEditorParamsType.INK_OPACITY, Math.round(100 * (this.opacity ?? InkEditor._defaultOpacity))]];
+    const properties = [];
+    const {
+      _drawingOptions
+    } = this;
+    for (const [type, name] of this.constructor.typesMap) {
+      properties.push([type, _drawingOptions[name]]);
+    }
+    return properties;
   }
-  #updateThickness(thickness) {
-    const setThickness = th => {
-      this.thickness = th;
-      this.#fitToContent();
+  _updateProperty(type, name, value) {
+    const options = this._drawingOptions;
+    const savedValue = options[name];
+    const setter = val => {
+      options.updateProperty(name, val);
+      const bbox = this.#drawOutlines.updateProperty(name, val);
+      if (bbox) {
+        this.#updateBbox(bbox);
+      }
+      this.parent?.drawLayer.updateProperties(this._drawId, options.toSVGProperties());
     };
-    const savedThickness = this.thickness;
     this.addCommands({
-      cmd: setThickness.bind(this, thickness),
-      undo: setThickness.bind(this, savedThickness),
+      cmd: setter.bind(this, value),
+      undo: setter.bind(this, savedValue),
       post: this._uiManager.updateUI.bind(this._uiManager, this),
       mustExec: true,
-      type: AnnotationEditorParamsType.INK_THICKNESS,
+      type,
       overwriteIfSameType: true,
       keepUndo: true
     });
   }
-  #updateColor(color) {
-    const setColor = col => {
-      this.color = col;
-      this.#redraw();
-    };
-    const savedColor = this.color;
-    this.addCommands({
-      cmd: setColor.bind(this, color),
-      undo: setColor.bind(this, savedColor),
-      post: this._uiManager.updateUI.bind(this._uiManager, this),
-      mustExec: true,
-      type: AnnotationEditorParamsType.INK_COLOR,
-      overwriteIfSameType: true,
-      keepUndo: true
+  _onResizing() {
+    this.parent?.drawLayer.updateProperties(this._drawId, DrawingEditor._mergeSVGProperties(this.#drawOutlines.getPathResizingSVGProperties(this.#convertToDrawSpace()), {
+      bbox: this.#rotateBox()
+    }));
+  }
+  _onResized() {
+    this.parent?.drawLayer.updateProperties(this._drawId, DrawingEditor._mergeSVGProperties(this.#drawOutlines.getPathResizedSVGProperties(this.#convertToDrawSpace()), {
+      bbox: this.#rotateBox()
+    }));
+  }
+  _onTranslating(x, y) {
+    this.parent?.drawLayer.updateProperties(this._drawId, {
+      bbox: this.#rotateBox(x, y)
     });
   }
-  #updateOpacity(opacity) {
-    const setOpacity = op => {
-      this.opacity = op;
-      this.#redraw();
-    };
-    opacity /= 100;
-    const savedOpacity = this.opacity;
-    this.addCommands({
-      cmd: setOpacity.bind(this, opacity),
-      undo: setOpacity.bind(this, savedOpacity),
-      post: this._uiManager.updateUI.bind(this._uiManager, this),
-      mustExec: true,
-      type: AnnotationEditorParamsType.INK_OPACITY,
-      overwriteIfSameType: true,
-      keepUndo: true
+  _onTranslated() {
+    this.parent?.drawLayer.updateProperties(this._drawId, DrawingEditor._mergeSVGProperties(this.#drawOutlines.getPathTranslatedSVGProperties(this.#convertToDrawSpace(), this.parentDimensions), {
+      bbox: this.#rotateBox()
+    }));
+  }
+  _onStartDragging() {
+    this.parent?.drawLayer.updateProperties(this._drawId, {
+      rootClass: {
+        moving: true
+      }
     });
+  }
+  _onStopDragging() {
+    this.parent?.drawLayer.updateProperties(this._drawId, {
+      rootClass: {
+        moving: false
+      }
+    });
+  }
+  commit() {
+    super.commit();
+    this.disableEditMode();
+    this.disableEditing();
+  }
+  disableEditing() {
+    super.disableEditing();
+    this.div.classList.toggle("disabled", true);
+  }
+  enableEditing() {
+    super.enableEditing();
+    this.div.classList.toggle("disabled", false);
+  }
+  getBaseTranslation() {
+    return [0, 0];
+  }
+  get isResizable() {
+    return true;
+  }
+  onceAdded() {
+    if (!this.annotationElementId) {
+      this.parent.addUndoableEditor(this);
+    }
+    this._isDraggable = true;
+    if (this.#mustBeCommitted) {
+      this.#mustBeCommitted = false;
+      this.commit();
+      this.parent.setSelected(this);
+      this.div.focus();
+    }
+  }
+  remove() {
+    this.#cleanDrawLayer();
+    super.remove();
   }
   rebuild() {
     if (!this.parent) {
@@ -18306,691 +18482,1096 @@ class InkEditor extends AnnotationEditor {
     if (this.div === null) {
       return;
     }
-    if (!this.canvas) {
-      this.#createCanvas();
-      this.#createObserver();
-    }
+    this.#addToDrawLayer();
+    this.#updateBbox(this.#drawOutlines.box);
     if (!this.isAttachedToDOM) {
       this.parent.add(this);
-      this.#setCanvasDims();
     }
-    this.#fitToContent();
-  }
-  remove() {
-    if (this.canvas === null) {
-      return;
-    }
-    if (!this.isEmpty()) {
-      this.commit();
-    }
-    this.canvas.width = this.canvas.height = 0;
-    this.canvas.remove();
-    this.canvas = null;
-    if (this.#canvasContextMenuTimeoutId) {
-      clearTimeout(this.#canvasContextMenuTimeoutId);
-      this.#canvasContextMenuTimeoutId = null;
-    }
-    this.#observer?.disconnect();
-    this.#observer = null;
-    super.remove();
   }
   setParent(parent) {
-    if (!this.parent && parent) {
+    let mustBeSelected = false;
+    if (this.parent && !parent) {
       this._uiManager.removeShouldRescale(this);
-    } else if (this.parent && parent === null) {
+      this.#cleanDrawLayer();
+    } else if (parent) {
       this._uiManager.addShouldRescale(this);
+      this.#addToDrawLayer(parent);
+      mustBeSelected = !this.parent && this.div?.classList.contains("selectedEditor");
     }
     super.setParent(parent);
+    if (mustBeSelected) {
+      this.select();
+    }
+  }
+  #cleanDrawLayer() {
+    if (this._drawId === null || !this.parent) {
+      return;
+    }
+    this.parent.drawLayer.remove(this._drawId);
+    this._drawId = null;
+    this._drawingOptions.reset();
+  }
+  #addToDrawLayer(parent = this.parent) {
+    if (this._drawId !== null && this.parent === parent) {
+      return;
+    }
+    if (this._drawId !== null) {
+      this.parent.drawLayer.updateParent(this._drawId, parent.drawLayer);
+      return;
+    }
+    this._drawingOptions.updateAll();
+    this._drawId = this.#createDrawing(this.#drawOutlines, parent);
+  }
+  #convertToParentSpace([x, y, width, height]) {
+    const {
+      parentDimensions: [pW, pH],
+      rotation
+    } = this;
+    switch (rotation) {
+      case 90:
+        return [y, 1 - x, width * (pH / pW), height * (pW / pH)];
+      case 180:
+        return [1 - x, 1 - y, width, height];
+      case 270:
+        return [1 - y, x, width * (pH / pW), height * (pW / pH)];
+      default:
+        return [x, y, width, height];
+    }
+  }
+  #convertToDrawSpace() {
+    const {
+      x,
+      y,
+      width,
+      height,
+      parentDimensions: [pW, pH],
+      rotation
+    } = this;
+    switch (rotation) {
+      case 90:
+        return [1 - y, x, width * (pW / pH), height * (pH / pW)];
+      case 180:
+        return [1 - x, 1 - y, width, height];
+      case 270:
+        return [y, 1 - x, width * (pW / pH), height * (pH / pW)];
+      default:
+        return [x, y, width, height];
+    }
+  }
+  #updateBbox(bbox) {
+    [this.x, this.y, this.width, this.height] = this.#convertToParentSpace(bbox);
+    if (this.div) {
+      this.fixAndSetPosition();
+      const [parentWidth, parentHeight] = this.parentDimensions;
+      this.setDims(this.width * parentWidth, this.height * parentHeight);
+    }
+    this._onResized();
+  }
+  #rotateBox() {
+    const {
+      x,
+      y,
+      width,
+      height,
+      rotation,
+      parentRotation,
+      parentDimensions: [pW, pH]
+    } = this;
+    switch ((rotation * 4 + parentRotation) / 90) {
+      case 1:
+        return [1 - y - height, x, height, width];
+      case 2:
+        return [1 - x - width, 1 - y - height, width, height];
+      case 3:
+        return [y, 1 - x - width, height, width];
+      case 4:
+        return [x, y - width * (pW / pH), height * (pH / pW), width * (pW / pH)];
+      case 5:
+        return [1 - y, x, width * (pW / pH), height * (pH / pW)];
+      case 6:
+        return [1 - x - height * (pH / pW), 1 - y, height * (pH / pW), width * (pW / pH)];
+      case 7:
+        return [y - width * (pW / pH), 1 - x - height * (pH / pW), width * (pW / pH), height * (pH / pW)];
+      case 8:
+        return [x - width, y - height, width, height];
+      case 9:
+        return [1 - y, x - width, height, width];
+      case 10:
+        return [1 - x, 1 - y, width, height];
+      case 11:
+        return [y - height, 1 - x, height, width];
+      case 12:
+        return [x - height * (pH / pW), y, height * (pH / pW), width * (pW / pH)];
+      case 13:
+        return [1 - y - width * (pW / pH), x - height * (pH / pW), width * (pW / pH), height * (pH / pW)];
+      case 14:
+        return [1 - x, 1 - y - width * (pW / pH), height * (pH / pW), width * (pW / pH)];
+      case 15:
+        return [y, 1 - x, width * (pW / pH), height * (pH / pW)];
+      default:
+        return [x, y, width, height];
+    }
+  }
+  rotate() {
+    if (!this.parent) {
+      return;
+    }
+    this.parent.drawLayer.updateProperties(this._drawId, DrawingEditor._mergeSVGProperties({
+      bbox: this.#rotateBox()
+    }, this.#drawOutlines.updateRotation((this.parentRotation - this.rotation + 360) % 360)));
   }
   onScaleChanging() {
-    const [parentWidth, parentHeight] = this.parentDimensions;
-    const width = this.width * parentWidth;
-    const height = this.height * parentHeight;
-    this.setDimensions(width, height);
-  }
-  enableEditMode() {
-    if (this.#disableEditing || this.canvas === null) {
+    if (!this.parent) {
       return;
     }
-    super.enableEditMode();
-    this._isDraggable = false;
-    this.#addPointerdownListener();
+    this.#updateBbox(this.#drawOutlines.updateParentDimensions(this.parentDimensions, this.parent.scale));
   }
-  disableEditMode() {
-    if (!this.isInEditMode() || this.canvas === null) {
-      return;
-    }
-    super.disableEditMode();
-    this._isDraggable = !this.isEmpty();
-    this.div.classList.remove("editing");
-    this.#removePointerdownListener();
-  }
-  onceAdded() {
-    this._isDraggable = !this.isEmpty();
-  }
-  isEmpty() {
-    return this.paths.length === 0 || this.paths.length === 1 && this.paths[0].length === 0;
-  }
-  #getInitialBBox() {
-    const {
-      parentRotation,
-      parentDimensions: [width, height]
-    } = this;
-    switch (parentRotation) {
-      case 90:
-        return [0, height, height, width];
-      case 180:
-        return [width, height, width, height];
-      case 270:
-        return [width, 0, height, width];
-      default:
-        return [0, 0, width, height];
-    }
-  }
-  #setStroke() {
-    const {
-      ctx,
-      color,
-      opacity,
-      thickness,
-      parentScale,
-      scaleFactor
-    } = this;
-    ctx.lineWidth = thickness * parentScale / scaleFactor;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.miterLimit = 10;
-    ctx.strokeStyle = `${color}${opacityToHex(opacity)}`;
-  }
-  #startDrawing(x, y) {
-    this.canvas.addEventListener("contextmenu", noContextMenu, {
-      signal: this._uiManager._signal
-    });
-    this.#removePointerdownListener();
-    this.#drawingAC = new AbortController();
-    const signal = this._uiManager.combinedSignal(this.#drawingAC);
-    this.canvas.addEventListener("pointerleave", this.canvasPointerleave.bind(this), {
-      signal
-    });
-    this.canvas.addEventListener("pointermove", this.canvasPointermove.bind(this), {
-      signal
-    });
-    this.canvas.addEventListener("pointerup", this.canvasPointerup.bind(this), {
-      signal
-    });
-    this.isEditing = true;
-    if (!this.#isCanvasInitialized) {
-      this.#isCanvasInitialized = true;
-      this.#setCanvasDims();
-      this.thickness ||= InkEditor._defaultThickness;
-      this.color ||= InkEditor._defaultColor || AnnotationEditor._defaultLineColor;
-      this.opacity ??= InkEditor._defaultOpacity;
-    }
-    this.currentPath.push([x, y]);
-    this.#hasSomethingToDraw = false;
-    this.#setStroke();
-    this.#requestFrameCallback = () => {
-      this.#drawPoints();
-      if (this.#requestFrameCallback) {
-        window.requestAnimationFrame(this.#requestFrameCallback);
-      }
-    };
-    window.requestAnimationFrame(this.#requestFrameCallback);
-  }
-  #draw(x, y) {
-    const [lastX, lastY] = this.currentPath.at(-1);
-    if (this.currentPath.length > 1 && x === lastX && y === lastY) {
-      return;
-    }
-    const currentPath = this.currentPath;
-    let path2D = this.#currentPath2D;
-    currentPath.push([x, y]);
-    this.#hasSomethingToDraw = true;
-    if (currentPath.length <= 2) {
-      path2D.moveTo(...currentPath[0]);
-      path2D.lineTo(x, y);
-      return;
-    }
-    if (currentPath.length === 3) {
-      this.#currentPath2D = path2D = new Path2D();
-      path2D.moveTo(...currentPath[0]);
-    }
-    this.#makeBezierCurve(path2D, ...currentPath.at(-3), ...currentPath.at(-2), x, y);
-  }
-  #endPath() {
-    if (this.currentPath.length === 0) {
-      return;
-    }
-    const lastPoint = this.currentPath.at(-1);
-    this.#currentPath2D.lineTo(...lastPoint);
-  }
-  #stopDrawing(x, y) {
-    this.#requestFrameCallback = null;
-    x = Math.min(Math.max(x, 0), this.canvas.width);
-    y = Math.min(Math.max(y, 0), this.canvas.height);
-    this.#draw(x, y);
-    this.#endPath();
-    let bezier;
-    if (this.currentPath.length !== 1) {
-      bezier = this.#generateBezierPoints();
-    } else {
-      const xy = [x, y];
-      bezier = [[xy, xy.slice(), xy.slice(), xy]];
-    }
-    const path2D = this.#currentPath2D;
-    const currentPath = this.currentPath;
-    this.currentPath = [];
-    this.#currentPath2D = new Path2D();
-    const cmd = () => {
-      this.allRawPaths.push(currentPath);
-      this.paths.push(bezier);
-      this.bezierPath2D.push(path2D);
-      this._uiManager.rebuild(this);
-    };
-    const undo = () => {
-      this.allRawPaths.pop();
-      this.paths.pop();
-      this.bezierPath2D.pop();
-      if (this.paths.length === 0) {
-        this.remove();
-      } else {
-        if (!this.canvas) {
-          this.#createCanvas();
-          this.#createObserver();
-        }
-        this.#fitToContent();
-      }
-    };
-    this.addCommands({
-      cmd,
-      undo,
-      mustExec: true
-    });
-  }
-  #drawPoints() {
-    if (!this.#hasSomethingToDraw) {
-      return;
-    }
-    this.#hasSomethingToDraw = false;
-    const thickness = Math.ceil(this.thickness * this.parentScale);
-    const lastPoints = this.currentPath.slice(-3);
-    const x = lastPoints.map(xy => xy[0]);
-    const y = lastPoints.map(xy => xy[1]);
-    const xMin = Math.min(...x) - thickness;
-    const xMax = Math.max(...x) + thickness;
-    const yMin = Math.min(...y) - thickness;
-    const yMax = Math.max(...y) + thickness;
-    const {
-      ctx
-    } = this;
-    ctx.save();
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (const path of this.bezierPath2D) {
-      ctx.stroke(path);
-    }
-    ctx.stroke(this.#currentPath2D);
-    ctx.restore();
-  }
-  #makeBezierCurve(path2D, x0, y0, x1, y1, x2, y2) {
-    const prevX = (x0 + x1) / 2;
-    const prevY = (y0 + y1) / 2;
-    const x3 = (x1 + x2) / 2;
-    const y3 = (y1 + y2) / 2;
-    path2D.bezierCurveTo(prevX + 2 * (x1 - prevX) / 3, prevY + 2 * (y1 - prevY) / 3, x3 + 2 * (x1 - x3) / 3, y3 + 2 * (y1 - y3) / 3, x3, y3);
-  }
-  #generateBezierPoints() {
-    const path = this.currentPath;
-    if (path.length <= 2) {
-      return [[path[0], path[0], path.at(-1), path.at(-1)]];
-    }
-    const bezierPoints = [];
-    let i;
-    let [x0, y0] = path[0];
-    for (i = 1; i < path.length - 2; i++) {
-      const [x1, y1] = path[i];
-      const [x2, y2] = path[i + 1];
-      const x3 = (x1 + x2) / 2;
-      const y3 = (y1 + y2) / 2;
-      const control1 = [x0 + 2 * (x1 - x0) / 3, y0 + 2 * (y1 - y0) / 3];
-      const control2 = [x3 + 2 * (x1 - x3) / 3, y3 + 2 * (y1 - y3) / 3];
-      bezierPoints.push([[x0, y0], control1, control2, [x3, y3]]);
-      [x0, y0] = [x3, y3];
-    }
-    const [x1, y1] = path[i];
-    const [x2, y2] = path[i + 1];
-    const control1 = [x0 + 2 * (x1 - x0) / 3, y0 + 2 * (y1 - y0) / 3];
-    const control2 = [x2 + 2 * (x1 - x2) / 3, y2 + 2 * (y1 - y2) / 3];
-    bezierPoints.push([[x0, y0], control1, control2, [x2, y2]]);
-    return bezierPoints;
-  }
-  #redraw() {
-    if (this.isEmpty()) {
-      this.#updateTransform();
-      return;
-    }
-    this.#setStroke();
-    const {
-      canvas,
-      ctx
-    } = this;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.#updateTransform();
-    for (const path of this.bezierPath2D) {
-      ctx.stroke(path);
-    }
-  }
-  commit() {
-    if (this.#disableEditing) {
-      return;
-    }
-    super.commit();
-    this.isEditing = false;
-    this.disableEditMode();
-    this.setInForeground();
-    this.#disableEditing = true;
-    this.div.classList.add("disabled");
-    this.#fitToContent(true);
-    this.select();
-    this.parent.addInkEditorIfNeeded(true);
-    this.moveInDOM();
-    this.div.focus({
-      preventScroll: true
-    });
-  }
-  focusin(event) {
-    if (!this._focusEventsAllowed) {
-      return;
-    }
-    super.focusin(event);
-    this.enableEditMode();
-  }
-  #addPointerdownListener() {
-    if (this.#pointerdownAC) {
-      return;
-    }
-    this.#pointerdownAC = new AbortController();
-    const signal = this._uiManager.combinedSignal(this.#pointerdownAC);
-    this.canvas.addEventListener("pointerdown", this.canvasPointerdown.bind(this), {
-      signal
-    });
-  }
-  #removePointerdownListener() {
-    this.pointerdownAC?.abort();
-    this.pointerdownAC = null;
-  }
-  canvasPointerdown(event) {
-    if (event.button !== 0 || !this.isInEditMode() || this.#disableEditing) {
-      return;
-    }
-    this.setInForeground();
-    event.preventDefault();
-    if (!this.div.contains(document.activeElement)) {
-      this.div.focus({
-        preventScroll: true
-      });
-    }
-    this.#startDrawing(event.offsetX, event.offsetY);
-  }
-  canvasPointermove(event) {
-    event.preventDefault();
-    this.#draw(event.offsetX, event.offsetY);
-  }
-  canvasPointerup(event) {
-    event.preventDefault();
-    this.#endDrawing(event);
-  }
-  canvasPointerleave(event) {
-    this.#endDrawing(event);
-  }
-  #endDrawing(event) {
-    this.#drawingAC?.abort();
-    this.#drawingAC = null;
-    this.#addPointerdownListener();
-    if (this.#canvasContextMenuTimeoutId) {
-      clearTimeout(this.#canvasContextMenuTimeoutId);
-    }
-    this.#canvasContextMenuTimeoutId = setTimeout(() => {
-      this.#canvasContextMenuTimeoutId = null;
-      this.canvas.removeEventListener("contextmenu", noContextMenu);
-    }, 10);
-    this.#stopDrawing(event.offsetX, event.offsetY);
-    this.addToAnnotationStorage();
-    this.setInBackground();
-  }
-  #createCanvas() {
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = this.canvas.height = 0;
-    this.canvas.className = "inkEditorCanvas";
-    this.canvas.setAttribute("data-l10n-id", "pdfjs-ink-canvas");
-    this.div.append(this.canvas);
-    this.ctx = this.canvas.getContext("2d");
-  }
-  #createObserver() {
-    this.#observer = new ResizeObserver(entries => {
-      const rect = entries[0].contentRect;
-      if (rect.width && rect.height) {
-        this.setDimensions(rect.width, rect.height);
-      }
-    });
-    this.#observer.observe(this.div);
-    this._uiManager._signal.addEventListener("abort", () => {
-      this.#observer?.disconnect();
-      this.#observer = null;
-    }, {
-      once: true
-    });
-  }
-  get isResizable() {
-    return !this.isEmpty() && this.#disableEditing;
-  }
+  static onScaleChangingWhenDrawing() {}
   render() {
     if (this.div) {
       return this.div;
     }
-    let baseX, baseY;
-    if (this.width) {
-      baseX = this.x;
-      baseY = this.y;
-    }
-    super.render();
-    this.div.setAttribute("data-l10n-id", "pdfjs-ink");
-    const [x, y, w, h] = this.#getInitialBBox();
-    this.setAt(x, y, 0, 0);
-    this.setDims(w, h);
-    this.#createCanvas();
-    if (this.width) {
-      const [parentWidth, parentHeight] = this.parentDimensions;
-      this.setAspectRatio(this.width * parentWidth, this.height * parentHeight);
-      this.setAt(baseX * parentWidth, baseY * parentHeight, this.width * parentWidth, this.height * parentHeight);
-      this.#isCanvasInitialized = true;
-      this.#setCanvasDims();
-      this.setDims(this.width * parentWidth, this.height * parentHeight);
-      this.#redraw();
-      this.div.classList.add("disabled");
-    } else {
-      this.div.classList.add("editing");
-      this.enableEditMode();
-    }
-    this.#createObserver();
-    return this.div;
+    const div = super.render();
+    div.classList.add("draw");
+    const drawDiv = document.createElement("div");
+    div.append(drawDiv);
+    drawDiv.setAttribute("aria-hidden", "true");
+    drawDiv.className = "internal";
+    const [parentWidth, parentHeight] = this.parentDimensions;
+    this.setDims(this.width * parentWidth, this.height * parentHeight);
+    this._uiManager.addShouldRescale(this);
+    this.disableEditing();
+    return div;
   }
-  #setCanvasDims() {
-    if (!this.#isCanvasInitialized) {
+  static createDrawerInstance(_x, _y, _parentWidth, _parentHeight, _rotation) {
+    unreachable("Not implemented");
+  }
+  static startDrawing(parent, uiManager, _isLTR, {
+    target,
+    offsetX: x,
+    offsetY: y
+  }) {
+    const {
+      viewport: {
+        rotation
+      }
+    } = parent;
+    const {
+      width: parentWidth,
+      height: parentHeight
+    } = target.getBoundingClientRect();
+    const ac = new AbortController();
+    const signal = parent.combinedSignal(ac);
+    window.addEventListener("pointerup", e => {
+      ac.abort();
+      parent.toggleDrawing(true);
+      this._endDraw(e);
+    }, {
+      signal
+    });
+    window.addEventListener("pointerdown", stopEvent, {
+      capture: true,
+      passive: false,
+      signal
+    });
+    window.addEventListener("contextmenu", noContextMenu, {
+      signal
+    });
+    target.addEventListener("pointermove", this._drawMove.bind(this), {
+      signal
+    });
+    parent.toggleDrawing();
+    if (this._currentDraw) {
+      parent.drawLayer.updateProperties(this._currentDrawId, this._currentDraw.startNew(x, y, parentWidth, parentHeight, rotation));
       return;
     }
-    const [parentWidth, parentHeight] = this.parentDimensions;
-    this.canvas.width = Math.ceil(this.width * parentWidth);
-    this.canvas.height = Math.ceil(this.height * parentHeight);
-    this.#updateTransform();
+    uiManager.updateUIForDefaultProperties(this);
+    this._currentDraw = this.createDrawerInstance(x, y, parentWidth, parentHeight, rotation);
+    this._currentDrawingOptions = this.getDefaultDrawingOptions();
+    this._currentParent = parent;
+    ({
+      id: this._currentDrawId
+    } = parent.drawLayer.draw(this._mergeSVGProperties(this._currentDrawingOptions.toSVGProperties(), this._currentDraw.defaultSVGProperties), true, false));
   }
-  setDimensions(width, height) {
-    const roundedWidth = Math.round(width);
-    const roundedHeight = Math.round(height);
-    if (this.#realWidth === roundedWidth && this.#realHeight === roundedHeight) {
+  static _drawMove({
+    offsetX,
+    offsetY
+  }) {
+    this._currentParent.drawLayer.updateProperties(this._currentDrawId, this._currentDraw.add(offsetX, offsetY));
+  }
+  static _endDraw({
+    offsetX,
+    offsetY
+  }) {
+    const parent = this._currentParent;
+    parent.drawLayer.updateProperties(this._currentDrawId, this._currentDraw.end(offsetX, offsetY));
+    if (this.supportMultipleDrawings) {
+      const draw = this._currentDraw;
+      const drawId = this._currentDrawId;
+      const lastElement = draw.getLastElement();
+      parent.addCommands({
+        cmd: () => {
+          parent.drawLayer.updateProperties(drawId, draw.setLastElement(lastElement));
+        },
+        undo: () => {
+          parent.drawLayer.updateProperties(drawId, draw.removeLastElement());
+        },
+        mustExec: false,
+        type: AnnotationEditorParamsType.DRAW_STEP
+      });
       return;
     }
-    this.#realWidth = roundedWidth;
-    this.#realHeight = roundedHeight;
-    this.canvas.style.visibility = "hidden";
-    const [parentWidth, parentHeight] = this.parentDimensions;
-    this.width = width / parentWidth;
-    this.height = height / parentHeight;
-    this.fixAndSetPosition();
-    if (this.#disableEditing) {
-      this.#setScaleFactor(width, height);
+    this.endDrawing(false);
+  }
+  static endDrawing(isAborted) {
+    const parent = this._currentParent;
+    if (!parent) {
+      return null;
     }
-    this.#setCanvasDims();
-    this.#redraw();
-    this.canvas.style.visibility = "visible";
-    this.fixDims();
+    parent.toggleDrawing(true);
+    parent.cleanUndoStack(AnnotationEditorParamsType.DRAW_STEP);
+    if (!this._currentDraw.isEmpty()) {
+      const {
+        pageDimensions: [pageWidth, pageHeight],
+        scale
+      } = parent;
+      const editor = parent.createAndAddNewEditor({
+        offsetX: 0,
+        offsetY: 0
+      }, false, {
+        drawId: this._currentDrawId,
+        drawOutlines: this._currentDraw.getOutlines(pageWidth * scale, pageHeight * scale, scale, this._INNER_MARGIN),
+        drawingOptions: this._currentDrawingOptions,
+        mustBeCommitted: !isAborted
+      });
+      this._cleanup();
+      return editor;
+    }
+    parent.drawLayer.remove(this._currentDrawId);
+    this._cleanup();
+    return null;
   }
-  #setScaleFactor(width, height) {
-    const padding = this.#getPadding();
-    const scaleFactorW = (width - padding) / this.#baseWidth;
-    const scaleFactorH = (height - padding) / this.#baseHeight;
-    this.scaleFactor = Math.min(scaleFactorW, scaleFactorH);
+  static _cleanup() {
+    this._currentDrawId = -1;
+    this._currentDraw = null;
+    this._currentDrawingOptions = null;
+    this._currentParent = null;
   }
-  #updateTransform() {
-    const padding = this.#getPadding() / 2;
-    this.ctx.setTransform(this.scaleFactor, 0, 0, this.scaleFactor, this.translationX * this.scaleFactor + padding, this.translationY * this.scaleFactor + padding);
+  createDrawingOptions(_data) {}
+  static deserializeDraw(_pageX, _pageY, _pageWidth, _pageHeight, _innerWidth, _data) {
+    unreachable("Not implemented");
   }
-  static #buildPath2D(bezier) {
-    const path2D = new Path2D();
-    for (let i = 0, ii = bezier.length; i < ii; i++) {
-      const [first, control1, control2, second] = bezier[i];
-      if (i === 0) {
-        path2D.moveTo(...first);
+  static async deserialize(data, parent, uiManager) {
+    const {
+      rawDims: {
+        pageWidth,
+        pageHeight,
+        pageX,
+        pageY
       }
-      path2D.bezierCurveTo(control1[0], control1[1], control2[0], control2[1], second[0], second[1]);
-    }
-    return path2D;
+    } = parent.viewport;
+    const drawOutlines = this.deserializeDraw(pageX, pageY, pageWidth, pageHeight, this._INNER_MARGIN, data);
+    const editor = await super.deserialize(data, parent, uiManager);
+    editor.createDrawingOptions(data);
+    editor.#createDrawOutlines({
+      drawOutlines
+    });
+    editor.#addToDrawLayer();
+    editor.onScaleChanging();
+    editor.rotate();
+    return editor;
   }
-  static #toPDFCoordinates(points, rect, rotation) {
-    const [blX, blY, trX, trY] = rect;
-    switch (rotation) {
-      case 0:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          points[i] += blX;
-          points[i + 1] = trY - points[i + 1];
+  serializeDraw(isForCopying) {
+    const [pageX, pageY] = this.pageTranslation;
+    const [pageWidth, pageHeight] = this.pageDimensions;
+    return this.#drawOutlines.serialize([pageX, pageY, pageWidth, pageHeight], isForCopying);
+  }
+  renderAnnotationElement(annotation) {
+    annotation.updateEdited({
+      rect: this.getRect(0, 0)
+    });
+    return null;
+  }
+  static canCreateNewEmptyEditor() {
+    return false;
+  }
+}
+
+;// ./src/display/editor/drawers/inkdraw.js
+
+
+class InkDrawOutliner {
+  #last = new Float64Array(6);
+  #line;
+  #lines;
+  #rotation;
+  #thickness;
+  #points;
+  #lastSVGPath = "";
+  #lastIndex = 0;
+  #outlines = new InkDrawOutline();
+  #parentWidth;
+  #parentHeight;
+  constructor(x, y, parentWidth, parentHeight, rotation, thickness) {
+    this.#parentWidth = parentWidth;
+    this.#parentHeight = parentHeight;
+    this.#rotation = rotation;
+    this.#thickness = thickness;
+    [x, y] = this.#normalizePoint(x, y);
+    const line = this.#line = [NaN, NaN, NaN, NaN, x, y];
+    this.#points = [x, y];
+    this.#lines = [{
+      line,
+      points: this.#points
+    }];
+    this.#last.set(line, 0);
+  }
+  updateProperty(name, value) {
+    if (name === "stroke-width") {
+      this.#thickness = value;
+    }
+  }
+  #normalizePoint(x, y) {
+    return Outline._normalizePoint(x, y, this.#parentWidth, this.#parentHeight, this.#rotation);
+  }
+  isEmpty() {
+    return !this.#lines || this.#lines.length === 0;
+  }
+  add(x, y) {
+    [x, y] = this.#normalizePoint(x, y);
+    const [x1, y1, x2, y2] = this.#last.subarray(2, 6);
+    const diffX = x - x2;
+    const diffY = y - y2;
+    const d = Math.hypot(this.#parentWidth * diffX, this.#parentHeight * diffY);
+    if (d <= 2) {
+      return null;
+    }
+    this.#points.push(x, y);
+    if (isNaN(x1)) {
+      this.#last.set([x2, y2, x, y], 2);
+      this.#line.push(NaN, NaN, NaN, NaN, x, y);
+      return {
+        path: {
+          d: this.toSVGPath()
         }
+      };
+    }
+    if (isNaN(this.#last[0])) {
+      this.#line.splice(6, 6);
+    }
+    this.#last.set([x1, y1, x2, y2, x, y], 0);
+    this.#line.push((x1 + 5 * x2) / 6, (y1 + 5 * y2) / 6, (5 * x2 + x) / 6, (5 * y2 + y) / 6, (x2 + x) / 2, (y2 + y) / 2);
+    return {
+      path: {
+        d: this.toSVGPath()
+      }
+    };
+  }
+  end(x, y) {
+    const change = this.add(x, y);
+    if (change) {
+      return change;
+    }
+    if (this.#points.length === 2) {
+      return {
+        path: {
+          d: this.toSVGPath()
+        }
+      };
+    }
+    return null;
+  }
+  startNew(x, y, parentWidth, parentHeight, rotation) {
+    this.#parentWidth = parentWidth;
+    this.#parentHeight = parentHeight;
+    this.#rotation = rotation;
+    [x, y] = this.#normalizePoint(x, y);
+    const line = this.#line = [NaN, NaN, NaN, NaN, x, y];
+    this.#points = [x, y];
+    const last = this.#lines.at(-1);
+    if (last) {
+      last.line = new Float32Array(last.line);
+      last.points = new Float32Array(last.points);
+    }
+    this.#lines.push({
+      line,
+      points: this.#points
+    });
+    this.#last.set(line, 0);
+    this.#lastIndex = 0;
+    this.toSVGPath();
+    return null;
+  }
+  getLastElement() {
+    return this.#lines.at(-1);
+  }
+  setLastElement(element) {
+    if (!this.#lines) {
+      return this.#outlines.setLastElement(element);
+    }
+    this.#lines.push(element);
+    this.#line = element.line;
+    this.#points = element.points;
+    this.#lastIndex = 0;
+    return {
+      path: {
+        d: this.toSVGPath()
+      }
+    };
+  }
+  removeLastElement() {
+    if (!this.#lines) {
+      return this.#outlines.removeLastElement();
+    }
+    this.#lines.pop();
+    this.#lastSVGPath = "";
+    for (let i = 0, ii = this.#lines.length; i < ii; i++) {
+      const {
+        line,
+        points
+      } = this.#lines[i];
+      this.#line = line;
+      this.#points = points;
+      this.#lastIndex = 0;
+      this.toSVGPath();
+    }
+    return {
+      path: {
+        d: this.#lastSVGPath
+      }
+    };
+  }
+  toSVGPath() {
+    const firstX = Outline.svgRound(this.#line[4]);
+    const firstY = Outline.svgRound(this.#line[5]);
+    if (this.#points.length === 2) {
+      this.#lastSVGPath = `${this.#lastSVGPath} M ${firstX} ${firstY} Z`;
+      return this.#lastSVGPath;
+    }
+    if (this.#points.length <= 6) {
+      const i = this.#lastSVGPath.lastIndexOf("M");
+      this.#lastSVGPath = `${this.#lastSVGPath.slice(0, i)} M ${firstX} ${firstY}`;
+      this.#lastIndex = 6;
+    }
+    if (this.#points.length === 4) {
+      const secondX = Outline.svgRound(this.#line[10]);
+      const secondY = Outline.svgRound(this.#line[11]);
+      this.#lastSVGPath = `${this.#lastSVGPath} L ${secondX} ${secondY}`;
+      this.#lastIndex = 12;
+      return this.#lastSVGPath;
+    }
+    const buffer = [];
+    if (this.#lastIndex === 0) {
+      buffer.push(`M ${firstX} ${firstY}`);
+      this.#lastIndex = 6;
+    }
+    for (let i = this.#lastIndex, ii = this.#line.length; i < ii; i += 6) {
+      const [c1x, c1y, c2x, c2y, x, y] = this.#line.slice(i, i + 6).map(Outline.svgRound);
+      buffer.push(`C${c1x} ${c1y} ${c2x} ${c2y} ${x} ${y}`);
+    }
+    this.#lastSVGPath += buffer.join(" ");
+    this.#lastIndex = this.#line.length;
+    return this.#lastSVGPath;
+  }
+  getOutlines(parentWidth, parentHeight, scale, innerMargin) {
+    const last = this.#lines.at(-1);
+    last.line = new Float32Array(last.line);
+    last.points = new Float32Array(last.points);
+    this.#outlines.build(this.#lines, parentWidth, parentHeight, scale, this.#rotation, this.#thickness, innerMargin);
+    this.#last = null;
+    this.#line = null;
+    this.#lines = null;
+    this.#lastSVGPath = null;
+    return this.#outlines;
+  }
+  get defaultSVGProperties() {
+    return {
+      root: {
+        viewBox: "0 0 10000 10000"
+      },
+      rootClass: {
+        draw: true
+      },
+      bbox: [0, 0, 1, 1]
+    };
+  }
+}
+class InkDrawOutline extends Outline {
+  #bbox;
+  #currentRotation = 0;
+  #innerMargin;
+  #lines;
+  #parentWidth;
+  #parentHeight;
+  #parentScale;
+  #rotation;
+  #thickness;
+  build(lines, parentWidth, parentHeight, parentScale, rotation, thickness, innerMargin) {
+    this.#parentWidth = parentWidth;
+    this.#parentHeight = parentHeight;
+    this.#parentScale = parentScale;
+    this.#rotation = rotation;
+    this.#thickness = thickness;
+    this.#innerMargin = innerMargin ?? 0;
+    this.#lines = lines;
+    this.#computeBbox();
+  }
+  setLastElement(element) {
+    this.#lines.push(element);
+    return {
+      path: {
+        d: this.toSVGPath()
+      }
+    };
+  }
+  removeLastElement() {
+    this.#lines.pop();
+    return {
+      path: {
+        d: this.toSVGPath()
+      }
+    };
+  }
+  toSVGPath() {
+    const buffer = [];
+    for (const {
+      line
+    } of this.#lines) {
+      buffer.push(`M${Outline.svgRound(line[4])} ${Outline.svgRound(line[5])}`);
+      if (line.length === 6) {
+        buffer.push("Z");
+        continue;
+      }
+      if (line.length === 12) {
+        buffer.push(`L${Outline.svgRound(line[10])} ${Outline.svgRound(line[11])}`);
+        continue;
+      }
+      for (let i = 6, ii = line.length; i < ii; i += 6) {
+        const [c1x, c1y, c2x, c2y, x, y] = line.subarray(i, i + 6).map(Outline.svgRound);
+        buffer.push(`C${c1x} ${c1y} ${c2x} ${c2y} ${x} ${y}`);
+      }
+    }
+    return buffer.join("");
+  }
+  serialize([pageX, pageY, pageWidth, pageHeight], isForCopying) {
+    const serializedLines = [];
+    const serializedPoints = [];
+    const [x, y, width, height] = this.#getBBoxWithNoMargin();
+    let tx, ty, sx, sy, x1, y1, x2, y2, rescaleFn;
+    switch (this.#rotation) {
+      case 0:
+        rescaleFn = Outline._rescale;
+        tx = pageX;
+        ty = pageY + pageHeight;
+        sx = pageWidth;
+        sy = -pageHeight;
+        x1 = pageX + x * pageWidth;
+        y1 = pageY + (1 - y - height) * pageHeight;
+        x2 = pageX + (x + width) * pageWidth;
+        y2 = pageY + (1 - y) * pageHeight;
         break;
       case 90:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          const x = points[i];
-          points[i] = points[i + 1] + blX;
-          points[i + 1] = x + blY;
-        }
+        rescaleFn = Outline._rescaleAndSwap;
+        tx = pageX;
+        ty = pageY;
+        sx = pageWidth;
+        sy = pageHeight;
+        x1 = pageX + y * pageWidth;
+        y1 = pageY + x * pageHeight;
+        x2 = pageX + (y + height) * pageWidth;
+        y2 = pageY + (x + width) * pageHeight;
         break;
       case 180:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          points[i] = trX - points[i];
-          points[i + 1] += blY;
-        }
+        rescaleFn = Outline._rescale;
+        tx = pageX + pageWidth;
+        ty = pageY;
+        sx = -pageWidth;
+        sy = pageHeight;
+        x1 = pageX + (1 - x - width) * pageWidth;
+        y1 = pageY + y * pageHeight;
+        x2 = pageX + (1 - x) * pageWidth;
+        y2 = pageY + (y + height) * pageHeight;
         break;
       case 270:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          const x = points[i];
-          points[i] = trX - points[i + 1];
-          points[i + 1] = trY - x;
-        }
+        rescaleFn = Outline._rescaleAndSwap;
+        tx = pageX + pageWidth;
+        ty = pageY + pageHeight;
+        sx = -pageWidth;
+        sy = -pageHeight;
+        x1 = pageX + (1 - y - height) * pageWidth;
+        y1 = pageY + (1 - x - width) * pageHeight;
+        x2 = pageX + (1 - y) * pageWidth;
+        y2 = pageY + (1 - x) * pageHeight;
         break;
-      default:
-        throw new Error("Invalid rotation");
     }
-    return points;
+    for (const {
+      line,
+      points
+    } of this.#lines) {
+      serializedLines.push(rescaleFn(line, tx, ty, sx, sy, isForCopying ? new Array(line.length) : null));
+      serializedPoints.push(rescaleFn(points, tx, ty, sx, sy, isForCopying ? new Array(points.length) : null));
+    }
+    return {
+      lines: serializedLines,
+      points: serializedPoints,
+      rect: [x1, y1, x2, y2]
+    };
   }
-  static #fromPDFCoordinates(points, rect, rotation) {
-    const [blX, blY, trX, trY] = rect;
+  static deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, {
+    paths: {
+      lines,
+      points
+    },
+    rotation,
+    thickness
+  }) {
+    const newLines = [];
+    let tx, ty, sx, sy, rescaleFn;
     switch (rotation) {
       case 0:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          points[i] -= blX;
-          points[i + 1] = trY - points[i + 1];
-        }
+        rescaleFn = Outline._rescale;
+        tx = -pageX / pageWidth;
+        ty = pageY / pageHeight + 1;
+        sx = 1 / pageWidth;
+        sy = -1 / pageHeight;
         break;
       case 90:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          const x = points[i];
-          points[i] = points[i + 1] - blY;
-          points[i + 1] = x - blX;
-        }
+        rescaleFn = Outline._rescaleAndSwap;
+        tx = -pageY / pageHeight;
+        ty = -pageX / pageWidth;
+        sx = 1 / pageHeight;
+        sy = 1 / pageWidth;
         break;
       case 180:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          points[i] = trX - points[i];
-          points[i + 1] -= blY;
-        }
+        rescaleFn = Outline._rescale;
+        tx = pageX / pageWidth + 1;
+        ty = -pageY / pageHeight;
+        sx = -1 / pageWidth;
+        sy = 1 / pageHeight;
         break;
       case 270:
-        for (let i = 0, ii = points.length; i < ii; i += 2) {
-          const x = points[i];
-          points[i] = trY - points[i + 1];
-          points[i + 1] = trX - x;
-        }
+        rescaleFn = Outline._rescaleAndSwap;
+        tx = pageY / pageHeight + 1;
+        ty = pageX / pageWidth + 1;
+        sx = -1 / pageHeight;
+        sy = -1 / pageWidth;
         break;
-      default:
-        throw new Error("Invalid rotation");
     }
-    return points;
-  }
-  #serializePaths(s, tx, ty, rect) {
-    const paths = [];
-    const padding = this.thickness / 2;
-    const shiftX = s * tx + padding;
-    const shiftY = s * ty + padding;
-    for (const bezier of this.paths) {
-      const buffer = [];
-      const points = [];
-      for (let j = 0, jj = bezier.length; j < jj; j++) {
-        const [first, control1, control2, second] = bezier[j];
-        if (first[0] === second[0] && first[1] === second[1] && jj === 1) {
-          const p0 = s * first[0] + shiftX;
-          const p1 = s * first[1] + shiftY;
-          buffer.push(p0, p1);
-          points.push(p0, p1);
-          break;
-        }
-        const p10 = s * first[0] + shiftX;
-        const p11 = s * first[1] + shiftY;
-        const p20 = s * control1[0] + shiftX;
-        const p21 = s * control1[1] + shiftY;
-        const p30 = s * control2[0] + shiftX;
-        const p31 = s * control2[1] + shiftY;
-        const p40 = s * second[0] + shiftX;
-        const p41 = s * second[1] + shiftY;
-        if (j === 0) {
-          buffer.push(p10, p11);
-          points.push(p10, p11);
-        }
-        buffer.push(p20, p21, p30, p31, p40, p41);
-        points.push(p20, p21);
-        if (j === jj - 1) {
-          points.push(p40, p41);
-        }
-      }
-      paths.push({
-        bezier: InkEditor.#toPDFCoordinates(buffer, rect, this.rotation),
-        points: InkEditor.#toPDFCoordinates(points, rect, this.rotation)
+    for (let i = 0, ii = lines.length; i < ii; i++) {
+      newLines.push({
+        line: rescaleFn(lines[i].map(x => x ?? NaN), tx, ty, sx, sy),
+        points: rescaleFn(points[i].map(x => x ?? NaN), tx, ty, sx, sy)
       });
     }
-    return paths;
+    const outlines = new InkDrawOutline();
+    outlines.build(newLines, pageWidth, pageHeight, 1, rotation, thickness, innerMargin);
+    return outlines;
   }
-  #getBbox() {
-    let xMin = Infinity;
-    let xMax = -Infinity;
-    let yMin = Infinity;
-    let yMax = -Infinity;
-    for (const path of this.paths) {
-      for (const [first, control1, control2, second] of path) {
-        const bbox = Util.bezierBoundingBox(...first, ...control1, ...control2, ...second);
-        xMin = Math.min(xMin, bbox[0]);
-        yMin = Math.min(yMin, bbox[1]);
-        xMax = Math.max(xMax, bbox[2]);
-        yMax = Math.max(yMax, bbox[3]);
+  #getMarginComponents(thickness = this.#thickness) {
+    const margin = this.#innerMargin + thickness / 2 * this.#parentScale;
+    return this.#rotation % 180 === 0 ? [margin / this.#parentWidth, margin / this.#parentHeight] : [margin / this.#parentHeight, margin / this.#parentWidth];
+  }
+  #getBBoxWithNoMargin() {
+    const [x, y, width, height] = this.#bbox;
+    const [marginX, marginY] = this.#getMarginComponents(0);
+    return [x + marginX, y + marginY, width - 2 * marginX, height - 2 * marginY];
+  }
+  #computeBbox() {
+    const bbox = this.#bbox = new Float32Array([Infinity, Infinity, -Infinity, -Infinity]);
+    for (const {
+      line
+    } of this.#lines) {
+      if (line.length <= 12) {
+        for (let i = 4, ii = line.length; i < ii; i += 6) {
+          const [x, y] = line.subarray(i, i + 2);
+          bbox[0] = Math.min(bbox[0], x);
+          bbox[1] = Math.min(bbox[1], y);
+          bbox[2] = Math.max(bbox[2], x);
+          bbox[3] = Math.max(bbox[3], y);
+        }
+        continue;
+      }
+      let lastX = line[4],
+        lastY = line[5];
+      for (let i = 6, ii = line.length; i < ii; i += 6) {
+        const [c1x, c1y, c2x, c2y, x, y] = line.subarray(i, i + 6);
+        Util.bezierBoundingBox(lastX, lastY, c1x, c1y, c2x, c2y, x, y, bbox);
+        lastX = x;
+        lastY = y;
       }
     }
-    return [xMin, yMin, xMax, yMax];
+    const [marginX, marginY] = this.#getMarginComponents();
+    bbox[0] = Math.min(1, Math.max(0, bbox[0] - marginX));
+    bbox[1] = Math.min(1, Math.max(0, bbox[1] - marginY));
+    bbox[2] = Math.min(1, Math.max(0, bbox[2] + marginX));
+    bbox[3] = Math.min(1, Math.max(0, bbox[3] + marginY));
+    bbox[2] -= bbox[0];
+    bbox[3] -= bbox[1];
   }
-  #getPadding() {
-    return this.#disableEditing ? Math.ceil(this.thickness * this.parentScale) : 0;
+  get box() {
+    return this.#bbox;
   }
-  #fitToContent(firstTime = false) {
-    if (this.isEmpty()) {
-      return;
+  updateProperty(name, value) {
+    if (name === "stroke-width") {
+      return this.#updateThickness(value);
     }
-    if (!this.#disableEditing) {
-      this.#redraw();
-      return;
+    return null;
+  }
+  #updateThickness(thickness) {
+    const [oldMarginX, oldMarginY] = this.#getMarginComponents();
+    this.#thickness = thickness;
+    const [newMarginX, newMarginY] = this.#getMarginComponents();
+    const [diffMarginX, diffMarginY] = [newMarginX - oldMarginX, newMarginY - oldMarginY];
+    const bbox = this.#bbox;
+    bbox[0] -= diffMarginX;
+    bbox[1] -= diffMarginY;
+    bbox[2] += 2 * diffMarginX;
+    bbox[3] += 2 * diffMarginY;
+    return bbox;
+  }
+  updateParentDimensions([width, height], scale) {
+    const [oldMarginX, oldMarginY] = this.#getMarginComponents();
+    this.#parentWidth = width;
+    this.#parentHeight = height;
+    this.#parentScale = scale;
+    const [newMarginX, newMarginY] = this.#getMarginComponents();
+    const diffMarginX = newMarginX - oldMarginX;
+    const diffMarginY = newMarginY - oldMarginY;
+    const bbox = this.#bbox;
+    bbox[0] -= diffMarginX;
+    bbox[1] -= diffMarginY;
+    bbox[2] += 2 * diffMarginX;
+    bbox[3] += 2 * diffMarginY;
+    return bbox;
+  }
+  updateRotation(rotation) {
+    this.#currentRotation = rotation;
+    return {
+      path: {
+        transform: this.rotationTransform
+      }
+    };
+  }
+  get viewBox() {
+    return this.#bbox.map(Outline.svgRound).join(" ");
+  }
+  get defaultProperties() {
+    const [x, y] = this.#bbox;
+    return {
+      root: {
+        viewBox: this.viewBox
+      },
+      path: {
+        "transform-origin": `${Outline.svgRound(x)} ${Outline.svgRound(y)}`
+      }
+    };
+  }
+  get rotationTransform() {
+    const [,, width, height] = this.#bbox;
+    let a = 0,
+      b = 0,
+      c = 0,
+      d = 0,
+      e = 0,
+      f = 0;
+    switch (this.#currentRotation) {
+      case 90:
+        b = height / width;
+        c = -width / height;
+        e = width;
+        break;
+      case 180:
+        a = -1;
+        d = -1;
+        e = width;
+        f = height;
+        break;
+      case 270:
+        b = -height / width;
+        c = width / height;
+        f = height;
+        break;
+      default:
+        return "";
     }
-    const bbox = this.#getBbox();
-    const padding = this.#getPadding();
-    this.#baseWidth = Math.max(AnnotationEditor.MIN_SIZE, bbox[2] - bbox[0]);
-    this.#baseHeight = Math.max(AnnotationEditor.MIN_SIZE, bbox[3] - bbox[1]);
-    const width = Math.ceil(padding + this.#baseWidth * this.scaleFactor);
-    const height = Math.ceil(padding + this.#baseHeight * this.scaleFactor);
-    const [parentWidth, parentHeight] = this.parentDimensions;
-    this.width = width / parentWidth;
-    this.height = height / parentHeight;
-    this.setAspectRatio(width, height);
-    const prevTranslationX = this.translationX;
-    const prevTranslationY = this.translationY;
-    this.translationX = -bbox[0];
-    this.translationY = -bbox[1];
-    this.#setCanvasDims();
-    this.#redraw();
-    this.#realWidth = width;
-    this.#realHeight = height;
-    this.setDims(width, height);
-    const unscaledPadding = firstTime ? padding / this.scaleFactor / 2 : 0;
-    this.translate(prevTranslationX - this.translationX - unscaledPadding, prevTranslationY - this.translationY - unscaledPadding);
+    return `matrix(${a} ${b} ${c} ${d} ${Outline.svgRound(e)} ${Outline.svgRound(f)})`;
+  }
+  getPathResizingSVGProperties([newX, newY, newWidth, newHeight]) {
+    const [marginX, marginY] = this.#getMarginComponents();
+    const [x, y, width, height] = this.#bbox;
+    if (Math.abs(width - marginX) <= Outline.PRECISION || Math.abs(height - marginY) <= Outline.PRECISION) {
+      const tx = newX + newWidth / 2 - (x + width / 2);
+      const ty = newY + newHeight / 2 - (y + height / 2);
+      return {
+        path: {
+          "transform-origin": `${Outline.svgRound(newX)} ${Outline.svgRound(newY)}`,
+          transform: `${this.rotationTransform} translate(${tx} ${ty})`
+        }
+      };
+    }
+    const s1x = (newWidth - 2 * marginX) / (width - 2 * marginX);
+    const s1y = (newHeight - 2 * marginY) / (height - 2 * marginY);
+    const s2x = width / newWidth;
+    const s2y = height / newHeight;
+    return {
+      path: {
+        "transform-origin": `${Outline.svgRound(x)} ${Outline.svgRound(y)}`,
+        transform: `${this.rotationTransform} scale(${s2x} ${s2y}) ` + `translate(${Outline.svgRound(marginX)} ${Outline.svgRound(marginY)}) scale(${s1x} ${s1y}) ` + `translate(${Outline.svgRound(-marginX)} ${Outline.svgRound(-marginY)})`
+      }
+    };
+  }
+  getPathResizedSVGProperties([newX, newY, newWidth, newHeight]) {
+    const [marginX, marginY] = this.#getMarginComponents();
+    const bbox = this.#bbox;
+    const [x, y, width, height] = bbox;
+    bbox[0] = newX;
+    bbox[1] = newY;
+    bbox[2] = newWidth;
+    bbox[3] = newHeight;
+    if (Math.abs(width - marginX) <= Outline.PRECISION || Math.abs(height - marginY) <= Outline.PRECISION) {
+      const tx = newX + newWidth / 2 - (x + width / 2);
+      const ty = newY + newHeight / 2 - (y + height / 2);
+      for (const {
+        line,
+        points
+      } of this.#lines) {
+        Outline._translate(line, tx, ty, line);
+        Outline._translate(points, tx, ty, points);
+      }
+      return {
+        root: {
+          viewBox: this.viewBox
+        },
+        path: {
+          "transform-origin": `${Outline.svgRound(newX)} ${Outline.svgRound(newY)}`,
+          transform: this.rotationTransform || null,
+          d: this.toSVGPath()
+        }
+      };
+    }
+    const s1x = (newWidth - 2 * marginX) / (width - 2 * marginX);
+    const s1y = (newHeight - 2 * marginY) / (height - 2 * marginY);
+    const tx = -s1x * (x + marginX) + newX + marginX;
+    const ty = -s1y * (y + marginY) + newY + marginY;
+    if (s1x !== 1 || s1y !== 1 || tx !== 0 || ty !== 0) {
+      for (const {
+        line,
+        points
+      } of this.#lines) {
+        Outline._rescale(line, tx, ty, s1x, s1y, line);
+        Outline._rescale(points, tx, ty, s1x, s1y, points);
+      }
+    }
+    return {
+      root: {
+        viewBox: this.viewBox
+      },
+      path: {
+        "transform-origin": `${Outline.svgRound(newX)} ${Outline.svgRound(newY)}`,
+        transform: this.rotationTransform || null,
+        d: this.toSVGPath()
+      }
+    };
+  }
+  getPathTranslatedSVGProperties([newX, newY], parentDimensions) {
+    const [newParentWidth, newParentHeight] = parentDimensions;
+    const bbox = this.#bbox;
+    const tx = newX - bbox[0];
+    const ty = newY - bbox[1];
+    if (this.#parentWidth === newParentWidth && this.#parentHeight === newParentHeight) {
+      for (const {
+        line,
+        points
+      } of this.#lines) {
+        Outline._translate(line, tx, ty, line);
+        Outline._translate(points, tx, ty, points);
+      }
+    } else {
+      const sx = this.#parentWidth / newParentWidth;
+      const sy = this.#parentHeight / newParentHeight;
+      this.#parentWidth = newParentWidth;
+      this.#parentHeight = newParentHeight;
+      for (const {
+        line,
+        points
+      } of this.#lines) {
+        Outline._rescale(line, tx, ty, sx, sy, line);
+        Outline._rescale(points, tx, ty, sx, sy, points);
+      }
+      bbox[2] *= sx;
+      bbox[3] *= sy;
+    }
+    bbox[0] = newX;
+    bbox[1] = newY;
+    return {
+      root: {
+        viewBox: this.viewBox
+      },
+      path: {
+        d: this.toSVGPath(),
+        "transform-origin": `${Outline.svgRound(newX)} ${Outline.svgRound(newY)}`
+      }
+    };
+  }
+  get defaultSVGProperties() {
+    const bbox = this.#bbox;
+    return {
+      root: {
+        viewBox: this.viewBox
+      },
+      rootClass: {
+        draw: true
+      },
+      path: {
+        d: this.toSVGPath(),
+        "transform-origin": `${Outline.svgRound(bbox[0])} ${Outline.svgRound(bbox[1])}`,
+        transform: this.rotationTransform || null
+      },
+      bbox
+    };
+  }
+}
+
+;// ./src/display/editor/ink.js
+
+
+
+
+
+class InkDrawingOptions extends DrawingOptions {
+  #viewParameters;
+  constructor(viewerParameters) {
+    super();
+    this.#viewParameters = viewerParameters;
+    super.updateProperties({
+      fill: "none",
+      stroke: AnnotationEditor._defaultLineColor,
+      "stroke-opacity": 1,
+      "stroke-width": 1,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-miterlimit": 10
+    });
+  }
+  updateSVGProperty(name, value) {
+    if (name === "stroke-width") {
+      value ??= this["stroke-width"];
+      value *= this.#viewParameters.realScale;
+    }
+    super.updateSVGProperty(name, value);
+  }
+  clone() {
+    const clone = new InkDrawingOptions(this.#viewParameters);
+    clone.updateAll(this);
+    return clone;
+  }
+}
+class InkEditor extends DrawingEditor {
+  static _type = "ink";
+  static _editorType = AnnotationEditorType.INK;
+  static _defaultDrawingOptions = null;
+  constructor(params) {
+    super({
+      ...params,
+      name: "inkEditor"
+    });
+    this._willKeepAspectRatio = true;
+  }
+  static initialize(l10n, uiManager) {
+    AnnotationEditor.initialize(l10n, uiManager);
+    this._defaultDrawingOptions = new InkDrawingOptions(uiManager.viewParameters);
+  }
+  static getDefaultDrawingOptions(options) {
+    const clone = this._defaultDrawingOptions.clone();
+    clone.updateProperties(options);
+    return clone;
+  }
+  static get supportMultipleDrawings() {
+    return true;
+  }
+  static get typesMap() {
+    return shadow(this, "typesMap", new Map([[AnnotationEditorParamsType.INK_THICKNESS, "stroke-width"], [AnnotationEditorParamsType.INK_COLOR, "stroke"], [AnnotationEditorParamsType.INK_OPACITY, "stroke-opacity"]]));
+  }
+  static createDrawerInstance(x, y, parentWidth, parentHeight, rotation) {
+    return new InkDrawOutliner(x, y, parentWidth, parentHeight, rotation, this._defaultDrawingOptions["stroke-width"]);
+  }
+  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, innerMargin, data) {
+    return InkDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data);
   }
   static async deserialize(data, parent, uiManager) {
     if (data instanceof InkAnnotationElement) {
       return null;
     }
-    const editor = await super.deserialize(data, parent, uiManager);
-    editor.thickness = data.thickness;
-    editor.color = Util.makeHexColor(...data.color);
-    editor.opacity = data.opacity;
-    const [pageWidth, pageHeight] = editor.pageDimensions;
-    const width = editor.width * pageWidth;
-    const height = editor.height * pageHeight;
-    const scaleFactor = editor.parentScale;
-    const padding = data.thickness / 2;
-    editor.#disableEditing = true;
-    editor.#realWidth = Math.round(width);
-    editor.#realHeight = Math.round(height);
-    const {
-      paths,
-      rect,
-      rotation
-    } = data;
-    for (let {
-      bezier
-    } of paths) {
-      bezier = InkEditor.#fromPDFCoordinates(bezier, rect, rotation);
-      const path = [];
-      editor.paths.push(path);
-      let p0 = scaleFactor * (bezier[0] - padding);
-      let p1 = scaleFactor * (bezier[1] - padding);
-      for (let i = 2, ii = bezier.length; i < ii; i += 6) {
-        const p10 = scaleFactor * (bezier[i] - padding);
-        const p11 = scaleFactor * (bezier[i + 1] - padding);
-        const p20 = scaleFactor * (bezier[i + 2] - padding);
-        const p21 = scaleFactor * (bezier[i + 3] - padding);
-        const p30 = scaleFactor * (bezier[i + 4] - padding);
-        const p31 = scaleFactor * (bezier[i + 5] - padding);
-        path.push([[p0, p1], [p10, p11], [p20, p21], [p30, p31]]);
-        p0 = p30;
-        p1 = p31;
-      }
-      const path2D = this.#buildPath2D(path);
-      editor.bezierPath2D.push(path2D);
-    }
-    const bbox = editor.#getBbox();
-    editor.#baseWidth = Math.max(AnnotationEditor.MIN_SIZE, bbox[2] - bbox[0]);
-    editor.#baseHeight = Math.max(AnnotationEditor.MIN_SIZE, bbox[3] - bbox[1]);
-    editor.#setScaleFactor(width, height);
-    return editor;
+    return super.deserialize(data, parent, uiManager);
   }
-  serialize() {
+  onScaleChanging() {
+    if (!this.parent) {
+      return;
+    }
+    super.onScaleChanging();
+    const {
+      _drawId,
+      _drawingOptions,
+      parent
+    } = this;
+    _drawingOptions.updateSVGProperty("stroke-width");
+    parent.drawLayer.updateProperties(_drawId, _drawingOptions.toSVGProperties());
+  }
+  static onScaleChangingWhenDrawing() {
+    const parent = this._currentParent;
+    if (!parent) {
+      return;
+    }
+    super.onScaleChangingWhenDrawing();
+    this._defaultDrawingOptions.updateSVGProperty("stroke-width");
+    parent.drawLayer.updateProperties(this._currentDrawId, this._defaultDrawingOptions.toSVGProperties());
+  }
+  createDrawingOptions({
+    color,
+    thickness,
+    opacity
+  }) {
+    this._drawingOptions = InkEditor.getDefaultDrawingOptions({
+      stroke: Util.makeHexColor(...color),
+      "stroke-width": thickness,
+      "stroke-opacity": opacity
+    });
+  }
+  serialize(isForCopying = false) {
     if (this.isEmpty()) {
       return null;
     }
-    const rect = this.getRect(0, 0);
-    const color = AnnotationEditor._colorManager.convert(this.ctx.strokeStyle);
-    return {
+    if (this.deleted) {
+      return this.serializeDeleted();
+    }
+    const {
+      lines,
+      points,
+      rect
+    } = this.serializeDraw(isForCopying);
+    const {
+      _drawingOptions: {
+        stroke,
+        "stroke-opacity": opacity,
+        "stroke-width": thickness
+      }
+    } = this;
+    const serialized = {
       annotationType: AnnotationEditorType.INK,
-      color,
-      thickness: this.thickness,
-      opacity: this.opacity,
-      paths: this.#serializePaths(this.scaleFactor / this.parentScale, this.translationX, this.translationY, rect),
+      color: AnnotationEditor._colorManager.convert(stroke),
+      opacity,
+      thickness,
+      paths: {
+        lines,
+        points
+      },
       pageIndex: this.pageIndex,
       rect,
       rotation: this.rotation,
       structTreeParentId: this._structTreeParentId
     };
+    serialized.id = this.annotationElementId;
+    return serialized;
   }
 }
 
@@ -19670,8 +20251,8 @@ class AnnotationEditorLayer {
   #editorFocusTimeoutId = null;
   #editors = new Map();
   #hadPointerDown = false;
-  #isCleaningUp = false;
   #isDisabling = false;
+  #drawingAC = null;
   #textLayer = null;
   #textSelectionAC = null;
   #uiManager;
@@ -19727,10 +20308,9 @@ class AnnotationEditorLayer {
         this.disableClick();
         return;
       case AnnotationEditorType.INK:
-        this.addInkEditorIfNeeded(false);
         this.disableTextSelection();
         this.togglePointerEvents(true);
-        this.disableClick();
+        this.enableClick();
         break;
       case AnnotationEditorType.HIGHLIGHT:
         this.enableTextSelection();
@@ -19754,29 +20334,14 @@ class AnnotationEditorLayer {
   hasTextLayer(textLayer) {
     return textLayer === this.#textLayer?.div;
   }
-  addInkEditorIfNeeded(isCommitting) {
-    if (this.#uiManager.getMode() !== AnnotationEditorType.INK) {
-      return;
-    }
-    if (!isCommitting) {
-      for (const editor of this.#editors.values()) {
-        if (editor.isEmpty()) {
-          editor.setInBackground();
-          return;
-        }
-      }
-    }
-    const editor = this.createAndAddNewEditor({
-      offsetX: 0,
-      offsetY: 0
-    }, false);
-    editor.setInBackground();
-  }
   setEditingState(isEditing) {
     this.#uiManager.setEditingState(isEditing);
   }
   addCommands(params) {
     this.#uiManager.addCommands(params);
+  }
+  cleanUndoStack(type) {
+    this.#uiManager.cleanUndoStack(type);
   }
   toggleDrawing(enabled = false) {
     this.div.classList.toggle("drawing", !enabled);
@@ -19976,9 +20541,6 @@ class AnnotationEditorLayer {
     this.#uiManager.removeEditor(editor);
     editor.div.remove();
     editor.isAttachedToDOM = false;
-    if (!this.#isCleaningUp) {
-      this.addInkEditorIfNeeded(false);
-    }
   }
   changeParent(editor) {
     if (editor.parent === this) {
@@ -20161,6 +20723,9 @@ class AnnotationEditorLayer {
       return;
     }
     this.#hadPointerDown = false;
+    if (this.#currentEditorType?.isDrawer && this.#currentEditorType.supportMultipleDrawings) {
+      return;
+    }
     if (!this.#allowClick) {
       this.#allowClick = true;
       return;
@@ -20189,8 +20754,42 @@ class AnnotationEditorLayer {
       return;
     }
     this.#hadPointerDown = true;
+    if (this.#currentEditorType?.isDrawer) {
+      this.startDrawingSession(event);
+      return;
+    }
     const editor = this.#uiManager.getActive();
     this.#allowClick = !editor || editor.isEmpty();
+  }
+  startDrawingSession(event) {
+    this.div.focus();
+    if (this.#drawingAC) {
+      this.#currentEditorType.startDrawing(this, this.#uiManager, false, event);
+      return;
+    }
+    this.#uiManager.unselectAll();
+    this.#drawingAC = new AbortController();
+    const signal = this.#uiManager.combinedSignal(this.#drawingAC);
+    this.div.addEventListener("blur", ({
+      relatedTarget
+    }) => {
+      if (relatedTarget && !this.div.contains(relatedTarget)) {
+        this.commitOrRemove();
+      }
+    }, {
+      signal
+    });
+    this.#uiManager.disableUserSelect(true);
+    this.#currentEditorType.startDrawing(this, this.#uiManager, false, event);
+  }
+  endDrawingSession(isAborted = false) {
+    if (!this.#drawingAC) {
+      return null;
+    }
+    this.#drawingAC.abort();
+    this.#drawingAC = null;
+    this.#uiManager.disableUserSelect(false);
+    return this.#currentEditorType.endDrawing(isAborted);
   }
   findNewParent(editor, x, y) {
     const layer = this.#uiManager.findParent(x, y);
@@ -20200,7 +20799,21 @@ class AnnotationEditorLayer {
     layer.changeParent(editor);
     return true;
   }
+  commitOrRemove() {
+    if (this.#drawingAC) {
+      this.endDrawingSession();
+      return true;
+    }
+    return false;
+  }
+  onScaleChanging() {
+    if (!this.#drawingAC) {
+      return;
+    }
+    this.#currentEditorType.onScaleChangingWhenDrawing(this);
+  }
   destroy() {
+    this.commitOrRemove();
     if (this.#uiManager.getActive()?.parent === this) {
       this.#uiManager.commitOrRemove();
       this.#uiManager.setActiveEditor(null);
@@ -20220,13 +20833,11 @@ class AnnotationEditorLayer {
     this.#uiManager.removeLayer(this);
   }
   #cleanup() {
-    this.#isCleaningUp = true;
     for (const editor of this.#editors.values()) {
       if (editor.isEmpty()) {
         editor.remove();
       }
     }
-    this.#isCleaningUp = false;
   }
   render({
     viewport
@@ -20255,7 +20866,6 @@ class AnnotationEditorLayer {
         editor.rotate(rotation);
       }
     }
-    this.addInkEditorIfNeeded(false);
   }
   get pageDimensions() {
     const {
@@ -20300,12 +20910,7 @@ class DrawLayer {
   static get _svgFactory() {
     return shadow(this, "_svgFactory", new DOMSVGFactory());
   }
-  static #setBox(element, {
-    x = 0,
-    y = 0,
-    width = 1,
-    height = 1
-  } = {}) {
+  static #setBox(element, [x, y, width, height]) {
     const {
       style
     } = element;
@@ -20314,11 +20919,10 @@ class DrawLayer {
     style.width = `${100 * width}%`;
     style.height = `${100 * height}%`;
   }
-  #createSVG(box) {
+  #createSVG() {
     const svg = DrawLayer._svgFactory.create(1, 1, true);
     this.#parent.append(svg);
     svg.setAttribute("aria-hidden", true);
-    DrawLayer.#setBox(svg, box);
     return svg;
   }
   #createClipPath(defs, pathId) {
@@ -20333,46 +20937,51 @@ class DrawLayer {
     clipPathUse.classList.add("clip");
     return clipPathId;
   }
-  draw(outlines, color, opacity, isPathUpdatable = false) {
+  #updateProperties(element, properties) {
+    for (const [key, value] of Object.entries(properties)) {
+      if (value === null) {
+        element.removeAttribute(key);
+      } else {
+        element.setAttribute(key, value);
+      }
+    }
+  }
+  draw(properties, isPathUpdatable = false, hasClip = false) {
     const id = this.#id++;
-    const root = this.#createSVG(outlines.box);
-    root.classList.add(...outlines.classNamesForDrawing);
+    const root = this.#createSVG();
     const defs = DrawLayer._svgFactory.createElement("defs");
     root.append(defs);
     const path = DrawLayer._svgFactory.createElement("path");
     defs.append(path);
     const pathId = `path_p${this.pageIndex}_${id}`;
     path.setAttribute("id", pathId);
-    path.setAttribute("d", outlines.toSVGPath());
+    path.setAttribute("vector-effect", "non-scaling-stroke");
     if (isPathUpdatable) {
       this.#toUpdate.set(id, path);
     }
-    const clipPathId = this.#createClipPath(defs, pathId);
+    const clipPathId = hasClip ? this.#createClipPath(defs, pathId) : null;
     const use = DrawLayer._svgFactory.createElement("use");
     root.append(use);
-    root.setAttribute("fill", color);
-    root.setAttribute("fill-opacity", opacity);
     use.setAttribute("href", `#${pathId}`);
+    this.updateProperties(root, properties);
     this.#mapping.set(id, root);
     return {
       id,
       clipPathId: `url(#${clipPathId})`
     };
   }
-  drawOutline(outlines) {
+  drawOutline(properties, mustRemoveSelfIntersections) {
     const id = this.#id++;
-    const root = this.#createSVG(outlines.box);
-    root.classList.add(...outlines.classNamesForOutlining);
+    const root = this.#createSVG();
     const defs = DrawLayer._svgFactory.createElement("defs");
     root.append(defs);
     const path = DrawLayer._svgFactory.createElement("path");
     defs.append(path);
     const pathId = `path_p${this.pageIndex}_${id}`;
     path.setAttribute("id", pathId);
-    path.setAttribute("d", outlines.toSVGPath());
     path.setAttribute("vector-effect", "non-scaling-stroke");
     let maskId;
-    if (outlines.mustRemoveSelfIntersections) {
+    if (mustRemoveSelfIntersections) {
       const mask = DrawLayer._svgFactory.createElement("mask");
       defs.append(mask);
       maskId = `mask_p${this.pageIndex}_${id}`;
@@ -20401,47 +21010,59 @@ class DrawLayer {
     root.append(use2);
     use1.classList.add("mainOutline");
     use2.classList.add("secondaryOutline");
+    this.updateProperties(root, properties);
     this.#mapping.set(id, root);
     return id;
   }
-  finalizeLine(id, line) {
-    const path = this.#toUpdate.get(id);
+  finalizeDraw(id, properties) {
     this.#toUpdate.delete(id);
-    this.updateBox(id, line.box);
-    path.setAttribute("d", line.toSVGPath());
+    this.updateProperties(id, properties);
   }
-  updateLine(id, line) {
+  updateProperties(elementOrId, properties) {
+    if (!properties) {
+      return;
+    }
+    const {
+      root,
+      bbox,
+      rootClass,
+      path
+    } = properties;
+    const element = typeof elementOrId === "number" ? this.#mapping.get(elementOrId) : elementOrId;
+    if (!element) {
+      return;
+    }
+    if (root) {
+      this.#updateProperties(element, root);
+    }
+    if (bbox) {
+      DrawLayer.#setBox(element, bbox);
+    }
+    if (rootClass) {
+      const {
+        classList
+      } = element;
+      for (const [className, value] of Object.entries(rootClass)) {
+        classList.toggle(className, value);
+      }
+    }
+    if (path) {
+      const defs = element.firstChild;
+      const pathElement = defs.firstChild;
+      this.#updateProperties(pathElement, path);
+    }
+  }
+  updateParent(id, layer) {
+    if (layer === this) {
+      return;
+    }
     const root = this.#mapping.get(id);
-    const defs = root.firstChild;
-    const path = defs.firstChild;
-    path.setAttribute("d", line.toSVGPath());
-  }
-  updatePath(id, line) {
-    this.#toUpdate.get(id).setAttribute("d", line.toSVGPath());
-  }
-  updateBox(id, box) {
-    DrawLayer.#setBox(this.#mapping.get(id), box);
-  }
-  show(id, visible) {
-    this.#mapping.get(id).classList.toggle("hidden", !visible);
-  }
-  rotate(id, angle) {
-    this.#mapping.get(id).setAttribute("data-main-rotation", angle);
-  }
-  changeColor(id, color) {
-    this.#mapping.get(id).setAttribute("fill", color);
-  }
-  changeOpacity(id, opacity) {
-    this.#mapping.get(id).setAttribute("fill-opacity", opacity);
-  }
-  addClass(id, className) {
-    this.#mapping.get(id).classList.add(className);
-  }
-  removeClass(id, className) {
-    this.#mapping.get(id).classList.remove(className);
-  }
-  getSVGRoot(id) {
-    return this.#mapping.get(id);
+    if (!root) {
+      return;
+    }
+    layer.#parent.append(root);
+    this.#mapping.delete(id);
+    layer.#mapping.set(id, root);
   }
   remove(id) {
     this.#toUpdate.delete(id);
@@ -20475,8 +21096,13 @@ class DrawLayer {
 
 
 
-const pdfjsVersion = "4.8.69";
-const pdfjsBuild = "3634dab10";
+const pdfjsVersion = "4.9.124";
+const pdfjsBuild = "867aaf01f";
+{
+  globalThis.pdfjsTestingUtils = {
+    HighlightOutliner: HighlightOutliner
+  };
+}
 
 var __webpack_exports__AbortException = __webpack_exports__.AbortException;
 var __webpack_exports__AnnotationEditorLayer = __webpack_exports__.AnnotationEditorLayer;
@@ -20520,7 +21146,8 @@ var __webpack_exports__noContextMenu = __webpack_exports__.noContextMenu;
 var __webpack_exports__normalizeUnicode = __webpack_exports__.normalizeUnicode;
 var __webpack_exports__setLayerDimensions = __webpack_exports__.setLayerDimensions;
 var __webpack_exports__shadow = __webpack_exports__.shadow;
+var __webpack_exports__stopEvent = __webpack_exports__.stopEvent;
 var __webpack_exports__version = __webpack_exports__.version;
-export { __webpack_exports__AbortException as AbortException, __webpack_exports__AnnotationEditorLayer as AnnotationEditorLayer, __webpack_exports__AnnotationEditorParamsType as AnnotationEditorParamsType, __webpack_exports__AnnotationEditorType as AnnotationEditorType, __webpack_exports__AnnotationEditorUIManager as AnnotationEditorUIManager, __webpack_exports__AnnotationLayer as AnnotationLayer, __webpack_exports__AnnotationMode as AnnotationMode, __webpack_exports__ColorPicker as ColorPicker, __webpack_exports__DOMSVGFactory as DOMSVGFactory, __webpack_exports__DrawLayer as DrawLayer, __webpack_exports__FeatureTest as FeatureTest, __webpack_exports__GlobalWorkerOptions as GlobalWorkerOptions, __webpack_exports__ImageKind as ImageKind, __webpack_exports__InvalidPDFException as InvalidPDFException, __webpack_exports__MissingPDFException as MissingPDFException, __webpack_exports__OPS as OPS, __webpack_exports__OutputScale as OutputScale, __webpack_exports__PDFDataRangeTransport as PDFDataRangeTransport, __webpack_exports__PDFDateString as PDFDateString, __webpack_exports__PDFWorker as PDFWorker, __webpack_exports__PasswordResponses as PasswordResponses, __webpack_exports__PermissionFlag as PermissionFlag, __webpack_exports__PixelsPerInch as PixelsPerInch, __webpack_exports__RenderingCancelledException as RenderingCancelledException, __webpack_exports__TextLayer as TextLayer, __webpack_exports__UnexpectedResponseException as UnexpectedResponseException, __webpack_exports__Util as Util, __webpack_exports__VerbosityLevel as VerbosityLevel, __webpack_exports__XfaLayer as XfaLayer, __webpack_exports__build as build, __webpack_exports__createValidAbsoluteUrl as createValidAbsoluteUrl, __webpack_exports__fetchData as fetchData, __webpack_exports__getDocument as getDocument, __webpack_exports__getFilenameFromUrl as getFilenameFromUrl, __webpack_exports__getPdfFilenameFromUrl as getPdfFilenameFromUrl, __webpack_exports__getXfaPageViewport as getXfaPageViewport, __webpack_exports__isDataScheme as isDataScheme, __webpack_exports__isPdfFile as isPdfFile, __webpack_exports__noContextMenu as noContextMenu, __webpack_exports__normalizeUnicode as normalizeUnicode, __webpack_exports__setLayerDimensions as setLayerDimensions, __webpack_exports__shadow as shadow, __webpack_exports__version as version };
+export { __webpack_exports__AbortException as AbortException, __webpack_exports__AnnotationEditorLayer as AnnotationEditorLayer, __webpack_exports__AnnotationEditorParamsType as AnnotationEditorParamsType, __webpack_exports__AnnotationEditorType as AnnotationEditorType, __webpack_exports__AnnotationEditorUIManager as AnnotationEditorUIManager, __webpack_exports__AnnotationLayer as AnnotationLayer, __webpack_exports__AnnotationMode as AnnotationMode, __webpack_exports__ColorPicker as ColorPicker, __webpack_exports__DOMSVGFactory as DOMSVGFactory, __webpack_exports__DrawLayer as DrawLayer, __webpack_exports__FeatureTest as FeatureTest, __webpack_exports__GlobalWorkerOptions as GlobalWorkerOptions, __webpack_exports__ImageKind as ImageKind, __webpack_exports__InvalidPDFException as InvalidPDFException, __webpack_exports__MissingPDFException as MissingPDFException, __webpack_exports__OPS as OPS, __webpack_exports__OutputScale as OutputScale, __webpack_exports__PDFDataRangeTransport as PDFDataRangeTransport, __webpack_exports__PDFDateString as PDFDateString, __webpack_exports__PDFWorker as PDFWorker, __webpack_exports__PasswordResponses as PasswordResponses, __webpack_exports__PermissionFlag as PermissionFlag, __webpack_exports__PixelsPerInch as PixelsPerInch, __webpack_exports__RenderingCancelledException as RenderingCancelledException, __webpack_exports__TextLayer as TextLayer, __webpack_exports__UnexpectedResponseException as UnexpectedResponseException, __webpack_exports__Util as Util, __webpack_exports__VerbosityLevel as VerbosityLevel, __webpack_exports__XfaLayer as XfaLayer, __webpack_exports__build as build, __webpack_exports__createValidAbsoluteUrl as createValidAbsoluteUrl, __webpack_exports__fetchData as fetchData, __webpack_exports__getDocument as getDocument, __webpack_exports__getFilenameFromUrl as getFilenameFromUrl, __webpack_exports__getPdfFilenameFromUrl as getPdfFilenameFromUrl, __webpack_exports__getXfaPageViewport as getXfaPageViewport, __webpack_exports__isDataScheme as isDataScheme, __webpack_exports__isPdfFile as isPdfFile, __webpack_exports__noContextMenu as noContextMenu, __webpack_exports__normalizeUnicode as normalizeUnicode, __webpack_exports__setLayerDimensions as setLayerDimensions, __webpack_exports__shadow as shadow, __webpack_exports__stopEvent as stopEvent, __webpack_exports__version as version };
 
 //# sourceMappingURL=pdf.mjs.map
