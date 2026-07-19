@@ -1,9 +1,13 @@
 { "translations": {
     "PDF viewer" : "Πρόγραμμα προβολής PDF",
-    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Προβάλετε απευθείας έγγραφα PDF στο Nextcloud σας. \nΩς ένα επιπλέον πλεονέκτημα, αυτή η εφαρμογή μπορεί επίσης να εμφανίσει αρχεία Adobe Illustrator (.ai). \nΜε τη χρήση του [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Προβάλετε απευθείας έγγραφα PDF στο Nextcloud σας. \nΩς επιπλέον πλεονέκτημα, αυτή η εφαρμογή μπορεί επίσης να εμφανίσει αρχεία Adobe Illustrator (.ai). \nΒασίζεται στο [pdf.js](https://mozilla.github.io/pdf.js/)",
     "Failed to load settings" : "Αποτυχία φόρτωσης ρυθμίσεων",
     "Failed to save settings" : "Αποτυχία αποθήκευσης ρυθμίσεων",
+    "PDF Viewer" : "Πρόγραμμα προβολής PDF",
+    "Configure PDF viewer settings" : "Διαμόρφωση ρυθμίσεων του προγράμματος προβολής PDF",
+    "Enable PDF scripting" : "Ενεργοποίηση σεναρίων κώδικα (scripting) PDF",
+    "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Η ενεργοποίηση των σεναρίων κώδικα PDF επιτρέπει την εκτέλεση JavaScript μέσα σε έγγραφα PDF. Αυτό καθιστά δυνατούς τους υπολογισμούς σε φόρμες και το δυναμικό περιεχόμενο, αλλά ενδέχεται να ενέχει κινδύνους ασφάλειας με μη έμπιστα αρχεία PDF. Τα σενάρια PDF εκτελούνται σε περιβάλλον απομόνωσης (sandbox).",
     "File upload failed." : "Η μεταφόρτωση του αρχείου απέτυχε.",
-    "To view a shared PDF file, the download needs to be allowed for this file share" : "Για να προβάλετε ένα διαμοιρασμένο αρχείο PDF, πρέπει να επιτρέπεται η λήψη για αυτό το διαμοιρασμένο αρχείο"
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Για να προβάλετε ένα κοινόχρηστο αρχείο PDF, πρέπει να επιτρέπεται η λήψη για αυτήν την κοινή χρήση αρχείου"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
