@@ -172,6 +172,11 @@ export default {
 
 			// Preferences override options, so they must be disabled for
 			// "externalLinkTarget" and "annotationMode" to take effect.
+			// Since 4.5.136 default preferences no longer override options, but
+			// "pdfjs.preferences" from local storage still do. A warning is
+			// also printed by PDF.js if preferences are not disabled and an
+			// overridable option is used.
+			// https://github.com/mozilla/pdf.js/pull/18413
 			PDFViewerApplicationOptions.set('disablePreferences', true)
 			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
 			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
