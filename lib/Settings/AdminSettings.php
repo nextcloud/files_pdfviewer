@@ -22,14 +22,17 @@ class AdminSettings implements ISettings {
 		$this->config = $config;
 	}
 
+	#[\Override]
 	public function getForm(): TemplateResponse {
 		return new TemplateResponse(Application::APP_ID, 'admin');
 	}
 
+	#[\Override]
 	public function getSection(): string {
 		return 'server';
 	}
 
+	#[\Override]
 	public function getPriority(): int {
 		return 50;
 	}
