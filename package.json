@@ -55,6 +55,7 @@
     "@nextcloud/webpack-vue-config": "^7.0.2",
     "adm-zip": "^0.6.0",
     "axios": "^1.13.6",
-    "cli-progress": "^3.12.0"
+    "cli-progress": "^3.12.0",
+    "vue-loader": "^15.11.1"
   }
 }
