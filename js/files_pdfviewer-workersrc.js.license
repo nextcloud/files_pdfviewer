@@ -1,8 +1,13 @@
+SPDX-License-Identifier: MIT
 SPDX-License-Identifier: AGPL-3.0-or-later
+SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 
 
 This file is generated from multiple sources. Included packages:
+- webpack
+	- version: 5.109.2
+	- license: MIT
 - files_pdfviewer
 	- version: 6.0.0-dev.0
 	- license: AGPL-3.0-or-later

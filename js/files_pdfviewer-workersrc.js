@@ -1,2 +1,2 @@
-(()=>{"use strict";window.location===window.parent.location&&(window.location.href="/")})();
-//# sourceMappingURL=files_pdfviewer-workersrc.js.map?v=9ed01405725716f8697e
+(()=>{"use strict";const e={};function n(){window.location===window.parent.location&&(window.location.href="/")}e.dn=e=>{var n=Object.getOwnPropertyDescriptor(e,"name");(!n||!n.writable&&n.configurable)&&Object.defineProperty(e,"name",{value:"default",configurable:!0})},e.dn(n),n()})();
+//# sourceMappingURL=files_pdfviewer-workersrc.js.map?v=31ae2aac83d2c5f02903
