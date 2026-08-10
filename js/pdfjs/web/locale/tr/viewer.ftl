@@ -26,8 +26,8 @@ pdfjs-zoom-out-button =
     .title = Uzaklaştır
 pdfjs-zoom-out-button-label = Uzaklaştır
 pdfjs-zoom-in-button =
-    .title = Yaklaştır
-pdfjs-zoom-in-button-label = Yaklaştır
+    .title = Yakınlaştır
+pdfjs-zoom-in-button-label = Yakınlaştır
 pdfjs-zoom-select =
     .title = Yakınlaştırma
 pdfjs-presentation-mode-button =
@@ -51,12 +51,6 @@ pdfjs-download-button-label = İndir
 pdfjs-bookmark-button =
     .title = Geçerli sayfa (geçerli sayfanın adresini görüntüle)
 pdfjs-bookmark-button-label = Geçerli sayfa
-# Used in Firefox for Android.
-pdfjs-open-in-app-button =
-    .title = Uygulamada aç
-# Used in Firefox for Android.
-# Length of the translation matters since we are in a mobile context, with limited screen estate.
-pdfjs-open-in-app-button-label = Uygulamada aç
 
 ##  Secondary toolbar and context menu
 
@@ -85,10 +79,10 @@ pdfjs-scroll-page-button =
     .title = Sayfa kaydırmayı kullan
 pdfjs-scroll-page-button-label = Sayfa kaydırma
 pdfjs-scroll-vertical-button =
-    .title = Dikey kaydırma kullan
+    .title = Dikey kaydırmayı kullan
 pdfjs-scroll-vertical-button-label = Dikey kaydırma
 pdfjs-scroll-horizontal-button =
-    .title = Yatay kaydırma kullan
+    .title = Yatay kaydırmayı kullan
 pdfjs-scroll-horizontal-button-label = Yatay kaydırma
 pdfjs-scroll-wrapped-button =
     .title = Yan yana kaydırmayı kullan
@@ -111,6 +105,14 @@ pdfjs-document-properties-button-label = Belge özellikleri…
 pdfjs-document-properties-file-name = Dosya adı:
 pdfjs-document-properties-file-size = Dosya boyutu:
 # Variables:
+#   $kb (Number) - the PDF file size in kilobytes
+#   $b (Number) - the PDF file size in bytes
+pdfjs-document-properties-size-kb = { NUMBER($kb, maximumSignificantDigits: 3) } KB ({ $b } bayt)
+# Variables:
+#   $mb (Number) - the PDF file size in megabytes
+#   $b (Number) - the PDF file size in bytes
+pdfjs-document-properties-size-mb = { NUMBER($mb, maximumSignificantDigits: 3) } MB ({ $b } bayt)
+# Variables:
 #   $size_kb (Number) - the PDF file size in kilobytes
 #   $size_b (Number) - the PDF file size in bytes
 pdfjs-document-properties-kb = { $size_kb } KB ({ $size_b } bayt)
@@ -122,8 +124,11 @@ pdfjs-document-properties-title = Başlık:
 pdfjs-document-properties-author = Yazar:
 pdfjs-document-properties-subject = Konu:
 pdfjs-document-properties-keywords = Anahtar kelimeler:
-pdfjs-document-properties-creation-date = Oluturma tarihi:
+pdfjs-document-properties-creation-date = Oluşturma tarihi:
 pdfjs-document-properties-modification-date = Değiştirme tarihi:
+# Variables:
+#   $dateObj (Date) - the creation/modification date and time of the PDF file
+pdfjs-document-properties-date-time-string = { DATETIME($dateObj, dateStyle: "short", timeStyle: "medium") }
 # Variables:
 #   $date (Date) - the creation/modification date of the PDF file
 #   $time (Time) - the creation/modification time of the PDF file
@@ -273,7 +278,7 @@ pdfjs-rendering-error = Sayfa yorumlanırken bir hata oluştu.
 # Variables:
 #   $date (Date) - the modification date of the annotation
 #   $time (Time) - the modification time of the annotation
-pdfjs-annotation-date-string = { $date }, { $time }
+pdfjs-annotation-date-string = { $date } { $time }
 # .alt: This is used as a tooltip.
 # Variables:
 #   $type (String) - an annotation type from a list defined in the PDF spec
@@ -281,6 +286,9 @@ pdfjs-annotation-date-string = { $date }, { $time }
 # Some common types are e.g.: "Check", "Text", "Comment", "Note"
 pdfjs-text-annotation-type =
     .alt = [{ $type } işareti]
+# Variables:
+#   $dateObj (Date) - the modification date and time of the annotation
+pdfjs-annotation-date-time-string = { DATETIME($dateObj, dateStyle: "short", timeStyle: "medium") }
 
 ## Password
 
@@ -301,6 +309,27 @@ pdfjs-editor-ink-button-label = Çiz
 pdfjs-editor-stamp-button =
     .title = Resim ekle veya düzenle
 pdfjs-editor-stamp-button-label = Resim ekle veya düzenle
+pdfjs-editor-highlight-button =
+    .title = Vurgula
+pdfjs-editor-highlight-button-label = Vurgula
+pdfjs-highlight-floating-button1 =
+    .title = Vurgula
+    .aria-label = Vurgula
+pdfjs-highlight-floating-button-label = Vurgula
+
+## Remove button for the various kind of editor.
+
+pdfjs-editor-remove-ink-button =
+    .title = Çizimi kaldır
+pdfjs-editor-remove-freetext-button =
+    .title = Metni kaldır
+pdfjs-editor-remove-stamp-button =
+    .title = Resmi kaldır
+pdfjs-editor-remove-highlight-button =
+    .title = Vurgulamayı kaldır
+
+##
+
 # Editor Parameters
 pdfjs-editor-free-text-color-input = Renk
 pdfjs-editor-free-text-size-input = Boyut
@@ -310,6 +339,14 @@ pdfjs-editor-ink-opacity-input = Saydamlık
 pdfjs-editor-stamp-add-image-button =
     .title = Resim ekle
 pdfjs-editor-stamp-add-image-button-label = Resim ekle
+# This refers to the thickness of the line used for free highlighting (not bound to text)
+pdfjs-editor-free-highlight-thickness-input = Kalınlık
+pdfjs-editor-free-highlight-thickness-title =
+    .title = Metin dışındaki öğeleri vurgularken kalınlığı değiştir
+# .default-content is used as a placeholder in an empty text editor.
+pdfjs-free-text2 =
+    .aria-label = Metin düzenleyicisi
+    .default-content = Yazmaya başlayın…
 pdfjs-free-text =
     .aria-label = Metin düzenleyicisi
 pdfjs-free-text-default-content = Yazmaya başlayın…
@@ -320,21 +357,25 @@ pdfjs-ink-canvas =
 
 ## Alt-text dialog
 
-# Alternative text (alt text) helps when people can't see the image.
 pdfjs-editor-alt-text-button-label = Alternatif metin
+pdfjs-editor-alt-text-edit-button =
+    .aria-label = Alternatif metni düzenle
 pdfjs-editor-alt-text-edit-button-label = Alternatif metni düzenle
 pdfjs-editor-alt-text-dialog-label = Bir seçenek seçin
-pdfjs-editor-alt-text-dialog-description = Alternatif metin, insanlar görseli göremediğinde veya görsel yüklenmediğinde işe yarar.
+pdfjs-editor-alt-text-dialog-description = Alternatif metin, insanlar resmi göremediğinde veya resim yüklenmediğinde işe yarar.
 pdfjs-editor-alt-text-add-description-label = Açıklama ekle
 pdfjs-editor-alt-text-add-description-description = Konuyu, ortamı veya eylemleri tanımlayan bir iki cümle yazmaya çalışın.
 pdfjs-editor-alt-text-mark-decorative-label = Dekoratif olarak işaretle
-pdfjs-editor-alt-text-mark-decorative-description = Kenarlıklar veya filigranlar gibi dekoratif görüntüler için kullanılır.
+pdfjs-editor-alt-text-mark-decorative-description = Kenarlıklar veya filigranlar gibi dekoratif resimler için kullanılır.
 pdfjs-editor-alt-text-cancel-button = Vazgeç
 pdfjs-editor-alt-text-save-button = Kaydet
 pdfjs-editor-alt-text-decorative-tooltip = Dekoratif olarak işaretlendi
 # .placeholder: This is a placeholder for the alt text input area
 pdfjs-editor-alt-text-textarea =
     .placeholder = Örneğin, “Genç bir adam yemek yemek için masaya oturuyor”
+# Alternative text (alt text) helps when people can't see the image.
+pdfjs-editor-alt-text-button =
+    .aria-label = Alternatif metin
 
 ## Editor resizers
 ## This is used in an aria label to help to understand the role of the resizer.
@@ -347,3 +388,128 @@ pdfjs-editor-resizer-label-bottom-right = Sağ alt köşe — yeniden boyutland�
 pdfjs-editor-resizer-label-bottom-middle = Alt orta — yeniden boyutlandır
 pdfjs-editor-resizer-label-bottom-left = Sol alt köşe — yeniden boyutlandır
 pdfjs-editor-resizer-label-middle-left = Orta sol — yeniden boyutlandır
+pdfjs-editor-resizer-top-left =
+    .aria-label = Sol üst köşe — yeniden boyutlandır
+pdfjs-editor-resizer-top-middle =
+    .aria-label = Üst orta — yeniden boyutlandır
+pdfjs-editor-resizer-top-right =
+    .aria-label = Sağ üst köşe — yeniden boyutlandır
+pdfjs-editor-resizer-middle-right =
+    .aria-label = Orta sağ — yeniden boyutlandır
+pdfjs-editor-resizer-bottom-right =
+    .aria-label = Sağ alt köşe — yeniden boyutlandır
+pdfjs-editor-resizer-bottom-middle =
+    .aria-label = Alt orta — yeniden boyutlandır
+pdfjs-editor-resizer-bottom-left =
+    .aria-label = Sol alt köşe — yeniden boyutlandır
+pdfjs-editor-resizer-middle-left =
+    .aria-label = Orta sol — yeniden boyutlandır
+
+## Color picker
+
+# This means "Color used to highlight text"
+pdfjs-editor-highlight-colorpicker-label = Vurgu rengi
+pdfjs-editor-colorpicker-button =
+    .title = Rengi değiştir
+pdfjs-editor-colorpicker-dropdown =
+    .aria-label = Renk seçenekleri
+pdfjs-editor-colorpicker-yellow =
+    .title = Sarı
+pdfjs-editor-colorpicker-green =
+    .title = Yeşil
+pdfjs-editor-colorpicker-blue =
+    .title = Mavi
+pdfjs-editor-colorpicker-pink =
+    .title = Pembe
+pdfjs-editor-colorpicker-red =
+    .title = Kırmızı
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+pdfjs-editor-highlight-show-all-button-label = Tümünü göster
+pdfjs-editor-highlight-show-all-button =
+    .title = Tümünü göster
+
+## New alt-text dialog
+## Group note for entire feature: Alternative text (alt text) helps when people can't see the image. This feature includes a tool to create alt text automatically using an AI model that works locally on the user's device to preserve privacy.
+
+# Modal header positioned above a text box where users can edit the alt text.
+pdfjs-editor-new-alt-text-dialog-edit-label = Alt metni düzenle (resim açıklaması)
+# Modal header positioned above a text box where users can add the alt text.
+pdfjs-editor-new-alt-text-dialog-add-label = Alt metin ekle (resim açıklaması)
+pdfjs-editor-new-alt-text-textarea =
+    .placeholder = Açıklamanızı buraya yazın…
+# This text refers to the alt text box above this description. It offers a definition of alt text.
+pdfjs-editor-new-alt-text-description = Görme engelli kişilere gösterilecek veya resmin yüklenemediği durumlarda gösterilecek kısa açıklama.
+# This is a required legal disclaimer that refers to the automatically created text inside the alt text box above this text. It disappears if the text is edited by a human.
+pdfjs-editor-new-alt-text-disclaimer1 = Bu alt metin otomatik olarak oluşturulmuştur ve hatalı olabilir.
+pdfjs-editor-new-alt-text-disclaimer-learn-more-url = Daha fazla bilgi alın
+pdfjs-editor-new-alt-text-create-automatically-button-label = Otomatik olarak alt metin oluştur
+pdfjs-editor-new-alt-text-not-now-button = Şimdi değil
+pdfjs-editor-new-alt-text-error-title = Alt metin otomatik olarak oluşturulamadı
+pdfjs-editor-new-alt-text-error-description = Lütfen kendi alt metninizi yazın veya daha sonra yeniden deneyin.
+pdfjs-editor-new-alt-text-error-close-button = Kapat
+# Variables:
+#   $totalSize (Number) - the total size (in MB) of the AI model.
+#   $downloadedSize (Number) - the downloaded size (in MB) of the AI model.
+#   $percent (Number) - the percentage of the downloaded size.
+pdfjs-editor-new-alt-text-ai-model-downloading-progress = Alt metin yapay zekâ modeli indiriliyor ({ $downloadedSize } / { $totalSize } MB)
+    .aria-valuetext = Alt metin yapay zekâ modeli indiriliyor ({ $downloadedSize } / { $totalSize } MB)
+# This is a button that users can click to edit the alt text they have already added.
+pdfjs-editor-new-alt-text-added-button =
+    .aria-label = Alternatif metin eklendi
+pdfjs-editor-new-alt-text-added-button-label = Alt metin eklendi
+# This is a button that users can click to open the alt text editor and add alt text when it is not present.
+pdfjs-editor-new-alt-text-missing-button =
+    .aria-label = Alternatif metin eksik
+pdfjs-editor-new-alt-text-missing-button-label = Alt metin eksik
+# This is a button that opens up the alt text modal where users should review the alt text that was automatically generated.
+pdfjs-editor-new-alt-text-to-review-button =
+    .aria-label = Alternatif metni incele
+pdfjs-editor-new-alt-text-to-review-button-label = Alt metni incele
+# "Created automatically" is a prefix that will be added to the beginning of any alt text that has been automatically generated. After the colon, the user will see/hear the actual alt text description. If the alt text has been edited by a human, this prefix will not appear.
+# Variables:
+#   $generatedAltText (String) - the generated alt-text.
+pdfjs-editor-new-alt-text-generated-alt-text-with-disclaimer = Otomatik olarak oluşturuldu: { $generatedAltText }
+
+## Image alt-text settings
+
+pdfjs-image-alt-text-settings-button =
+    .title = Resim alt metni ayarları
+pdfjs-image-alt-text-settings-button-label = Resim alt metni ayarları
+pdfjs-editor-alt-text-settings-dialog-label = Resim alt metni ayarları
+pdfjs-editor-alt-text-settings-automatic-title = Otomatik alt metin
+pdfjs-editor-alt-text-settings-create-model-button-label = Otomatik olarak alt metin oluştur
+pdfjs-editor-alt-text-settings-create-model-description = Görme engelli kişilere gösterilecek veya resmin yüklenemediği durumlarda gösterilecek açıklamalar önerir.
+# Variables:
+#   $totalSize (Number) - the total size (in MB) of the AI model.
+pdfjs-editor-alt-text-settings-download-model-label = Alt metin yapay zekâ modeli ({ $totalSize } MB)
+pdfjs-editor-alt-text-settings-ai-model-description = Verilerinizin gizli kalması için cihazınızda yerel olarak çalışır. Otomatik alt metin için gereklidir.
+pdfjs-editor-alt-text-settings-delete-model-button = Sil
+pdfjs-editor-alt-text-settings-download-model-button = İndir
+pdfjs-editor-alt-text-settings-downloading-model-button = İndiriliyor…
+pdfjs-editor-alt-text-settings-editor-title = Alt metin düzenleyicisi
+pdfjs-editor-alt-text-settings-show-dialog-button-label = Resim eklerken alt metin düzenleyicisini hemen göster
+pdfjs-editor-alt-text-settings-show-dialog-description = Tüm resimlerinizin alt metne sahip olduğundan emin olmanızı sağlar.
+pdfjs-editor-alt-text-settings-close-button = Kapat
+
+## "Annotations removed" bar
+
+pdfjs-editor-undo-bar-message-highlight = Vurgulama silindi
+pdfjs-editor-undo-bar-message-freetext = Metin silindi
+pdfjs-editor-undo-bar-message-ink = Çizim silindi
+pdfjs-editor-undo-bar-message-stamp = Görsel silindi
+# Variables:
+#   $count (Number) - the number of removed annotations.
+pdfjs-editor-undo-bar-message-multiple =
+    { $count ->
+        [one] { $count } ek açıklama silindi
+       *[other] { $count } ek açıklama silindi
+    }
+pdfjs-editor-undo-bar-undo-button =
+    .title = Geri al
+pdfjs-editor-undo-bar-undo-button-label = Geri al
+pdfjs-editor-undo-bar-close-button =
+    .title = Kapat
+pdfjs-editor-undo-bar-close-button-label = Kapat
