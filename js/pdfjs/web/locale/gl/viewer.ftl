@@ -51,12 +51,6 @@ pdfjs-download-button-label = Descargar
 pdfjs-bookmark-button =
     .title = Páxina actual (ver o URL da páxina actual)
 pdfjs-bookmark-button-label = Páxina actual
-# Used in Firefox for Android.
-pdfjs-open-in-app-button =
-    .title = Abrir cunha aplicación
-# Used in Firefox for Android.
-# Length of the translation matters since we are in a mobile context, with limited screen estate.
-pdfjs-open-in-app-button-label = Abrir cunha aplicación
 
 ##  Secondary toolbar and context menu
 
@@ -226,6 +220,21 @@ pdfjs-find-match-diacritics-checkbox-label = Distinguir os diacríticos
 pdfjs-find-entire-word-checkbox-label = Palabras completas
 pdfjs-find-reached-top = Chegouse ao inicio do documento, continuar desde o final
 pdfjs-find-reached-bottom = Chegouse ao final do documento, continuar desde o inicio
+# Variables:
+#   $current (Number) - the index of the currently active find result
+#   $total (Number) - the total number of matches in the document
+pdfjs-find-match-count =
+    { $total ->
+        [one] Coincidencia { $current } de { $total }
+       *[other] Coincidencia { $current } de { $total }
+    }
+# Variables:
+#   $limit (Number) - the maximum number of matches
+pdfjs-find-match-count-limit =
+    { $limit ->
+        [one] Máis de { $limit } coincidencia
+       *[other] Máis de { $limit } coincidencias
+    }
 pdfjs-find-not-found = Non se atopou a frase
 
 ## Predefined zoom values
@@ -286,6 +295,18 @@ pdfjs-editor-ink-button-label = Debuxo
 pdfjs-editor-stamp-button =
     .title = Engadir ou editar imaxes
 pdfjs-editor-stamp-button-label = Engadir ou editar imaxes
+
+## Remove button for the various kind of editor.
+
+pdfjs-editor-remove-freetext-button =
+    .title = Eliminar o texto
+pdfjs-editor-remove-stamp-button =
+    .title = Eliminar a imaxe
+pdfjs-editor-remove-highlight-button =
+    .title = Eliminar o resaltado
+
+##
+
 # Editor Parameters
 pdfjs-editor-free-text-color-input = Cor
 pdfjs-editor-free-text-size-input = Tamaño
@@ -295,6 +316,8 @@ pdfjs-editor-ink-opacity-input = Opacidade
 pdfjs-editor-stamp-add-image-button =
     .title = Engadir imaxe
 pdfjs-editor-stamp-add-image-button-label = Engadir imaxe
+# This refers to the thickness of the line used for free highlighting (not bound to text)
+pdfjs-editor-free-highlight-thickness-input = Grosor
 pdfjs-free-text =
     .aria-label = Editor de texto
 pdfjs-free-text-default-content = Comezar a teclear…
@@ -305,7 +328,58 @@ pdfjs-ink-canvas =
 
 ## Alt-text dialog
 
+# Alternative text (alt text) helps when people can't see the image.
+pdfjs-editor-alt-text-button-label = Texto alternativo
+pdfjs-editor-alt-text-edit-button-label = Editar o texto alternativo
+pdfjs-editor-alt-text-dialog-label = Escoller unha opción
+pdfjs-editor-alt-text-add-description-label = Engadir unha descrición
+pdfjs-editor-alt-text-mark-decorative-label = Marcar como decorativo
+pdfjs-editor-alt-text-mark-decorative-description = Utilízase para imaxes ornamentais, como bordos ou marcas de auga.
+pdfjs-editor-alt-text-cancel-button = Cancelar
+pdfjs-editor-alt-text-save-button = Gardar
+pdfjs-editor-alt-text-decorative-tooltip = Marcado como decorativo
+# .placeholder: This is a placeholder for the alt text input area
+pdfjs-editor-alt-text-textarea =
+    .placeholder = Por exemplo, «Un mozo séntase á mesa para comer»
 
 ## Editor resizers
 ## This is used in an aria label to help to understand the role of the resizer.
+
+pdfjs-editor-resizer-label-top-left = Esquina superior esquerda: cambia o tamaño
+pdfjs-editor-resizer-label-top-middle = Medio superior: cambia o tamaño
+pdfjs-editor-resizer-label-top-right = Esquina superior dereita: cambia o tamaño
+pdfjs-editor-resizer-label-middle-right = Medio dereito: cambia o tamaño
+pdfjs-editor-resizer-label-bottom-right = Esquina inferior dereita: cambia o tamaño
+pdfjs-editor-resizer-label-bottom-middle = Abaixo medio: cambia o tamaño
+pdfjs-editor-resizer-label-bottom-left = Esquina inferior esquerda: cambia o tamaño
+pdfjs-editor-resizer-label-middle-left = Medio esquerdo: cambia o tamaño
+pdfjs-editor-resizer-top-left =
+    .aria-label = Esquina superior esquerda: cambia o tamaño
+pdfjs-editor-resizer-top-middle =
+    .aria-label = Medio superior: cambia o tamaño
+pdfjs-editor-resizer-top-right =
+    .aria-label = Esquina superior dereita: cambia o tamaño
+pdfjs-editor-resizer-middle-right =
+    .aria-label = Medio dereito: cambia o tamaño
+pdfjs-editor-resizer-bottom-right =
+    .aria-label = Esquina inferior dereita: cambia o tamaño
+pdfjs-editor-resizer-bottom-middle =
+    .aria-label = Abaixo medio: cambia o tamaño
+pdfjs-editor-resizer-bottom-left =
+    .aria-label = Esquina inferior esquerda: cambia o tamaño
+pdfjs-editor-resizer-middle-left =
+    .aria-label = Medio esquerdo: cambia o tamaño
+
+## Color picker
+
+
+## Show all highlights
+## This is a toggle button to show/hide all the highlights.
+
+
+## New alt-text dialog
+## Group note for entire feature: Alternative text (alt text) helps when people can't see the image. This feature includes a tool to create alt text automatically using an AI model that works locally on the user's device to preserve privacy.
+
+
+## Image alt-text settings
 
