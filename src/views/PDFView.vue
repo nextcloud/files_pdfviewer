@@ -154,7 +154,7 @@ export default {
 		},
 
 		getDownloadElement() {
-			return this.getIframeDocument().getElementById('download')
+			return this.getIframeDocument().getElementById('downloadButton')
 		},
 
 		getSecondaryDownloadElement() {
@@ -172,6 +172,11 @@ export default {
 
 			// Preferences override options, so they must be disabled for
 			// "externalLinkTarget" and "annotationMode" to take effect.
+			// Since 4.5.136 default preferences no longer override options, but
+			// "pdfjs.preferences" from local storage still do. A warning is
+			// also printed by PDF.js if preferences are not disabled and an
+			// overridable option is used.
+			// https://github.com/mozilla/pdf.js/pull/18413
 			PDFViewerApplicationOptions.set('disablePreferences', true)
 			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
 			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
@@ -189,14 +194,14 @@ export default {
 			// if the unflavored language is supported we use that,
 			// and if nothing is supported we do not set it as that would fallback to English but we let PDFjs use the browser language.
 			if (supportedLanguages.includes(language)) {
-				// Set the language (they misused "locale") to the user configured value
-				// instead of defaulting to the browser language
-				PDFViewerApplicationOptions.set('locale', language)
+				// Set the language to the user configured value instead of
+				// defaulting to the browser language
+				PDFViewerApplicationOptions.set('localeProperties', { lang: language })
 			} else {
 				// Sometimes a flavored language is not named correctly (PDFjs uses iso639-2 and Nextcloud iso639-1)
 				const unflavoredLanguage = language.split('-')[0]
 				if (supportedLanguages.includes(unflavoredLanguage) || supportedLanguages.find((language) => language.startsWith(`${unflavoredLanguage}-`))) {
-					PDFViewerApplicationOptions.set('locale', unflavoredLanguage)
+					PDFViewerApplicationOptions.set('localeProperties', { lang: unflavoredLanguage })
 				}
 			}
 
@@ -305,7 +310,7 @@ export default {
 
 			logger.info('PDF Document with annotation is being saved')
 
-			this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
+			return this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
 				return uploadPdfFile(this.file.filename, data)
 			}).then(() => {
 				logger.info('File uploaded successfully')
