@@ -15,6 +15,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\ServerVersion;
 use Test\TestCase;
 
 class DisplayControllerTest extends TestCase {
@@ -30,6 +31,9 @@ class DisplayControllerTest extends TestCase {
 	/** @var IConfig */
 	private $config;
 
+	/** @var ServerVersion */
+	private $serverVersion;
+
 	/** @var DisplayController */
 	private $controller;
 
@@ -38,11 +42,13 @@ class DisplayControllerTest extends TestCase {
 		$this->urlGenerator = $this->createMock(IURLGenerator::class);
 		$this->appManager = $this->createMock(IAppManager::class);
 		$this->config = $this->createMock(IConfig::class);
+		$this->serverVersion = \OCP\Server::get(ServerVersion::class);
 		$this->controller = new DisplayController(
 			$this->request,
 			$this->urlGenerator,
 			$this->appManager,
 			$this->config,
+			$this->serverVersion,
 		);
 
 		parent::setUp();
@@ -56,10 +62,16 @@ class DisplayControllerTest extends TestCase {
 			->with(Application::APP_ID, 'enable_scripting', 'no')
 			->willReturn('no');
 
+		// ServerVersion can not be mocked in PHPUnit < 11.2, and PHPUnit
+		// can not be used in PHP < 8.2, so the expected version needs to be
+		// calculated from the actual server version.
+		$serverVersion = implode('.', $this->serverVersion->getVersion());
+		$expectedVersion = substr(md5('1.0.0' . '-' . $serverVersion), 0, 8);
+
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => false,
-			'version' => '1.0.0',
+			'version' => $expectedVersion,
 			'enableScripting' => false,
 		];
 		$expectedResponse = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
