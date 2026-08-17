@@ -38,7 +38,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 <html dir="ltr" mozdisallowselectionprint>
   <head data-workersrc="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.worker.mjs')) ?>?v=<?php p($version) ?>"
         data-enablescripting="<?php p($enableScripting ? 'true' : 'false') ?>"
-        data-sandbox="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.sandbox.mjs'))?>"
+        data-sandbox="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.sandbox.mjs'))?>?v=<?php p($version) ?>"
         data-cmapurl="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/cmaps/')) ?>"
         data-imageresourcespath="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/images/')) ?>">
     <meta charset="utf-8">
