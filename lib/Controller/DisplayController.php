@@ -9,25 +9,46 @@
 namespace OCA\Files_PDFViewer\Controller;
 
 use OCA\Files_PDFViewer\AppInfo\Application;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\ServerVersion;
 
 class DisplayController extends Controller {
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var IAppManager */
+	private $appManager;
+
+	/** @var IConfig */
+	private $config;
+
+	/** @var ServerVersion */
+	private $serverVersion;
+
 	/**
 	 * @param IRequest $request
 	 * @param IURLGenerator $urlGenerator
+	 * @param IAppManager $appManager
+	 * @param IConfig $config
+	 * @param ServerVersion $serverVersion
 	 */
 	public function __construct(IRequest $request,
-		IURLGenerator $urlGenerator) {
+		IURLGenerator $urlGenerator,
+		IAppManager $appManager,
+		IConfig $config,
+		ServerVersion $serverVersion) {
 		parent::__construct(Application::APP_ID, $request);
 		$this->urlGenerator = $urlGenerator;
+		$this->appManager = $appManager;
+		$this->config = $config;
+		$this->serverVersion = $serverVersion;
 	}
 
 	/**
@@ -40,7 +61,9 @@ class DisplayController extends Controller {
 	public function showPdfViewer(bool $minmode = false): TemplateResponse {
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
-			'minmode' => $minmode
+			'minmode' => $minmode,
+			'version' => $this->getVersionHash(),
+			'enableScripting' => $this->config->getAppValue(Application::APP_ID, 'enable_scripting', 'no') === 'yes',
 		];
 
 		$response = new TemplateResponse(Application::APP_ID, 'viewer', $params, 'blank');
@@ -54,5 +77,24 @@ class DisplayController extends Controller {
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
+	}
+
+	/**
+	 * Returns the value used to bust the cache of the static assets.
+	 *
+	 * Assets requested with a "v" parameter are served as immutable, so
+	 * browsers keep them for months without checking again whether they
+	 * changed. The app version can not be used on its own for that, as it is
+	 * the same in every patch release of a Nextcloud version. Therefore,
+	 * the Nextcloud version is taken into account too, like the server does
+	 * for the assets that it links itself.
+	 *
+	 * @return string
+	 */
+	private function getVersionHash(): string {
+		$appVersion = $this->appManager->getAppVersion(Application::APP_ID);
+		$serverVersion = implode('.', $this->serverVersion->getVersion());
+
+		return substr(md5($appVersion . '-' . $serverVersion), 0, 8);
 	}
 }
