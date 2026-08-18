@@ -15,6 +15,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\ServerVersion;
 use Test\TestCase;
 
 class DisplayControllerTest extends TestCase {
@@ -30,6 +31,9 @@ class DisplayControllerTest extends TestCase {
 	/** @var IConfig */
 	private $config;
 
+	/** @var ServerVersion */
+	private $serverVersion;
+
 	/** @var DisplayController */
 	private $controller;
 
@@ -38,11 +42,13 @@ class DisplayControllerTest extends TestCase {
 		$this->urlGenerator = $this->createMock(IURLGenerator::class);
 		$this->appManager = $this->createMock(IAppManager::class);
 		$this->config = $this->createMock(IConfig::class);
+		$this->serverVersion = $this->createMock(ServerVersion::class);
 		$this->controller = new DisplayController(
 			$this->request,
 			$this->urlGenerator,
 			$this->appManager,
 			$this->config,
+			$this->serverVersion,
 		);
 
 		parent::setUp();
@@ -55,11 +61,14 @@ class DisplayControllerTest extends TestCase {
 		$this->config->method('getAppValue')
 			->with(Application::APP_ID, 'enable_scripting', 'no')
 			->willReturn('no');
+		$this->serverVersion->method('getVersion')
+			->willReturn([34, 0, 3, 2]);
 
 		$params = [
 			'urlGenerator' => $this->urlGenerator,
 			'minmode' => false,
-			'version' => '1.0.0',
+			// substr(md5('1.0.0-34.0.3.2'), 0, 8)
+			'version' => 'd77714da',
 			'enableScripting' => false,
 		];
 		$expectedResponse = new TemplateResponse(Application::APP_ID, 'viewer', $params, TemplateResponse::RENDER_AS_BLANK);
@@ -71,5 +80,40 @@ class DisplayControllerTest extends TestCase {
 		$expectedResponse->setContentSecurityPolicy($policy);
 
 		$this->assertEquals($expectedResponse, $this->controller->showPdfViewer());
+	}
+
+	public function testShowPdfViewerCacheBusterChangesWhenTheServerIsUpdated(): void {
+		// The app version is the same in every patch release of a Nextcloud
+		// version, so it can not be used on its own to bust the cache of the
+		// static assets.
+		$this->appManager->method('getAppVersion')
+			->with(Application::APP_ID)
+			->willReturn('1.0.0');
+		$this->config->method('getAppValue')
+			->with(Application::APP_ID, 'enable_scripting', 'no')
+			->willReturn('no');
+		$this->serverVersion->method('getVersion')
+			->willReturnOnConsecutiveCalls([34, 0, 2, 2], [34, 0, 3, 2]);
+
+		$paramsBeforeUpdate = $this->controller->showPdfViewer()->getParams();
+		$paramsAfterUpdate = $this->controller->showPdfViewer()->getParams();
+
+		$this->assertNotEquals($paramsBeforeUpdate['version'], $paramsAfterUpdate['version']);
+	}
+
+	public function testShowPdfViewerCacheBusterChangesWhenTheAppIsUpdated(): void {
+		$this->appManager->method('getAppVersion')
+			->with(Application::APP_ID)
+			->willReturnOnConsecutiveCalls('1.0.0', '1.1.0');
+		$this->config->method('getAppValue')
+			->with(Application::APP_ID, 'enable_scripting', 'no')
+			->willReturn('no');
+		$this->serverVersion->method('getVersion')
+			->willReturn([34, 0, 3, 2]);
+
+		$paramsBeforeUpdate = $this->controller->showPdfViewer()->getParams();
+		$paramsAfterUpdate = $this->controller->showPdfViewer()->getParams();
+
+		$this->assertNotEquals($paramsBeforeUpdate['version'], $paramsAfterUpdate['version']);
 	}
 }
