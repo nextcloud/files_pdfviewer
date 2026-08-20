@@ -9,9 +9,7 @@ namespace OCA\Files_PDFViewer\AppInfo;
 
 use OCA\Files_PDFViewer\Listeners\CSPListener;
 use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
-
 use OCA\Viewer\Event\LoadViewer;
-
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
