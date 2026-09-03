@@ -27,7 +27,6 @@ SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
 SPDX-FileCopyrightText: Max <max@nextcloud.com>
 SPDX-FileCopyrightText: Mark <mark@remarkablemark.org>
 SPDX-FileCopyrightText: Mapbox
-SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: Jeff Sagal <sagalbot@gmail.com>
 SPDX-FileCopyrightText: Jacob Clevenger<https://github.com/wheatjs>
 SPDX-FileCopyrightText: Guillaume Chau <guillaume.b.chau@gmail.com>
@@ -421,6 +420,6 @@ This file is generated from multiple sources. Included packages:
 - webpack
 	- version: 5.105.0
 	- license: MIT
-- files_pdfviewer
-	- version: 9.0.0-dev.0
+- nextcloud
+	- version: 1.0.0
 	- license: AGPL-3.0-or-later

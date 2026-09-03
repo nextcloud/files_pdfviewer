@@ -24,6 +24,6 @@ body {
 /* Force hide the sidebar in the thumbnail, as whether it is shown or not
  * depends on whether it was open or not the last time that the main viewer was
  * used. */
-#sidebarContainer {
+#viewsManager {
 	display: none;
 }

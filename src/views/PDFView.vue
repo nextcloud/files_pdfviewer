@@ -180,13 +180,16 @@ export default {
 			PDFViewerApplicationOptions.set('disablePreferences', true)
 			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
 			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
-			PDFViewerApplicationOptions.set('isEvalSupported', false)
 			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
 			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
 			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
 			PDFViewerApplicationOptions.set('enablePermissions', true)
 			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
+			PDFViewerApplicationOptions.set('iccUrl', this.getViewerTemplateParameter('iccurl'))
+			PDFViewerApplicationOptions.set('wasmUrl', this.getViewerTemplateParameter('wasmurl'))
 			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enablescripting') === 'true')
+			PDFViewerApplicationOptions.set('enableSignatureEditor', true)
+			//PDFViewerApplicationOptions.set('enableComment', true)
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
