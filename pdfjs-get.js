@@ -9,7 +9,7 @@ const cliProgress = require('cli-progress')
 const npmPackageLock = require('./package-lock.json')
 
 // Fetching pdf.js build release
-const PDFJSversion = npmPackageLock.dependencies['pdfjs-dist']['version']
+const PDFJSversion = npmPackageLock.packages['node_modules/pdfjs-dist'].version
 console.info('Fetching pdfjs', PDFJSversion)
 
 // Init progress
