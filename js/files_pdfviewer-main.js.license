@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
-SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: GitHub Inc.
 
 
@@ -31,6 +30,6 @@ This file is generated from multiple sources. Included packages:
 - webpack
 	- version: 5.105.0
 	- license: MIT
-- files_pdfviewer
-	- version: 9.0.0-dev.0
+- nextcloud
+	- version: 1.0.0
 	- license: AGPL-3.0-or-later
