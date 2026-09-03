@@ -9,7 +9,7 @@ const template = readFileSync('templates/viewer.php', 'utf8')
 const component = readFileSync('src/views/PDFView.vue', 'utf8')
 
 describe('viewer template parameters', () => {
-	const names = [...component.matchAll(/getViewerTemplateParameter\('([a-z]+)'\)/g)].map(([, name]) => name)
+	const names = [...component.matchAll(/getViewerTemplateParameter\(head, '([a-z]+)'\)/g)].map(([, name]) => name)
 
 	it('are read by the component', () => {
 		expect(names.length).toBeGreaterThan(0)
