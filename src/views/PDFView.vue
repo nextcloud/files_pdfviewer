@@ -183,6 +183,7 @@ export default {
 			PDFViewerApplicationOptions.set('isEvalSupported', false)
 			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
 			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
+			PDFViewerApplicationOptions.set('standardFontDataUrl', this.getViewerTemplateParameter('standardfontdataurl'))
 			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
 			PDFViewerApplicationOptions.set('enablePermissions', true)
 			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))

@@ -12,6 +12,8 @@ namespace OCA\Files_PDFViewer\AppInfo;
 return [
 	'routes' => [
 		['name' => 'display#showPdfViewer', 'url' => '/', 'verb' => 'GET'],
+		// The version segment is a cache buster, see AssetController::serve()
+		['name' => 'asset#serve', 'url' => '/assets/{version}/{path}', 'verb' => 'GET', 'requirements' => ['path' => '.+']],
 	],
 	'ocs' => [
 		['name' => 'settings#getSettings', 'url' => '/api/v1/settings', 'verb' => 'GET'],
