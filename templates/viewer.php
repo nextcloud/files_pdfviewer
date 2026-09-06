@@ -43,7 +43,8 @@ See https://github.com/adobe-type-tools/cmap-resources
   <head data-workersrc="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.worker.mjs')) ?>?v=<?php p($version) ?>"
         data-enablescripting="<?php p($enableScripting ? 'true' : 'false') ?>"
         data-sandbox="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.sandbox.mjs'))?>?v=<?php p($version) ?>"
-        data-cmapurl="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/cmaps/')) ?>"
+        data-cmapurl="<?php p($urlGenerator->linkToRoute('files_pdfviewer.asset.serve', ['version' => $version, 'path' => 'cmaps'])) ?>/"
+        data-standardfontdataurl="<?php p($urlGenerator->linkToRoute('files_pdfviewer.asset.serve', ['version' => $version, 'path' => 'standard_fonts'])) ?>/"
         data-imageresourcespath="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/images/')) ?>">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -58,7 +59,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 
     <!-- This snippet is used in production (included from viewer.html) -->
-    <link rel="resource" type="application/l10n" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/locale/locale.json')) ?>?v=<?php p($version) ?>"/>
+    <link rel="resource" type="application/l10n" href="<?php p($urlGenerator->linkToRoute('files_pdfviewer.asset.serve', ['version' => $version, 'path' => 'locale/locale.json'])) ?>"/>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/viewer.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/files_pdfviewer-workersrc.js')) ?>?v=<?php p($version) ?>"></script>
