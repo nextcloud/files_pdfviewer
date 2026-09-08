@@ -2,12 +2,12 @@
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-import vue from '@vitejs/plugin-vue2'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
 	plugins: [vue()],
-	// Provided by the DefinePlugin of webpack.config.js when building.
+	// Provided by the "define" option of vite.config.js when building.
 	define: {
 		SUPPORTED_LANGUAGES: JSON.stringify(['de', 'en-GB', 'pt-BR']),
 	},

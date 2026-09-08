@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { getCSPNonce } from '@nextcloud/auth'
-import { generateFilePath } from '@nextcloud/router'
 import FilesPdfViewerLoader from './views/FilesPdfViewerLoader.js'
 
-__webpack_nonce__ = getCSPNonce()
-__webpack_public_path__ = generateFilePath('files_pdfviewer', '', 'js/')
+import './views/PDFView.scss'
 
 OCA.Viewer.registerHandler({
 	id: 'pdf',

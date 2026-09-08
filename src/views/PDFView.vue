@@ -6,6 +6,7 @@
 	<iframe
 		v-if="isDownloadable || allowViewWithoutDownload"
 		ref="iframe"
+		class="files-pdfviewer__iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
 	<div v-else-if="!isRichDocumentsAvailable" id="emptycontent">
@@ -19,6 +20,7 @@ import { showError } from '@nextcloud/dialogs'
 import { loadState } from '@nextcloud/initial-state'
 import { getLanguage } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
+import { markRaw } from 'vue'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
 
@@ -53,7 +55,8 @@ export default {
 
 	data() {
 		return {
-			// Not all fields are reactive!
+			// Marked raw (see below): pdf.js's "eventBus" uses private class
+			// fields, which break behind a Vue reactive proxy.
 			PDFViewerApplication: null,
 		}
 	},
@@ -133,7 +136,7 @@ export default {
 		})
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		document.removeEventListener('webviewerloaded', this.handleWebviewerloaded)
 	},
 
@@ -187,7 +190,7 @@ export default {
 				sandboxBundleSrc: this.getViewerTemplateParameter(head, 'sandbox'),
 				enablePermissions: true,
 				imageResourcesPath: this.getViewerTemplateParameter(head, 'imageresourcespath'),
-				standardFontDataUrl: this.getViewerTemplateParameter('standardfontdataurl'),
+				standardFontDataUrl: this.getViewerTemplateParameter(head, 'standardfontdataurl'),
 				iccUrl: this.getViewerTemplateParameter(head, 'iccurl'),
 				wasmUrl: this.getViewerTemplateParameter(head, 'wasmurl'),
 				enableScripting: this.getViewerTemplateParameter(head, 'enablescripting') === 'true',
@@ -223,7 +226,7 @@ export default {
 		},
 
 		initializePDFViewerApplication() {
-			this.PDFViewerApplication = this.$refs.iframe.contentWindow.PDFViewerApplication
+			this.PDFViewerApplication = markRaw(this.$refs.iframe.contentWindow.PDFViewerApplication)
 
 			this.PDFViewerApplication.save = this.handleSave
 
@@ -338,25 +341,3 @@ export default {
 	},
 }
 </script>
-
-<style lang="scss" scoped>
-#emptycontent {
-	margin: 0;
-	padding: 10% 5%;
-	background-color: var(--color-main-background);
-}
-
-iframe {
-	width: 100%;
-	/* The height is increased to cover the full modal content. Note that the
-	 * added height is not related to the header itself, but to the "bottom"
-	 * property of ".modal-container" in the viewer, which just happens to use
-	 * the header height. */
-	height: calc(100% + var(--header-height));
-	/* Align the PDF viewer with the top of the viewer content so it appears
-	 * below its header. */
-	top: 0;
-	position: absolute;
-}
-
-</style>
