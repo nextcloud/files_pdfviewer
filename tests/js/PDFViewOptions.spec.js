@@ -16,8 +16,18 @@ const parameters = {
 
 const options = new Map()
 PDFView.methods.initializePDFViewerApplicationOptions.call({
-	$refs: { iframe: { contentWindow: { PDFViewerApplicationOptions: { set: (name, value) => options.set(name, value) } } } },
-	getViewerTemplateParameter: (name) => parameters[name],
+	$refs: {
+		iframe: {
+			contentWindow: {
+				PDFViewerApplicationOptions: {
+					setAll: (values) => Object.entries(values).forEach(([name, value]) => options.set(name, value)),
+					set: (name, value) => options.set(name, value),
+				},
+			},
+		},
+	},
+	getIframeDocument: () => ({ getElementsByTagName: () => [{}] }),
+	getViewerTemplateParameter: (head, name) => parameters[name],
 	isEditable: true,
 })
 
