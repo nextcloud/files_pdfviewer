@@ -64,7 +64,7 @@ See https://github.com/adobe-type-tools/cmap-resources
     <link rel="resource" type="application/l10n" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/locale/locale.json')) ?>?v=<?php p($version) ?>"/>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/viewer.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
-    <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/files_pdfviewer-workersrc.js')) ?>?v=<?php p($version) ?>"></script>
+    <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/files_pdfviewer-workersrc.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
   </head>
 
   <body tabindex="0">

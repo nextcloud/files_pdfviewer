@@ -1,0 +1,25 @@
+/**
+ * SPDX-FileCopyrightText: 2018 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+// Loaded eagerly from main.js: PDFView.vue itself is async, so styles
+// scoped to it would otherwise end up in an unpredictable hashed chunk.
+#emptycontent {
+	margin: 0;
+	padding: 10% 5%;
+	background-color: var(--color-main-background);
+}
+
+.files-pdfviewer__iframe {
+	width: 100%;
+	/* The height is increased to cover the full modal content. Note that the
+	 * added height is not related to the header itself, but to the "bottom"
+	 * property of ".modal-container" in the viewer, which just happens to use
+	 * the header height. */
+	height: calc(100% + var(--header-height));
+	/* Align the PDF viewer with the top of the viewer content so it appears
+	 * below its header. */
+	top: 0;
+	position: absolute;
+}

@@ -33,6 +33,7 @@ class LoadViewerListener implements IEventListener {
 			return;
 		}
 		Util::addScript(Application::APP_ID, 'files_pdfviewer-main', 'viewer');
+		Util::addStyle(Application::APP_ID, 'files_pdfviewer-main');
 
 		$this->initialState->provideInitialState('allowViewWithoutDownload', $this->shareManager->allowViewWithoutDownload());
 	}

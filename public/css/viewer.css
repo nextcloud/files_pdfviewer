@@ -1,0 +1,86 @@
+/**
+ * SPDX-FileCopyrightText: 2020-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2015 ownCloud, Inc.
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/* Prevent printing from the browser when the download of a share is hidden. */
+@media print {
+	.pdfViewer.disabledTextSelection {
+		visibility: hidden;
+		display: none;
+	}
+}
+
+/* Prevent text selection when the download of a share is hidden. */
+.pdfViewer.disabledTextSelection .textLayer {
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+/* Override text cursor in descendants. */
+.pdfViewer.disabledTextSelection .textLayer * {
+	cursor: default;
+}
+
+/* Replace default "Download" icon in "Download / Save" button with a "Save"
+ * icon. */
+.toolbarButton#downloadButton::before,
+#secondaryToolbar #secondaryToolbarButtonContainer #secondaryDownload::before {
+	-webkit-mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+	mask-image: url(../img/toolbarButton-secondaryToolbarSave.svg);
+}
+
+/* Do not highlight disabled toolbar buttons. */
+.toolbarButton:hover:disabled {
+	background-color: unset;
+}
+
+/* Hide the normal toolbar icon, which is a mask applied on a dark background,
+ * when showing the loading icon. */
+.toolbarButton.icon-loading-small:before {
+	background-color: unset;
+}
+
+/* icon-loading-small was copied from server CSS, as it is not available inside
+ * the iframe. */
+:root {
+	--color-loading-light: #ccc;
+	--color-loading-dark: #444;
+}
+
+.icon-loading-small:after {
+	z-index: 2;
+	content: '';
+	height: 12px;
+	width: 12px;
+	margin: -8px 0 0 -8px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	border-radius: 100%;
+	-webkit-animation: rotate .8s infinite linear;
+	animation: rotate .8s infinite linear;
+	-webkit-transform-origin: center;
+	-ms-transform-origin: center;
+	transform-origin: center;
+	border: 2px solid var(--color-loading-light);
+	border-top-color: var(--color-loading-dark);
+}
+
+/* Place the loading icon on the secondary toolbar icon by using the same
+ * inset-inline-start of the secondary toolbar icon (12px) and correcting the
+ * margin from the loading icon (8px). */
+.toolbarButton.labeled.icon-loading-small:after {
+	inset-inline-start: 20px;
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
