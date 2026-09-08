@@ -71,11 +71,11 @@ export default {
 		},
 
 		hideDownload() {
-			return this.file.hideDownload
+			return this.file?.hideDownload ?? false
 		},
 
 		isDownloadable() {
-			if (!this.file.shareAttributes) {
+			if (!this.file?.shareAttributes) {
 				return true
 			}
 
