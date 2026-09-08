@@ -35,7 +35,7 @@ Disable:
 
 To build the Javascript whenever you make changes, you can also use `npm run build`. Or `npm run watch` to automatically rebuild on every file save.
 
-You run all tests by using `make test`.
+You run the JavaScript tests by using `make test`. The PHP tests need the app to be installed in a Nextcloud instance and are run from the app folder with `composer run test:unit`.
 
 ### 📦 Update pdf.js
 
