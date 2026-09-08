@@ -14,6 +14,7 @@ SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: T. Jameson Little <t.jameson.little@gmail.com>
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
+SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: GitHub Inc.
 SPDX-FileCopyrightText: Feross Aboukhadijeh
 SPDX-FileCopyrightText: Evan You
@@ -142,6 +143,6 @@ This file is generated from multiple sources. Included packages:
 - webpack
 	- version: 5.105.0
 	- license: MIT
-- nextcloud
-	- version: 1.0.0
+- files_pdfviewer
+	- version: 7.0.0-dev.0
 	- license: AGPL-3.0-or-later
