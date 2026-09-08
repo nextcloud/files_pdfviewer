@@ -7,9 +7,9 @@
 		:name="t('files_pdfviewer', 'PDF Viewer')"
 		:description="t('files_pdfviewer', 'Configure PDF viewer settings')">
 		<NcCheckboxRadioSwitch
-			v-model="enableScripting"
+			:model-value="enableScripting"
 			:loading="loading"
-			@update:checked="setEnableScripting">
+			@update:model-value="setEnableScripting">
 			{{ t('files_pdfviewer', 'Enable PDF scripting') }}
 		</NcCheckboxRadioSwitch>
 		<NcNoteCard type="warning">
@@ -22,7 +22,9 @@
 import axios from '@nextcloud/axios'
 import { showError } from '@nextcloud/dialogs'
 import { generateOcsUrl } from '@nextcloud/router'
-import { NcCheckboxRadioSwitch, NcNoteCard, NcSettingsSection } from '@nextcloud/vue'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
+import NcSettingsSection from '@nextcloud/vue/components/NcSettingsSection'
 import logger from '../services/logger.js'
 
 export default {
