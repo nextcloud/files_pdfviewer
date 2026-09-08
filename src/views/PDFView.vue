@@ -187,7 +187,7 @@ export default {
 				sandboxBundleSrc: this.getViewerTemplateParameter(head, 'sandbox'),
 				enablePermissions: true,
 				imageResourcesPath: this.getViewerTemplateParameter(head, 'imageresourcespath'),
-				standardFontDataUrl: this.getViewerTemplateParameter('standardfontdataurl'),
+				standardFontDataUrl: this.getViewerTemplateParameter(head, 'standardfontdataurl'),
 				iccUrl: this.getViewerTemplateParameter(head, 'iccurl'),
 				wasmUrl: this.getViewerTemplateParameter(head, 'wasmurl'),
 				enableScripting: this.getViewerTemplateParameter(head, 'enablescripting') === 'true',
