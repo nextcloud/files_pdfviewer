@@ -11,13 +11,31 @@ const parameters = {
 	cmapurl: '/apps/files_pdfviewer/js/pdfjs/web/cmaps/',
 	standardfontdataurl: '/apps/files_pdfviewer/js/pdfjs/web/standard_fonts/',
 	imageresourcespath: '/apps/files_pdfviewer/js/pdfjs/web/images/',
+	iccurl: '/apps/files_pdfviewer/js/pdfjs/web/iccs/',
+	wasmurl: '/apps/files_pdfviewer/js/pdfjs/web/wasm/',
 	enablescripting: 'false',
 }
 
-const options = new Map()
+const head = document.createElement('head')
+for (const [name, value] of Object.entries(parameters)) {
+	head.setAttribute(`data-${name}`, value)
+}
+
+const options = {}
 PDFView.methods.initializePDFViewerApplicationOptions.call({
-	$refs: { iframe: { contentWindow: { PDFViewerApplicationOptions: { set: (name, value) => options.set(name, value) } } } },
-	getViewerTemplateParameter: (name) => parameters[name],
+	$refs: {
+		iframe: {
+			contentWindow: {
+				PDFViewerApplicationOptions: {
+					set: (name, value) => Object.assign(options, { [name]: value }),
+					setAll: (all) => Object.assign(options, all),
+				},
+			},
+		},
+	},
+	getIframeDocument: () => ({ getElementsByTagName: () => [head] }),
+	// The real lookup, so that a change to its signature is caught here
+	getViewerTemplateParameter: PDFView.methods.getViewerTemplateParameter,
 	isEditable: true,
 })
 
@@ -29,7 +47,10 @@ describe('PDF.js asset options', () => {
 		['cMapUrl', 'cmapurl'],
 		['workerSrc', 'workersrc'],
 		['imageResourcesPath', 'imageresourcespath'],
+		['sandboxBundleSrc', 'sandbox'],
+		['iccUrl', 'iccurl'],
+		['wasmUrl', 'wasmurl'],
 	])('point %s at the app', (option, parameter) => {
-		expect(options.get(option)).toBe(parameters[parameter])
+		expect(options[option]).toBe(parameters[parameter])
 	})
 })
