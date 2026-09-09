@@ -15,31 +15,30 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "prebuild": "rm -rf js && npm run pdfjs:get",
-    "postbuild": "build-js/npm-post-build.sh",
-    "build": "webpack --node-env production --progress",
-    "dev": "webpack --node-env development --progress",
-    "watch": "webpack --node-env development --progress --watch",
+    "prebuild": "rm -rf js css && npm run pdfjs:get",
+    "build": "vite build",
+    "dev": "vite build --mode development",
+    "watch": "vite build --mode development --watch",
     "pdfjs:get": "node pdfjs-get.js",
     "test": "vitest run",
     "lint": "eslint --ext .js,.vue src tests/js vitest.config.js",
     "lint:fix": "eslint --ext .js,.vue src tests/js vitest.config.js --fix",
-    "stylelint": "stylelint src css",
-    "stylelint:fix": "stylelint src css --fix"
+    "stylelint": "stylelint src public",
+    "stylelint:fix": "stylelint src public --fix"
   },
   "dependencies": {
     "@nextcloud/auth": "^2.6.0",
     "@nextcloud/axios": "^2.5.2",
-    "@nextcloud/dialogs": "^7.4.1",
+    "@nextcloud/dialogs": "^7.5.0",
     "@nextcloud/initial-state": "^3.0.0",
     "@nextcloud/l10n": "^3.3.0",
     "@nextcloud/logger": "^3.0.3",
     "@nextcloud/paths": "^3.1.0",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/sharing": "^0.4.0",
-    "@nextcloud/vue": "^8.37.0",
+    "@nextcloud/vue": "^9.11.0",
     "pdfjs-dist": "5.7.284",
-    "vue": "^2.7.16"
+    "vue": "^3.5.42"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
@@ -53,15 +52,15 @@
     "@nextcloud/browserslist-config": "^3.1.2",
     "@nextcloud/eslint-config": "^9.0.1",
     "@nextcloud/stylelint-config": "^3.2.2",
-    "@nextcloud/webpack-vue-config": "^7.0.2",
-    "@vitejs/plugin-vue2": "^2.3.4",
-    "@vue/test-utils": "^1.3.6",
+    "@nextcloud/vite-config": "^2.5.4",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/test-utils": "^2.5.0",
     "adm-zip": "^0.6.0",
     "axios": "^1.13.6",
     "cli-progress": "^3.12.0",
     "jsdom": "^30.0.1",
-    "terser-webpack-plugin": "^5.6.1",
-    "vitest": "^5.0.0",
-    "vue-loader": "^15.11.1"
+    "sass": "^1.104.0",
+    "vite": "^7.3.6",
+    "vitest": "^5.0.0"
   }
 }

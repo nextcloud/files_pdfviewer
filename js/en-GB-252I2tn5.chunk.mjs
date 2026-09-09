@@ -1,0 +1,2 @@
+import{m as t,l as o,f as a,a as e}from"./files_pdfviewer-admin.mjs";import{f as s}from"./formatLong-BiiB0LpJ.chunk.mjs";import"./be-tarask-9y9EM8WK.chunk.mjs";import"./logger-DFWjykSX.chunk.mjs";const n={code:"en-GB",formatDistance:e,formatLong:s,formatRelative:a,localize:o,match:t,options:{weekStartsOn:1,firstWeekContainsDate:4}};export{n as enGB};
+//# sourceMappingURL=en-GB-252I2tn5.chunk.mjs.map
