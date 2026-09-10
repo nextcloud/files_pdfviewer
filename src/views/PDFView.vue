@@ -161,14 +161,15 @@ export default {
 			return this.getIframeDocument().getElementById('secondaryDownload')
 		},
 
-		getViewerTemplateParameter(parameterName) {
+		getViewerTemplateParameter(head, parameterName) {
 			// templates/viewer.php provides the PDF viewer parameters in the
 			// data attributes of the head element.
-			return this.getIframeDocument().getElementsByTagName('head')[0].getAttribute('data-' + parameterName)
+			return head.getAttribute('data-' + parameterName)
 		},
 
 		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+			const head = this.getIframeDocument().getElementsByTagName('head')[0]
 
 			// Preferences override options, so they must be disabled for
 			// "externalLinkTarget" and "annotationMode" to take effect.
