@@ -1,15 +1,26 @@
-# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# This workflow is provided via the organization template repository
+#
+# https://github.com/nextcloud/.github
+# https://docs.github.com/en/actions/learn-github-actions/sharing-workflows-with-your-organization
+#
+# SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: MIT
 
 name: Node tests
 
-on: pull_request
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - stable*
 
 permissions:
   contents: read
 
 concurrency:
-  group: node-test-${{ github.head_ref || github.run_id }}
+  group: node-tests-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -30,21 +41,22 @@ jobs:
           filters: |
             src:
               - '.github/workflows/**'
-              - '**.js'
-              - '**.vue'
+              - '__tests__/**'
+              - '__mocks__/**'
+              - 'src/**'
+              - 'appinfo/info.xml'
               - 'package.json'
               - 'package-lock.json'
-              # viewerTemplate.spec.js compares these two against each other
-              - 'templates/viewer.php'
-              - 'js/pdfjs/web/viewer.html'
+              - 'tsconfig.json'
+              - '**.js'
+              - '**.ts'
+              - '**.vue'
 
   test:
     runs-on: ubuntu-latest
 
     needs: changes
     if: needs.changes.outputs.src != 'false'
-
-    name: NPM test
 
     steps:
       - name: Checkout
@@ -67,14 +79,23 @@ jobs:
       - name: Set up npm ${{ steps.versions.outputs.npmVersion }}
         run: npm i -g 'npm@${{ steps.versions.outputs.npmVersion }}'
 
-      - name: Install dependencies
+      - name: Install dependencies & build
         env:
           CYPRESS_INSTALL_BINARY: 0
-          PUPPETEER_SKIP_DOWNLOAD: true
-        run: npm ci
+        run: |
+          npm ci
+          npm run build --if-present
 
       - name: Test
-        run: npm run test
+        run: npm run test --if-present
+
+      - name: Test and process coverage
+        run: npm run test:coverage --if-present
+
+      - name: Collect coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        with:
+          files: ./coverage/lcov.info
 
   summary:
     permissions:
@@ -84,8 +105,7 @@ jobs:
 
     if: always()
 
-    # This is the summary, we just avoid to rename it so that branch protection rules still match
-    name: node-test
+    name: test-summary
 
     steps:
       - name: Summary status
