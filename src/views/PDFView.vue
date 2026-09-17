@@ -135,32 +135,38 @@ export default {
 			return this.getIframeDocument().getElementById('secondaryDownload')
 		},
 
-		getViewerTemplateParameter(parameterName) {
+		getViewerTemplateParameter(head, parameterName) {
 			// templates/viewer.php provides the PDF viewer parameters in the
 			// data attributes of the head element.
-			return this.getIframeDocument().getElementsByTagName('head')[0].getAttribute('data-' + parameterName)
+			return head.getAttribute('data-' + parameterName)
 		},
 
 		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+			const head = this.getIframeDocument().getElementsByTagName('head')[0]
 
-			// Preferences override options, so they must be disabled for
-			// "externalLinkTarget" and "annotationMode" to take effect.
-			// Since 4.5.136 default preferences no longer override options, but
-			// "pdfjs.preferences" from local storage still do. A warning is
-			// also printed by PDF.js if preferences are not disabled and an
-			// overridable option is used.
-			// https://github.com/mozilla/pdf.js/pull/18413
-			PDFViewerApplicationOptions.set('disablePreferences', true)
-			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
-			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
-			PDFViewerApplicationOptions.set('isEvalSupported', false)
-			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
-			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
-			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
-			PDFViewerApplicationOptions.set('enablePermissions', true)
-			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
-			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enablescripting') === 'true')
+			PDFViewerApplicationOptions.setAll({
+				// Preferences override options, so they must be disabled for
+				// "externalLinkTarget" and "annotationMode" to take effect.
+				// Since 4.5.136 default preferences no longer override options, but
+				// "pdfjs.preferences" from local storage still do. A warning is
+				// also printed by PDF.js if preferences are not disabled and an
+				// overridable option is used.
+				// https://github.com/mozilla/pdf.js/pull/18413
+				disablePreferences: true,
+				// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
+				externalLinkTarget: 2,
+				workerSrc: this.getViewerTemplateParameter(head, 'workersrc'),
+				cMapUrl: this.getViewerTemplateParameter(head, 'cmapurl'),
+				sandboxBundleSrc: this.getViewerTemplateParameter(head, 'sandbox'),
+				enablePermissions: true,
+				imageResourcesPath: this.getViewerTemplateParameter(head, 'imageresourcespath'),
+				standardFontDataUrl: this.getViewerTemplateParameter(head, 'standardfontdataurl'),
+				iccUrl: this.getViewerTemplateParameter(head, 'iccurl'),
+				wasmUrl: this.getViewerTemplateParameter(head, 'wasmurl'),
+				enableScripting: this.getViewerTemplateParameter(head, 'enablescripting') === 'true',
+				enableSignatureEditor: true,
+			})
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
