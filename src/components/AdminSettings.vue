@@ -9,7 +9,7 @@
 		<NcCheckboxRadioSwitch
 			v-model="enableScripting"
 			:loading="loading"
-			@update:checked="setEnableScripting">
+			@update:model-value="setEnableScripting">
 			{{ t('files_pdfviewer', 'Enable PDF scripting') }}
 		</NcCheckboxRadioSwitch>
 		<NcNoteCard type="warning">

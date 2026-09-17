@@ -3,49 +3,57 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import Vue, { defineAsyncComponent, defineComponent } from 'vue'
+import { createApp, defineAsyncComponent, defineComponent, h } from 'vue'
 
 const AsyncPdfView = defineAsyncComponent(() => import('./PDFView.vue'))
 
 /**
- * This thin Component wrapper can be rendered inside the viewer.
+ * Converts a Vue 2 "$listeners" map into Vue 3's "onEventName" props.
  *
- * The viewers vue instance is used to render this component
- * based on the options provided here for the options api.
+ * @param {object} listeners Event name to handler map, from "$listeners".
+ * @return {object} The equivalent "onEventName" props.
+ */
+function toVue3Listeners(listeners) {
+	return Object.fromEntries(Object.entries(listeners).map(([name, handler]) => [
+		'on' + name.replace(/(^|-)([a-z])/g, (match, separator, letter) => letter.toUpperCase()),
+		handler,
+	]))
+}
+
+/**
+ * Thin wrapper rendered by the viewer (still Vue 2). Mounts an independent
+ * Vue 3 app for the actual PDF view, sharing only this component's DOM
+ * element with the viewer's own component tree.
  *
- * When mounted this component constructs the vue instance
- * used inside pdfviewer based on pdvviewers vue import.
- *
- * Viewer adds a mixin to the component that adds a bunch of props.
- * These are all handed down to the PDFView component.
+ * Viewer adds a mixin providing the props handed down to PDFView.
  */
 export default defineComponent({
 	name: 'FilesPdfViewerLoader',
-	render: (h) => h('div'),
+	render: (h) => {
+		// Viewer's "viewer__file--active" class (applied to this element)
+		// sets no explicit width; PDFView.vue's own root element needs one.
+		return h('div', { style: { width: '100%', height: '100%', position: 'relative' } })
+	},
 	inheritAttrs: false,
 	mounted() {
-		this.innerVue = new Vue({
+		this.innerApp = createApp({
 			name: 'FilesPdfViewerProxy',
-			render: (h) => {
+			render: () => {
 				return h(AsyncPdfView, {
 					// Hand down props as added by the viewers Mime mixin.
-					props: {
-						...this.$props,
-						davPath: this.davPath,
-					},
-					on: {
-						...this.$listeners,
-						// doneLoading is provided by the viewers Mime mixin.
-						'done-loading': () => {
-							this.doneLoading()
-						},
+					...this.$props,
+					davPath: this.davPath,
+					...toVue3Listeners(this.$listeners),
+					// doneLoading is provided by the viewers Mime mixin.
+					onDoneLoading: () => {
+						this.doneLoading()
 					},
 				})
 			},
 		})
-		this.innerVue.$mount(this.$el)
+		this.innerApp.mount(this.$el)
 	},
 	beforeDestroy() {
-		this.innerVue.$destroy()
+		this.innerApp.unmount()
 	},
 })
