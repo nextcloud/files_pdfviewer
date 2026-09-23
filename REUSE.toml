@@ -64,3 +64,54 @@ path = ["js/pdfjs/web/standard_fonts/LiberationSans-Bold.ttf", "js/pdfjs/web/sta
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2010 Google Corporation with Reserved Font Arimo, Tinos and Cousine, 2012 Red Hat, Inc. with Reserved Font Name Liberation."
 SPDX-License-Identifier = "OFL-1.1-RFN"
+
+[[annotations]]
+path = ["js/pdfjs/web/wasm/LICENSE_JBIG2", "js/pdfjs/web/wasm/jbig2.wasm"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2014 The PDFium Authors"
+SPDX-License-Identifier = "BSD-3-Clause AND Apache-2.0"
+
+[[annotations]]
+path = ["js/pdfjs/web/wasm/LICENSE_PDFJS_JBIG2", "js/pdfjs/web/wasm/jbig2_nowasm_fallback.js"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Mozilla Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["js/pdfjs/web/wasm/LICENSE_OPENJPEG", "js/pdfjs/web/wasm/openjpeg.wasm"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2002-2014 Universite catholique de Louvain (UCL), Belgium and other OpenJPEG contributors"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = ["js/pdfjs/web/wasm/LICENSE_PDFJS_OPENJPEG", "js/pdfjs/web/wasm/openjpeg_nowasm_fallback.js"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Mozilla Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["js/pdfjs/web/wasm/LICENSE_QCMS", "js/pdfjs/web/wasm/qcms_bg.wasm"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 Mozilla Corporation, 1998-2007 Marti Maria"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "js/pdfjs/web/wasm/LICENSE_PDFJS_QCMS"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Mozilla Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+# The QuickJS-based PDF JavaScript sandbox, built from the separate
+# mozilla/pdf.js.quickjs repository (no LICENSE file is bundled alongside
+# it in the pdfjs-dist release, unlike the other wasm/ modules above).
+path = ["js/pdfjs/web/wasm/quickjs-eval.js", "js/pdfjs/web/wasm/quickjs-eval.wasm"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Mozilla Foundation"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["js/pdfjs/web/iccs/CGATS001Compat-v2-micro.icc", "js/pdfjs/web/iccs/LICENSE"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Mozilla Foundation"
+SPDX-License-Identifier = "CC0-1.0"
