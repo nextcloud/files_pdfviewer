@@ -161,14 +161,15 @@ export default {
 			return this.getIframeDocument().getElementById('secondaryDownload')
 		},
 
-		getViewerTemplateParameter(parameterName) {
+		getViewerTemplateParameter(head, parameterName) {
 			// templates/viewer.php provides the PDF viewer parameters in the
 			// data attributes of the head element.
-			return this.getIframeDocument().getElementsByTagName('head')[0].getAttribute('data-' + parameterName)
+			return head.getAttribute('data-' + parameterName)
 		},
 
 		initializePDFViewerApplicationOptions() {
 			const PDFViewerApplicationOptions = this.$refs.iframe.contentWindow.PDFViewerApplicationOptions
+			const head = this.getIframeDocument().getElementsByTagName('head')[0]
 
 			// Preferences override options, so they must be disabled for
 			// "externalLinkTarget" and "annotationMode" to take effect.
@@ -181,12 +182,14 @@ export default {
 			// TODO https://github.com/mozilla/pdf.js/pull/14424#issuecomment-1092947792
 			PDFViewerApplicationOptions.set('externalLinkTarget', 2)
 			PDFViewerApplicationOptions.set('isEvalSupported', false)
-			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter('workersrc'))
-			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter('cmapurl'))
-			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter('sandbox'))
+			PDFViewerApplicationOptions.set('workerSrc', this.getViewerTemplateParameter(head, 'workersrc'))
+			PDFViewerApplicationOptions.set('cMapUrl', this.getViewerTemplateParameter(head, 'cmapurl'))
+			PDFViewerApplicationOptions.set('sandboxBundleSrc', this.getViewerTemplateParameter(head, 'sandbox'))
 			PDFViewerApplicationOptions.set('enablePermissions', true)
-			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter('imageresourcespath'))
-			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter('enablescripting') === 'true')
+			PDFViewerApplicationOptions.set('imageResourcesPath', this.getViewerTemplateParameter(head, 'imageresourcespath'))
+			PDFViewerApplicationOptions.set('iccUrl', this.getViewerTemplateParameter(head, 'iccurl'))
+			PDFViewerApplicationOptions.set('wasmUrl', this.getViewerTemplateParameter(head, 'wasmurl'))
+			PDFViewerApplicationOptions.set('enableScripting', this.getViewerTemplateParameter(head, 'enablescripting') === 'true')
 
 			const language = getLanguage()
 			const supportedLanguages = SUPPORTED_LANGUAGES
