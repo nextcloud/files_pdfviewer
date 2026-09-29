@@ -23,7 +23,4 @@
 	<extraFiles>
 		<directory name="vendor-bin/psalm/vendor/nextcloud" />
 	</extraFiles>
-	<stubs>
-		<file name="tests/stubs/oca_viewer_event_loadviewer.php" />
-	</stubs>
 </psalm>
