@@ -28,6 +28,15 @@ function pdf(name, permissions = Permission.READ) {
 }
 
 describe('PDFView', () => {
+	it('hands pdf.js a URL that survives being decoded once', () => {
+		// pdf.js decodes its file parameter, and a "#" left bare after that
+		// would cut the path short
+		const src = PDFView.computed.iframeSrc.call({ file: pdf('my file #1.pdf') })
+		const file = new URL(src, 'https://cloud.example.com').searchParams.get('file')
+
+		expect(file).toBe('https://cloud.example.com/remote.php/dav/files/alice/my%20file%20%231.pdf')
+	})
+
 	it('lets the user annotate only a file they may write', () => {
 		expect(PDFView.computed.isEditable.call({ file: pdf('a.pdf', Permission.READ) })).toBe(false)
 		expect(PDFView.computed.isEditable.call({ file: pdf('a.pdf', Permission.READ | Permission.UPDATE) })).toBe(true)

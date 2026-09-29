@@ -56,8 +56,10 @@ export default {
 
 	computed: {
 		iframeSrc() {
+			// pdf.js decodes the parameter once, so it has to carry the
+			// encoded URL: a name with a "#" would otherwise end the path
 			return generateUrl('/apps/files_pdfviewer/?file={file}', {
-				file: this.file.source,
+				file: this.file.encodedSource,
 			})
 		},
 
