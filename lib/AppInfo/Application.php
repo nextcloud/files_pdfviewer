@@ -9,11 +9,11 @@ namespace OCA\Files_PDFViewer\AppInfo;
 
 use OCA\Files_PDFViewer\Listeners\CSPListener;
 use OCA\Files_PDFViewer\Listeners\LoadViewerListener;
-use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 
 class Application extends App implements IBootstrap {
@@ -25,7 +25,7 @@ class Application extends App implements IBootstrap {
 
 	#[\Override]
 	public function register(IRegistrationContext $context): void {
-		$context->registerEventListener(LoadViewer::class, LoadViewerListener::class);
+		$context->registerEventListener(BeforeTemplateRenderedEvent::class, LoadViewerListener::class);
 		$context->registerEventListener(AddContentSecurityPolicyEvent::class, CSPListener::class);
 	}
 

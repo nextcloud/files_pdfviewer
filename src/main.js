@@ -3,19 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import FilesPdfViewerLoader from './views/FilesPdfViewerLoader.js'
+import { t } from '@nextcloud/l10n'
+import { registerHandler } from '@nextcloud/viewer'
+import { defineCustomElement } from 'vue'
+import PDFViewElement from './views/PDFViewElement.js'
 
 import './views/PDFView.scss'
 
-OCA.Viewer.registerHandler({
+const tagname = 'files-pdfviewer-view'
+
+const mimes = [
+	'application/pdf',
+	'application/illustrator',
+]
+
+// Light DOM, so the server's styles and variables apply inside
+window.customElements.define(tagname, defineCustomElement(PDFViewElement, { shadowRoot: false }))
+
+registerHandler({
 	id: 'pdf',
-
-	mimes: [
-		'application/pdf',
-		'application/illustrator',
-	],
-
-	component: FilesPdfViewerLoader,
-
-	canCompare: true,
+	displayName: t('files_pdfviewer', 'PDF viewer'),
+	tagname,
+	enabled: (nodes) => nodes.every((node) => mimes.includes(node.mime)),
 })
