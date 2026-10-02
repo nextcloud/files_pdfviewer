@@ -1,0 +1,2 @@
+import{g as o}from"./dav-B4doiO92.chunk.mjs";import{r as s,f as r,h as c}from"./logger-CRuRhkXk.chunk.mjs";async function l(e,n){const t=await o().getFileContents(e.source,{details:!0,signal:n});return URL.createObjectURL(new Blob([t.data],{type:t.headers["content-type"]}))}function d(e){const n=c(()=>e.file.displayname),t=s(e.file.encodedSource);return r(()=>e.file.encodedSource,a=>{t.value=a}),{filename:n,src:t}}export{l as p,d as u};
+//# sourceMappingURL=useViewerProps-Bqrx3GfT.chunk.mjs.map
