@@ -2,7 +2,7 @@ OC.L10N.register(
     "files_pdfviewer",
     {
     "PDF viewer" : "PDF prehliadač",
-    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Zobrazujte PDF dokumenty priamo vo vašom Nextcloude. \nAko bonus dokáže táto aplikácia zobraziť aj súbory Adobe Illustrator (.ai). \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)",
+    "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Zobrazujte PDF dokumenty priamo vo vašom Nextcloude.\nAko bonus dokáže táto aplikácia zobraziť aj súbory Adobe Illustrator (.ai).\n\nPoužíva [pdf.js](https://mozilla.github.io/pdf.js/)",
     "Failed to load settings" : "Nepodarilo sa načítať nastavenia",
     "Failed to save settings" : "Nepodarilo sa uložiť nastavenia",
     "PDF Viewer" : "Prehliadač PDF",
