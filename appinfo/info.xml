@@ -9,10 +9,10 @@
 	<name>PDF viewer</name>
 	<summary>PDF viewer</summary>
 
-	<description><![CDATA[Directly view PDF documents in your Nextcloud. 
-As an added bonus, this app can also display Adobe Illustrator (.ai) files. 
+	<description><![CDATA[Directly view PDF documents in your Nextcloud.
+As an added bonus, this app can also display Adobe Illustrator (.ai) files.
 Powered by [pdf.js](https://mozilla.github.io/pdf.js/)]]></description>
-	<version>7.0.0</version>
+	<version>7.0.1</version>
 	<licence>agpl</licence>
 	<author mail="skjnldsv@protonmail.com">John Molakvoæ</author>
 
@@ -24,7 +24,7 @@ Powered by [pdf.js](https://mozilla.github.io/pdf.js/)]]></description>
 	<bugs>https://github.com/nextcloud/files_pdfviewer/issues</bugs>
 	<website>https://github.com/nextcloud/files_pdfviewer</website>
 	<repository type="git">https://github.com/nextcloud/files_pdfviewer.git</repository>
-  
+
 	<dependencies>
 		<nextcloud min-version="34" max-version="34" />
 	</dependencies>
