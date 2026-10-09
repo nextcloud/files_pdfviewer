@@ -17,41 +17,34 @@
 
 <script>
 import { showError } from '@nextcloud/dialogs'
+import { Permission } from '@nextcloud/files'
 import { loadState } from '@nextcloud/initial-state'
-import { getLanguage } from '@nextcloud/l10n'
+import { getLanguage, t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
+import { getHandlers, getViewer } from '@nextcloud/viewer'
 import { markRaw } from 'vue'
 import logger from '../services/logger.js'
 import uploadPdfFile from '../services/uploadPdfFile.js'
+import { isDownloadable, isDownloadHidden } from '../utils/downloadRestrictions.js'
 
 export default {
 	name: 'PDFView',
 	inheritAttrs: false,
 	props: {
-		// file source to fetch contents from
-		source: {
-			type: String,
-			default: undefined,
+		// the file on screen, handed over by the viewer
+		file: {
+			type: Object,
+			required: true,
 		},
 
-		// unique file id
-		fileid: {
-			type: [Number, String],
-			default: undefined,
-		},
-
-		// list of all the visible files
-		fileList: {
+		// the files the viewer was opened with
+		files: {
 			type: Array,
 			default: () => [],
 		},
-
-		// file source to fetch contents from
-		davPath: {
-			type: String,
-			default: undefined,
-		},
 	},
+
+	emits: ['loaded'],
 
 	data() {
 		return {
@@ -63,66 +56,46 @@ export default {
 
 	computed: {
 		iframeSrc() {
+			// pdf.js decodes the parameter once, so it has to carry the
+			// encoded URL: a name with a "#" would otherwise end the path
 			return generateUrl('/apps/files_pdfviewer/?file={file}', {
-				file: this.source ?? this.davPath,
+				file: this.file.encodedSource,
 			})
 		},
 
-		file() {
-			// fileList and fileid are provided by the Mime mixin of the Viewer.
-			return this.fileList.find((file) => file.fileid === this.fileid)
-		},
-
 		hideDownload() {
-			return this.file.hideDownload
+			return isDownloadHidden(this.file)
 		},
 
 		isDownloadable() {
-			if (!this.file.shareAttributes) {
-				return true
-			}
-
-			const shareAttributes = JSON.parse(this.file.shareAttributes)
-			const downloadPermissions = shareAttributes.find(({ scope, key }) => scope === 'permissions' && key === 'download')
-			if (downloadPermissions) {
-				return downloadPermissions.value
-			}
-
-			return true
+			return isDownloadable(this.file)
 		},
 
 		allowViewWithoutDownload() {
-			return loadState('files_pdfviewer', 'allowViewWithoutDownload')
+			return loadState('files_pdfviewer', 'allowViewWithoutDownload', false)
 		},
 
 		isRichDocumentsAvailable() {
-			return 'richdocuments' in OC.appswebroots
+			// Installed is not enough: without a viewer handler there is
+			// nothing to hand the file to, and it is as if it were not
+			return 'richdocuments' in OC.appswebroots && getHandlers().has('richdocuments')
 		},
 
 		isEditable() {
-			return this.file?.permissions?.indexOf('W') >= 0
+			return (this.file.permissions & Permission.UPDATE) !== 0
 		},
 	},
 
 	async mounted() {
 		if ((!this.isDownloadable && !this.allowViewWithoutDownload) || (this.hideDownload && this.isRichDocumentsAvailable)) {
-			this.$emit('done-loading')
+			this.$emit('loaded')
 
 			if (this.isRichDocumentsAvailable) {
 				logger.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
 
-				// Opening the viewer again overwrites its current state, so the
-				// current options need to be explicitly passed again.
-				OCA.Viewer.openWith('richdocuments', {
-					fileInfo: this.file,
-					list: OCA.Viewer.list,
-					enableSidebar: OCA.Viewer.enableSidebar,
-					loadMore: OCA.Viewer.loadMore,
-					canLoop: OCA.Viewer.canLoop,
-					onPrev: OCA.Viewer.onPrev,
-					onNext: OCA.Viewer.onNext,
-					onClose: OCA.Viewer.onClose,
-				})
+				// Opening over the viewer keeps the opener's onClose, so
+				// passing no options here loses nothing it needs on close
+				getViewer().open(this.files.length > 0 ? this.files : [this.file], this.file, undefined, 'richdocuments')
 			}
 
 			return
@@ -130,7 +103,7 @@ export default {
 
 		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
 
-		this.$emit('done-loading')
+		this.$emit('loaded')
 		this.$nextTick(function() {
 			this.$el.focus()
 		})
@@ -141,6 +114,8 @@ export default {
 	},
 
 	methods: {
+		t,
+
 		onIFrameLoaded() {
 			if (this.isEditable) {
 				this.$nextTick(() => {
@@ -320,7 +295,7 @@ export default {
 			logger.info('PDF Document with annotation is being saved')
 
 			return this.PDFViewerApplication.pdfDocument.saveDocument().then((data) => {
-				return uploadPdfFile(this.file.filename, data)
+				return uploadPdfFile(this.file.encodedSource, data)
 			}).then(() => {
 				logger.info('File uploaded successfully')
 			}).catch((error) => {

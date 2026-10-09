@@ -3,8 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-// Loaded eagerly from main.js: PDFView.vue itself is async, so styles
-// scoped to it would otherwise end up in an unpredictable hashed chunk.
+// Loaded with PDFView.vue when the viewer first opens a PDF.
+// The element the viewer renders. Custom elements are inline by default,
+// and the iframe below is sized against this box.
+files-pdfviewer-view {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
 #emptycontent {
 	margin: 0;
 	padding: 10% 5%;
