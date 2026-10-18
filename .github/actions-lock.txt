@@ -1,19 +1,19 @@
 # SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: MIT
 acad44f3e99b665897766ce90374dd03 block-merge-freeze.yml
-7f15fef2fde87aae0eb8386ded489372 command-compile.yml
+83fc862cd4312894dfd2be81fb88c0b5 command-compile.yml
 e6351c608939c31ae1e32923aa82aa10 dependabot-approve-merge.yml
 2581a67c5bcdcd570427e6d51db767d7 fixup.yml
-dc0ae733f35c60274937c2647c027d46 lint-eslint.yml
-4b40dd0073e16f74dd04e6d49dcc043d lint-php-cs.yml
-cfb31e47b6e9ab65e76c89b028754a4e lint-php.yml
-ab3a506506b1d7c1cea9593ecfd84366 lint-stylelint.yml
-0dc931ec237a235370e224282608b20e npm-audit-fix.yml
-ab958fa2b07234fceab6b6d836fb7f19 npm-build.yml
-6d20bb9054bf13310aaa1bf98025b3d9 phpunit-mysql.yml
-a9366230d0b876662fb0ab124ba586af phpunit-oci.yml
-33e50146debe0922d4e176f22d949aa1 phpunit-pgsql.yml
-869cf6703da576578e5d1774aa87d837 phpunit-sqlite.yml
-d1821b8a816578070ed8fd018f321f6d pr-feedback.yml
-6dc046dfbca5dc65d938265c518fcac4 psalm.yml
+92d7708f80f4e09d3aeb7d1d93168988 lint-eslint.yml
+230493ed3855e3f7d9209cc63e9dbe13 lint-php-cs.yml
+994cce702e8c1ec02e45e113e48512b6 lint-php.yml
+ef5d06d720012cc3ea8fa9396682a133 lint-stylelint.yml
+b7e9debcd278ab33bbe8e272e010d8e0 npm-audit-fix.yml
+e93653cbfe2a909ca78415e656dbfa01 npm-build.yml
+ccf70525553e797b8d7a1fb30d344323 phpunit-mysql.yml
+dc762923203b94da162ea3339b23ea65 phpunit-oci.yml
+2b074ba7d721c93009615d0f917ad972 phpunit-pgsql.yml
+eaef9ddd2f5552e34c3bc921a48c5e1f phpunit-sqlite.yml
+2639f2b96989a4fcbb441ca8f1fecb2f pr-feedback.yml
+dc1f60c242a2377a0de26a521c68b49a psalm.yml
 2dbec18233063b42f4d8e03bbb43671c reuse.yml
