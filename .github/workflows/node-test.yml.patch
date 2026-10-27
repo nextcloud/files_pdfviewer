@@ -1,0 +1,14 @@
+diff --git a/.github/workflows/node-test.yml b/.github/workflows/node-test.yml
+index 4d9458a2..620d19d1 100644
+--- a/.github/workflows/node-test.yml
++++ b/.github/workflows/node-test.yml
+@@ -51,6 +51,9 @@ jobs:
+               - '**.js'
+               - '**.ts'
+               - '**.vue'
++              # viewerTemplate.spec.js compares these two against each other
++              - 'templates/viewer.php'
++              - 'js/pdfjs/web/viewer.html'
+
+   test:
+     runs-on: ubuntu-latest
