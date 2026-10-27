@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { recommendedVue2 } from '@nextcloud/eslint-config'
+import { recommended } from '@nextcloud/eslint-config'
 
 export default [
-	...recommendedVue2,
+	...recommended,
 	{
 		name: 'files_pdf/config',
 		languageOptions: {
