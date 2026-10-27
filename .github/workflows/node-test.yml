@@ -51,6 +51,9 @@ jobs:
               - '**.js'
               - '**.ts'
               - '**.vue'
+              # viewerTemplate.spec.js compares these two against each other
+              - 'templates/viewer.php'
+              - 'js/pdfjs/web/viewer.html'
 
   test:
     runs-on: ubuntu-latest
