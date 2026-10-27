@@ -21,6 +21,7 @@
 <script>
 import axios from '@nextcloud/axios'
 import { showError } from '@nextcloud/dialogs'
+import { t } from '@nextcloud/l10n'
 import { generateOcsUrl } from '@nextcloud/router'
 import { NcCheckboxRadioSwitch, NcNoteCard, NcSettingsSection } from '@nextcloud/vue'
 import logger from '../services/logger.js'
@@ -46,6 +47,8 @@ export default {
 	},
 
 	methods: {
+		t,
+
 		async loadSettings() {
 			this.loading = true
 			try {
