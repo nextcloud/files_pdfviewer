@@ -10,6 +10,7 @@ OC.L10N.register(
     "Enable PDF scripting" : "Povoliť skriptovanie PDF",
     "Enabling PDF scripting allows JavaScript execution within PDF documents. This enables form calculations and dynamic content, but may pose security risks with untrusted PDFs. PDF scripts run in a sandboxed environment." : "Povolenie skriptovania PDF umožňuje vykonávanie JavaScriptu v dokumentoch PDF. Umožňuje výpočty vo formulároch a dynamický obsah, môže však predstavovať bezpečnostné riziká pri nedôveryhodných súboroch PDF. Skripty PDF sa spúšťajú v izolovanom prostredí.",
     "File upload failed." : "Nahrávanie súboru zlyhalo.",
-    "To view a shared PDF file, the download needs to be allowed for this file share" : "Ak chcete zobraziť zdieľaný súbor PDF, sťahovanie musí byť povolené pre toto zdieľanie súboru"
+    "To view a shared PDF file, the download needs to be allowed for this file share" : "Ak chcete zobraziť zdieľaný súbor PDF, sťahovanie musí byť povolené pre toto zdieľanie súboru",
+    "Directly view PDF documents in your Nextcloud.\nAs an added bonus, this app can also display Adobe Illustrator (.ai) files.\nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Prezerajte si dokumenty PDF priamo vo svojom Nextcloude.\nAko bonus dokáže táto aplikácia zobrazovať aj súbory Adobe Illustrator (.ai).\nVyužíva [pdf.js](https://mozilla.github.io/pdf.js/)"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
