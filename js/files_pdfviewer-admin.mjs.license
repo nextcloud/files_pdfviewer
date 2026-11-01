@@ -1,67 +1,33 @@
 SPDX-License-Identifier: AGPL-3.0-or-later
-SPDX-License-Identifier: Apache-2.0
 SPDX-License-Identifier: GPL-3.0-or-later
 SPDX-License-Identifier: MIT
-SPDX-FileCopyrightText: Arnout Kazemier
 SPDX-FileCopyrightText: Eric Norris (https://github.com/ericnorris)
-SPDX-FileCopyrightText: Jeff Sagal <sagalbot@gmail.com>
 SPDX-FileCopyrightText: John Molakvoæ <skjnldsv@protonmail.com>
 SPDX-FileCopyrightText: Jordan Humphreys <jordan@zurb.com>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
 SPDX-FileCopyrightText: Nick Frasser (https://nfrasser.com)
-SPDX-FileCopyrightText: Rubén Norte <ruben.norte@softonic.com>
-SPDX-FileCopyrightText: Sindre Sorhus
 SPDX-FileCopyrightText: Vuepic
-SPDX-FileCopyrightText: atomiks
 SPDX-FileCopyrightText: date-fns developers
-SPDX-FileCopyrightText: p-queue developers
 SPDX-FileCopyrightText: ts-md5 developers
 
 This file is generated from multiple sources. Included packages:
-- @floating-ui/dom
-	- version: 1.8.0
-	- license: MIT
-- @floating-ui/utils
-	- version: 0.2.12
-	- license: MIT
-- @nextcloud/files
-	- version: 4.1.0
-	- license: AGPL-3.0-or-later
 - @nextcloud/l10n
 	- version: 3.4.1
 	- license: GPL-3.0-or-later
 - @nextcloud/vue
-	- version: 9.13.0
+	- version: 9.14.1
 	- license: AGPL-3.0-or-later
-- @nextcloud/vue-select
-	- version: 4.1.0
-	- license: MIT
 - @vuepic/vue-datepicker
 	- version: 11.0.3
 	- license: MIT
-- axios-retry
-	- version: 4.5.0
-	- license: Apache-2.0
 - date-fns
 	- version: 4.4.0
-	- license: MIT
-- eventemitter3
-	- version: 5.0.4
 	- license: MIT
 - files_pdfviewer
 	- version: 9.0.0-dev.0
 	- license: AGPL-3.0-or-later
-- is-retry-allowed
-	- version: 2.2.0
-	- license: MIT
 - linkifyjs
-	- version: 4.3.3
-	- license: MIT
-- p-queue
-	- version: 9.3.3
-	- license: MIT
-- p-timeout
-	- version: 7.0.1
+	- version: 4.4.0
 	- license: MIT
 - striptags
 	- version: 3.2.0
