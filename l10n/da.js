@@ -3,8 +3,8 @@ OC.L10N.register(
     {
     "PDF viewer" : "PDF-fremviser",
     "Directly view PDF documents in your Nextcloud. \nAs an added bonus, this app can also display Adobe Illustrator (.ai) files. \nPowered by [pdf.js](https://mozilla.github.io/pdf.js/)" : "Se PDF-dokumenter direkte i din Nextcloud.\nAppen kan desuden vise Adobe Illustrator-filer (.ai).\nDrevet af [pdf.js](https://mozilla.github.io/pdf.js/)",
-    "Failed to load settings" : "Fejl ved indlæsning af indstillinger",
-    "Failed to save settings" : "Kunne ikke gemme indstillinger",
+    "Failed to load settings" : "Kunne ikke indlæse indstillingerne",
+    "Failed to save settings" : "Kunne ikke gemme indstillingerne",
     "PDF Viewer" : "PDF-fremviser",
     "Configure PDF viewer settings" : "Konfigurer indstillinger for PDF-fremviseren",
     "Enable PDF scripting" : "Aktivér PDF-scripting",
