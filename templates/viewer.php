@@ -62,6 +62,11 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     <!-- This snippet is used in production (included from viewer.html) -->
     <link rel="resource" type="application/l10n" href="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/locale/locale.json')) ?>?v=<?php p($version) ?>"/>
+    <!-- Map upsert shims for engines without them (e.g. Firefox ESR 140):
+         module scripts run in document order, so this executes before
+         pdf.js below. The worker file gets the same source prepended at
+         build time, see pdfjs-get.js. -->
+    <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/files_pdfviewer-pdfjs-polyfills.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/build/pdf.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/pdfjs/web/viewer.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>
     <script nonce="<?php p($cspNonceManager->getNonce()) ?>" src="<?php p($urlGenerator->linkTo('files_pdfviewer', 'js/files_pdfviewer-workersrc.mjs')) ?>?v=<?php p($version) ?>" type="module"></script>

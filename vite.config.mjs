@@ -12,6 +12,9 @@ export default createAppConfig({
 	main: path.resolve(path.join('src', 'main.js')),
 	admin: path.resolve(path.join('src', 'admin.js')),
 	workersrc: path.resolve(path.join('src', 'workersrc.js')),
+	// Loaded by templates/viewer.php before the pdf.js modules, so their
+	// Map upsert calls work on engines without native support.
+	'pdfjs-polyfills': path.resolve(path.join('src', 'pdfjs-polyfills.js')),
 }, {
 	// "js/pdfjs" is fetched separately by the "prebuild" script and must
 	// survive the build.
