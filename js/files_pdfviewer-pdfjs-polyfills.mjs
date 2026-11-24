@@ -1,0 +1,2 @@
+function o(n){typeof n.getOrInsert!="function"&&(n.getOrInsert=function(t,e){return this.has(t)?this.get(t):(this.set(t,e),e)}),typeof n.getOrInsertComputed!="function"&&(n.getOrInsertComputed=function(t,e){if(this.has(t))return this.get(t);if(typeof e!="function")throw new TypeError("callbackfn is not callable");const r=e(t);return this.set(t,r),r})}o(Map.prototype),o(WeakMap.prototype);
+//# sourceMappingURL=files_pdfviewer-pdfjs-polyfills.mjs.map
