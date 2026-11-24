@@ -1,9 +1,9 @@
 /**
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
- * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { File, Permission } from '@nextcloud/files'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const handlers = vi.hoisted(() => new Map())
 const open = vi.hoisted(() => vi.fn(async () => {}))
@@ -43,9 +43,22 @@ describe('PDFView', () => {
 	})
 
 	describe('with richdocuments installed', () => {
+		/**
+		 * The probe of the content read, stubbed per test.
+		 *
+		 * @type {ReturnType<typeof vi.fn>}
+		 */
+		let fetchProbe
+
+		beforeEach(() => {
+			fetchProbe = vi.fn()
+			vi.stubGlobal('fetch', fetchProbe)
+		})
+
 		afterEach(() => {
 			handlers.clear()
 			open.mockClear()
+			vi.unstubAllGlobals()
 			delete window.OC
 		})
 
@@ -53,40 +66,70 @@ describe('PDFView', () => {
 		 * Run mounted() over a file, the way the viewer would mount it.
 		 *
 		 * @param {object} attributes the node attributes a share sets
+		 * @param {object} [options] how the content probe answers
+		 * @param {number} [options.status] HTTP status of the probe response
 		 */
-		async function mountOver(attributes) {
+		async function mountOver(attributes, { status = 403 } = {}) {
 			window.OC = { appswebroots: { richdocuments: '/apps/richdocuments' } }
+			fetchProbe.mockResolvedValue({ ok: status >= 200 && status < 300, status })
 			const doc = pdf('a.pdf')
 			doc.attributes['hide-download'] = attributes['hide-download']
 			const emitted = []
 			const context = {
 				file: doc,
 				files: [doc],
+				renderState: 'pending',
 				$emit: (name) => emitted.push(name),
 				$nextTick: () => {},
+				$el: { focus: () => {} },
 			}
 			for (const [name, computed] of Object.entries(PDFView.computed)) {
 				Object.defineProperty(context, name, { get: () => computed.call(context) })
 			}
+			for (const [name, method] of Object.entries(PDFView.methods)) {
+				context[name] = method.bind(context)
+			}
 			await PDFView.mounted.call(context)
-			return { doc, emitted }
+			return { doc, emitted, context }
 		}
 
-		it('hands a hidden download to its viewer handler', async () => {
+		it('hands a hidden download to its viewer handler when the content read is blocked', async () => {
 			handlers.set('richdocuments', {})
-			const { doc, emitted } = await mountOver({ 'hide-download': true })
+			const { doc, emitted, context } = await mountOver({ 'hide-download': true })
 
+			expect(fetchProbe).toHaveBeenCalledTimes(1)
 			expect(open).toHaveBeenCalledWith([doc], doc, undefined, 'richdocuments')
 			expect(emitted).toEqual(['loaded'])
+			expect(context.renderState).toBe('handed-over')
 		})
 
 		it('keeps the file when richdocuments has no viewer handler to take it', async () => {
 			// Not ported to the viewer package yet: as if it were not there
-			const { emitted } = await mountOver({ 'hide-download': true })
+			const { emitted, context } = await mountOver({ 'hide-download': true })
 
-			// Shown by pdf.js with the download disabled, as without richdocuments
+			// Shown as an error: the content read is blocked and there is no
+			// handler to render the file instead
 			expect(open).not.toHaveBeenCalled()
 			expect(emitted).toEqual(['loaded'])
+			expect(context.renderState).toBe('blocked')
+		})
+
+		it('renders a restricted file the server lets pdf.js read', async () => {
+			handlers.set('richdocuments', {})
+			const { context } = await mountOver({ 'hide-download': true }, { status: 206 })
+
+			expect(fetchProbe).toHaveBeenCalledTimes(1)
+			expect(open).not.toHaveBeenCalled()
+			expect(context.renderState).toBe('render')
+		})
+
+		it('renders a regular file without probing', async () => {
+			handlers.set('richdocuments', {})
+			const { context } = await mountOver({})
+
+			expect(fetchProbe).not.toHaveBeenCalled()
+			expect(open).not.toHaveBeenCalled()
+			expect(context.renderState).toBe('render')
 		})
 	})
 })

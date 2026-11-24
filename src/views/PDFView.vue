@@ -4,12 +4,12 @@
   -->
 <template>
 	<iframe
-		v-if="isDownloadable || allowViewWithoutDownload"
+		v-if="renderState === 'render'"
 		ref="iframe"
 		class="files-pdfviewer__iframe"
 		:src="iframeSrc"
 		@load="onIFrameLoaded" />
-	<div v-else-if="!isRichDocumentsAvailable" id="emptycontent">
+	<div v-else-if="renderState === 'blocked'" id="emptycontent">
 		<div class="icon-error" />
 		<h3>{{ t('files_pdfviewer', 'To view a shared PDF file, the download needs to be allowed for this file share') }}</h3>
 	</div>
@@ -18,7 +18,6 @@
 <script>
 import { showError } from '@nextcloud/dialogs'
 import { Permission } from '@nextcloud/files'
-import { loadState } from '@nextcloud/initial-state'
 import { getLanguage, t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { getHandlers, getViewer } from '@nextcloud/viewer'
@@ -48,6 +47,11 @@ export default {
 
 	data() {
 		return {
+			// Whether the embedded viewer may render the file yet: while a
+			// restricted file is being probed the template renders nothing
+			// and the viewer keeps showing its loading state.
+			renderState: 'pending',
+
 			// Marked raw (see below): pdf.js's "eventBus" uses private class
 			// fields, which break behind a Vue reactive proxy.
 			PDFViewerApplication: null,
@@ -71,10 +75,6 @@ export default {
 			return isDownloadable(this.file)
 		},
 
-		allowViewWithoutDownload() {
-			return loadState('files_pdfviewer', 'allowViewWithoutDownload', false)
-		},
-
 		isRichDocumentsAvailable() {
 			// Installed is not enough: without a viewer handler there is
 			// nothing to hand the file to, and it is as if it were not
@@ -87,26 +87,23 @@ export default {
 	},
 
 	async mounted() {
-		if ((!this.isDownloadable && !this.allowViewWithoutDownload) || (this.hideDownload && this.isRichDocumentsAvailable)) {
-			this.$emit('loaded')
-
-			if (this.isRichDocumentsAvailable) {
-				logger.info('PDF file is not downloadable or has a hidden download, but "richdocuments" is available, so falling back to it')
-
-				// Opening over the viewer keeps the opener's onClose, so
-				// passing no options here loses nothing it needs on close
-				getViewer().open(this.files.length > 0 ? this.files : [this.file], this.file, undefined, 'richdocuments')
-			}
-
+		if (this.isDownloadable && !this.hideDownload) {
+			// Regular file: nothing can restrict the content read, so render
+			// with pdf.js straight away
+			this.startRendering()
 			return
 		}
 
-		document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
+		// Restricted file: whether pdf.js may read the content at all is
+		// enforced on the real content read (view-only sharing and secure
+		// view/watermark wrappers), so probe that path instead of guessing
+		// from configuration
+		if (await this.canReadContent()) {
+			this.startRendering()
+			return
+		}
 
-		this.$emit('loaded')
-		this.$nextTick(function() {
-			this.$el.focus()
-		})
+		this.handOverToRichDocuments()
 	},
 
 	beforeUnmount() {
@@ -115,6 +112,48 @@ export default {
 
 	methods: {
 		t,
+
+		startRendering() {
+			this.renderState = 'render'
+
+			document.addEventListener('webviewerloaded', this.handleWebviewerloaded)
+
+			this.$emit('loaded')
+			this.$nextTick(function() {
+				this.$el.focus()
+			})
+		},
+
+		async canReadContent() {
+			try {
+				// The very URL the embedded pdf.js viewer fetches, asking for
+				// a single byte. A bare "#" in the file name has to be encoded
+				// or it would truncate the URL.
+				const response = await fetch(this.file.source.replaceAll('#', '%23'), {
+					headers: { Range: 'bytes=0-0' },
+					credentials: 'same-origin',
+				})
+				return response.ok || response.status === 206
+			} catch (error) {
+				logger.error('Could not check whether the PDF content can be read', error)
+				return false
+			}
+		},
+
+		handOverToRichDocuments() {
+			// The content read is blocked (view-only policy or secure view),
+			// so pdf.js could not render this file anyway
+			this.renderState = this.isRichDocumentsAvailable ? 'handed-over' : 'blocked'
+			this.$emit('loaded')
+
+			if (this.isRichDocumentsAvailable) {
+				logger.info('PDF content cannot be read for this share, so falling back to richdocuments')
+
+				// Opening over the viewer keeps the opener's onClose, so
+				// passing no options here loses nothing it needs on close
+				getViewer().open(this.files.length > 0 ? this.files : [this.file], this.file, undefined, 'richdocuments')
+			}
+		},
 
 		onIFrameLoaded() {
 			if (this.isEditable) {
@@ -225,7 +264,9 @@ export default {
 				}
 			})
 
-			if (this.hideDownload || (!this.isDownloadable && this.allowViewWithoutDownload)) {
+			// Any restricted file must not offer download or print, no matter
+			// which renderer ended up showing it
+			if (this.hideDownload || !this.isDownloadable) {
 				const pdfViewer = this.getIframeDocument().querySelector('.pdfViewer')
 
 				if (pdfViewer) {
